@@ -5,8 +5,6 @@ import { getConfig } from "@/lib/config-server";
 import { fetchSystemBanner } from "@/lib/system-banner";
 import { getTimeZonePreference } from "@/lib/timezone-server";
 
-import { MARKETING_STATS } from "@llmgateway/shared";
-
 import "./globals.css";
 import "./psharehub-brand-fonts.css";
 
@@ -28,10 +26,11 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
 	metadataBase: new URL("https://ai.psharehub.com"),
 	title: {
-		default: `PShareHub AI Gateway — Open-Source AI Gateway for ${MARKETING_STATS.models} Models`,
+		default: "PShareHub AI Gateway — Bản xem trước",
 		template: "%s | PShareHub AI Gateway",
 	},
-	description: `Open-source AI gateway: route requests to ${MARKETING_STATS.models} models from ${MARKETING_STATS.providers} providers, including OpenAI, Anthropic and Google, through one OpenAI-compatible API.`,
+	description:
+		"Bản xem trước cổng API hỗ trợ Anthropic Messages và OpenAI Chat Completions. Yêu cầu nhà vận hành cấu hình thông tin truy cập upstream.",
 	authors: [{ name: "PShareHub AI Gateway" }],
 	creator: "PShareHub AI Gateway",
 	publisher: "PShareHub AI Gateway",
@@ -56,17 +55,19 @@ export const metadata: Metadata = {
 		canonical: "./",
 	},
 	openGraph: {
-		title: `PShareHub AI Gateway — Open-Source AI Gateway for ${MARKETING_STATS.models} Models`,
-		description: `Open-source AI gateway: route requests to ${MARKETING_STATS.models} models from ${MARKETING_STATS.providers} providers, including OpenAI, Anthropic and Google, through one OpenAI-compatible API.`,
+		title: "PShareHub AI Gateway — Bản xem trước",
+		description:
+			"Bản xem trước cổng API hỗ trợ Anthropic Messages và OpenAI Chat Completions.",
 		type: "website",
 		url: "https://ai.psharehub.com",
 		siteName: "PShareHub AI Gateway",
-		locale: "en_US",
+		locale: "vi_VN",
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: `PShareHub AI Gateway — Open-Source AI Gateway for ${MARKETING_STATS.models} Models`,
-		description: `Open-source AI gateway: route requests to ${MARKETING_STATS.models} models from ${MARKETING_STATS.providers} providers through one OpenAI-compatible API.`,
+		title: "PShareHub AI Gateway — Bản xem trước",
+		description:
+			"Bản xem trước cổng API hỗ trợ Anthropic Messages và OpenAI Chat Completions.",
 		creator: "@psharehub",
 	},
 	robots: {
@@ -112,7 +113,7 @@ export default async function RootLayout({
 	]);
 
 	return (
-		<html lang="en" className={geistMono.variable} suppressHydrationWarning>
+		<html lang="vi" className={geistMono.variable} suppressHydrationWarning>
 			<head>
 				<link
 					rel="service-desc"
@@ -120,8 +121,6 @@ export default async function RootLayout({
 					href="/openapi.json"
 				/>
 				<link rel="service-doc" href="/developers" />
-				<link rel="preconnect" href="https://internal.llmgateway.io" />
-				<link rel="preconnect" href="https://docs.llmgateway.io" />
 				<script
 					type="application/ld+json"
 					// eslint-disable-next-line @eslint-react/dom/no-dangerously-set-innerhtml

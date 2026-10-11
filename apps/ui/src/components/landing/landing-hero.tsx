@@ -2,16 +2,13 @@ import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 
 import { DashboardDemo } from "@/components/home/dashboard-demo";
-import { AuthLink } from "@/components/shared/auth-link";
 import { ShimmerButton } from "@/lib/components/shimmer-button";
 
-import { MARKETING_STATS } from "@llmgateway/shared";
-
 const STATS = [
-	{ value: MARKETING_STATS.tokensRouted, label: "tokens routed" },
-	{ value: MARKETING_STATS.requestsRouted, label: "requests routed" },
-	{ value: MARKETING_STATS.models, label: "models" },
-	{ value: MARKETING_STATS.providers, label: "providers" },
+	{ value: "Anthropic", label: "API Messages" },
+	{ value: "OpenAI", label: "Tương thích Chat Completions" },
+	{ value: "Streaming", label: "Responses" },
+	{ value: "Fallback", label: "Tuyến upstream đã cấu hình" },
 ];
 
 export function LandingHero() {
@@ -56,14 +53,13 @@ export function LandingHero() {
 						<div className="text-center max-w-4xl mx-auto">
 							<div>
 								<h1 className="text-balance text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground">
-									PShareHub AI Gateway — One API for {MARKETING_STATS.providers}{" "}
-									providers, including OpenAI, Anthropic, and Google
+									PShareHub AI Gateway
 								</h1>
 								<p className="mt-4 md:mt-6 max-w-2xl mx-auto text-balance text-base md:text-lg text-muted-foreground">
-									The open-source LLM API gateway. Stop juggling API keys and
-									provider dashboards. Route requests across{" "}
-									{MARKETING_STATS.models} models, track costs in real-time, and
-									switch providers without changing your code.
+									Bản xem trước cổng API hỗ trợ Anthropic Messages và OpenAI
+									Chat Completions. Yêu cầu được chuyển qua các tuyến upstream
+									do người vận hành cấu hình. Quyền truy cập công khai và giá
+									dịch vụ chưa được công bố.
 								</p>
 							</div>
 
@@ -73,17 +69,22 @@ export function LandingHero() {
 								<div className="relative">
 									{/* Outer glow ring */}
 									<div className="absolute -inset-3 animate-pulse rounded-full bg-[#ffad4e]/30 blur-xl" />
-									<AuthLink href="/signup" className="group relative">
+									<a
+										href="https://github.com/giangocquoc-art/llmgateway/tree/psharehub/branding-vietnamese-workers"
+										target="_blank"
+										rel="noopener noreferrer"
+										className="group relative"
+									>
 										<ShimmerButton
 											background="#6045e8"
 											className="px-10 py-3 shadow-2xl shadow-[#6045e8]/25 md:px-12 md:py-4"
 										>
 											<span className="flex items-center gap-3 text-center text-xl leading-none font-bold tracking-tight whitespace-pre-wrap text-white md:text-2xl">
-												<span>Get My API Key</span>
+												<span>Xem mã nguồn gateway</span>
 												<ArrowRight className="size-6 md:size-7 transition-transform group-hover:translate-x-1" />
 											</span>
 										</ShimmerButton>
-									</AuthLink>
+									</a>
 								</div>
 
 								{/* Trust indicators */}
@@ -101,7 +102,7 @@ export function LandingHero() {
 												clipRule="evenodd"
 											/>
 										</svg>
-										Bring your own keys — free forever
+										API Anthropic Messages
 									</span>
 									<span className="flex items-center gap-1.5">
 										<svg
@@ -116,7 +117,7 @@ export function LandingHero() {
 												clipRule="evenodd"
 											/>
 										</svg>
-										No credit card required
+										OpenAI tương thích Chat Completions
 									</span>
 									<span className="flex items-center gap-1.5">
 										<svg
@@ -131,7 +132,7 @@ export function LandingHero() {
 												clipRule="evenodd"
 											/>
 										</svg>
-										Setup in 30 seconds
+										Cần cấu hình quyền truy cập upstream
 									</span>
 								</div>
 							</div>

@@ -116,7 +116,7 @@ export default function Footer() {
 								</li>
 								<li>
 									<Link
-										href="https://airside.llmgateway.io"
+										href="https://psharehub.com/"
 										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
 										prefetch={true}
 									>

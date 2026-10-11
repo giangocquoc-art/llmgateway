@@ -10,25 +10,23 @@ import { AnimatedGroup } from "./animated-group";
 const capabilities = [
 	{
 		icon: Lock,
-		title: "Enterprise SSO",
-		description:
-			"SAML 2.0 single sign-on and SCIM provisioning with role-based access control",
+		title: "Anthropic Messages",
+		description: "API tương thích với định dạng Anthropic Messages.",
 	},
 	{
 		icon: Server,
-		title: "Self-hosted or Managed",
-		description:
-			"Deploy on your infrastructure or let us run it, with a 99.9% SLA on Enterprise Cloud",
+		title: "OpenAI Chat Completions",
+		description: "Adapter tương thích định dạng OpenAI Chat Completions.",
 	},
 	{
 		icon: Zap,
-		title: "Volume Pricing",
-		description: "Custom rate limits and pricing that scales with your usage",
+		title: "Phản hồi streaming",
+		description: "Hỗ trợ truyền phản hồi theo luồng.",
 	},
 	{
 		icon: Building2,
-		title: "White-label Ready",
-		description: "White-label gateway and chat app with your own branding",
+		title: "Dự phòng upstream",
+		description: "Có thể cấu hình nhiều tuyến upstream để chuyển tiếp.",
 	},
 ];
 
@@ -38,7 +36,7 @@ export function EnterpriseCTA() {
 			{/* Subtle top separator */}
 			<div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
-			{/* Background treatment — dark panel effect */}
+			{/* Background treatment - dark panel effect */}
 			<div className="absolute inset-0 bg-gradient-to-b from-foreground/[0.03] via-foreground/[0.05] to-foreground/[0.03]" />
 			<div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,var(--color-blue-500)/0.08,transparent)]" />
 
@@ -47,14 +45,13 @@ export function EnterpriseCTA() {
 					{/* Header */}
 					<AnimatedGroup preset="blur-slide" className="text-center mb-16">
 						<h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground">
-							Built for teams that
+							Cổng API AI
 							<br />
-							ship at scale
+							đang trong giai đoạn xem trước
 						</h2>
 						<p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-							When your LLM infrastructure becomes mission-critical, you need
-							dedicated support, compliance controls, and infrastructure that
-							matches your ambitions.
+							Bản xem trước hỗ trợ các định dạng API phổ biến và chuyển yêu cầu
+							tới upstream do người vận hành cấu hình.
 						</p>
 					</AnimatedGroup>
 
@@ -91,8 +88,8 @@ export function EnterpriseCTA() {
 							className="bg-foreground text-background hover:bg-foreground/90 px-8 py-6 text-base font-medium w-full sm:w-auto"
 							asChild
 						>
-							<Link href="/enterprise#contact">
-								Talk to Sales
+							<Link href="https://github.com/giangocquoc-art/llmgateway/tree/psharehub/branding-vietnamese-workers">
+								Xem mã nguồn
 								<ArrowRight className="ml-2 h-4 w-4" />
 							</Link>
 						</Button>
@@ -102,7 +99,7 @@ export function EnterpriseCTA() {
 							className="border-border bg-transparent text-foreground hover:bg-muted px-8 py-6 text-base w-full sm:w-auto"
 							asChild
 						>
-							<Link href="/enterprise">Explore Enterprise</Link>
+							<Link href="https://psharehub.com/">Truy cập PShareHub</Link>
 						</Button>
 					</AnimatedGroup>
 
@@ -111,14 +108,14 @@ export function EnterpriseCTA() {
 						preset="fade"
 						className="mt-8 flex items-center justify-center gap-6 text-sm text-muted-foreground"
 					>
-						<span>One API endpoint</span>
+						<span>Một endpoint API</span>
 						<span className="h-3 w-px bg-border" />
-						<span>Provider routing</span>
+						<span>Định tuyến upstream</span>
 						<span className="h-3 w-px bg-border" />
-						<span>Open source (AGPLv3)</span>
+						<span>Mã nguồn mở (AGPLv3)</span>
 						<span className="h-3 w-px bg-border hidden sm:block" />
 						<span className="hidden sm:inline">
-							Bring your own provider keys
+							Cần cấu hình thông tin upstream
 						</span>
 					</AnimatedGroup>
 				</div>

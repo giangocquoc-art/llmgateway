@@ -1,15 +1,12 @@
 "use client";
 import { usePostHog } from "posthog-js/react";
 
-import { AuthLink } from "@/components/shared/auth-link";
 import { Button } from "@/lib/components/button";
 import { ShimmerButton } from "@/lib/components/shimmer-button";
-import { useAppConfig } from "@/lib/config";
 
 import { AnimatedGroup } from "./animated-group";
 
 export default function CallToAction() {
-	const config = useAppConfig();
 	const posthog = usePostHog();
 	return (
 		<section className="relative py-32 md:py-40 overflow-hidden">
@@ -26,13 +23,14 @@ export default function CallToAction() {
 				<div className="max-w-3xl mx-auto text-center">
 					<AnimatedGroup preset="blur-slide" className="space-y-6">
 						<h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground">
-							Start routing requests
+							Bản xem trước PShareHub AI Gateway
 							<br />
-							in 30 seconds
+							Tương thích Anthropic và OpenAI
 						</h2>
 						<p className="text-lg text-muted-foreground max-w-xl mx-auto">
-							Join thousands of developers processing 100B+ tokens through LLM
-							Gateway. Free tier included, no credit card required.
+							Bản xem trước hỗ trợ Anthropic Messages và OpenAI Chat Completions
+							có phản hồi dạng streaming. Thông tin truy cập công khai và giá
+							dịch vụ chưa được công bố.
 						</p>
 					</AnimatedGroup>
 
@@ -40,39 +38,42 @@ export default function CallToAction() {
 						preset="blur-slide"
 						className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
 					>
-						<AuthLink
-							href="/signup"
+						<a
+							href="https://github.com/giangocquoc-art/llmgateway/tree/psharehub/branding-vietnamese-workers"
+							target="_blank"
+							rel="noopener noreferrer"
 							className="w-full sm:w-auto"
 							onClick={() =>
 								posthog.capture("cta_clicked", {
 									location: "landing_bottom",
-									cta: "create_free_account",
+									cta: "view_gateway_source",
 								})
 							}
 						>
 							<ShimmerButton
-								background="rgb(37, 99, 235)"
-								className="shadow-2xl shadow-blue-500/25 px-8 py-4 text-base font-medium w-full sm:w-auto"
+								background="#6045e8"
+								className="w-full px-8 py-4 text-base font-medium shadow-2xl shadow-[#6045e8]/25 sm:w-auto"
 							>
-								Create Free Account
+								Xem mã nguồn gateway
 							</ShimmerButton>
-						</AuthLink>
+						</a>
 						<Button
 							variant="outline"
 							className="border-border bg-transparent text-foreground hover:bg-muted px-8 py-6 text-base w-full sm:w-auto"
 							asChild
 						>
 							<a
-								href={config.githubUrl ?? ""}
+								href="https://psharehub.com/"
 								target="_blank"
+								rel="noopener noreferrer"
 								onClick={() =>
 									posthog.capture("cta_clicked", {
 										location: "landing_bottom",
-										cta: "self_host",
+										cta: "visit_psharehub",
 									})
 								}
 							>
-								Self-host LLM Gateway
+								Truy cập PShareHub
 							</a>
 						</Button>
 					</AnimatedGroup>

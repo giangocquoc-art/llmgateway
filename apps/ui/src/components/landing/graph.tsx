@@ -4,6 +4,7 @@ import { MonitorSmartphone, HelpCircle, Plus } from "lucide-react";
 import Link from "next/link";
 import React, { useRef } from "react";
 
+import { PShareHubLogo } from "@/components/branding/psharehub-logo";
 import { ProviderLogo } from "@/components/landing/provider-logo";
 import { Button } from "@/lib/components/button";
 import {
@@ -12,10 +13,7 @@ import {
 	TooltipTrigger,
 	TooltipContent,
 } from "@/lib/components/tooltip";
-import Logo from "@/lib/icons/Logo";
 import { cn } from "@/lib/utils";
-
-import { MARKETING_STATS } from "@llmgateway/shared";
 
 import { AnimatedBeam } from "./animated-beam";
 
@@ -42,9 +40,9 @@ const Circle = ({
 Circle.displayName = "Circle";
 
 const stats = [
-	{ value: MARKETING_STATS.providers, label: "Providers" },
-	{ value: MARKETING_STATS.models, label: "Models" },
-	{ value: MARKETING_STATS.tokensRouted, label: "Tokens routed" },
+	{ value: "Anthropic", label: "API Messages" },
+	{ value: "OpenAI", label: "Tương thích Chat Completions" },
+	{ value: "Streaming", label: "Phản hồi theo luồng" },
 ];
 
 export function Graph() {
@@ -107,12 +105,12 @@ export function Graph() {
 					<div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-4">
 						<div>
 							<h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-foreground">
-								One request. Any model.
+								Một yêu cầu. Một cổng kết nối.
 							</h2>
 							<p className="mt-4 text-muted-foreground max-w-xl">
-								Your app sends one request. We route it to OpenAI, Anthropic,
-								Google, or any of {MARKETING_STATS.providers}{" "}
-								providers—automatically picking the best path.
+								Ứng dụng gửi yêu cầu tới PShareHub AI Gateway, sau đó gateway
+								chuyển tới các tuyến upstream tương thích do người vận hành cấu
+								hình.
 							</p>
 						</div>
 						<div className="flex gap-8 lg:gap-12">
@@ -147,7 +145,7 @@ export function Graph() {
 
 						<div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
 							<Circle ref={centerRef}>
-								<Logo />
+								<PShareHubLogo compact className="size-8" />
 							</Circle>
 						</div>
 
@@ -176,7 +174,7 @@ export function Graph() {
 
 								<div className="relative group">
 									<Tooltip>
-										<TooltipTrigger aria-label="More providers — could be your model">
+										<TooltipTrigger aria-label="More providers - could be your model">
 											<Circle ref={rightRefs[5]}>
 												<HelpCircle className="text-muted-foreground dark:text-neutral-400" />
 											</Circle>
@@ -184,12 +182,12 @@ export function Graph() {
 										<TooltipContent>
 											Could be your model?{" "}
 											<a
-												href="mailto:contact@llmgateway.io"
+												href="https://psharehub.com/"
 												className="text-blue-500 underline"
 												target="_blank"
 												rel="noreferrer noopener"
 											>
-												Get in touch
+												Tìm hiểu PShareHub
 											</a>
 										</TooltipContent>
 									</Tooltip>
@@ -216,19 +214,22 @@ export function Graph() {
 
 				<div className="flex justify-center space-x-6">
 					<Button asChild>
-						<Link href="/models" prefetch={true}>
-							View all models
+						<Link
+							href="https://github.com/giangocquoc-art/llmgateway/tree/psharehub/branding-vietnamese-workers"
+							prefetch={true}
+						>
+							Xem mã nguồn gateway
 						</Link>
 					</Button>
 					<Button variant="outline" asChild>
 						<a
-							href="https://github.com/theopenco/llmgateway/issues/new?assignees=&labels=enhancement%2Cmodel-request&projects=&template=model-request.md&title=%5BModel+Request%5D+"
+							href="https://psharehub.com/"
 							target="_blank"
 							rel="noopener noreferrer"
 							className="inline-flex items-center gap-2"
 						>
 							<Plus className="h-4 w-4" />
-							Request Model
+							Truy cập PShareHub
 						</a>
 					</Button>
 				</div>

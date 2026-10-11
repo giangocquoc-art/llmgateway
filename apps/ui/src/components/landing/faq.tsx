@@ -1,7 +1,6 @@
 "use client";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import { PlusIcon } from "lucide-react";
-import Link from "next/link";
 
 import {
 	Accordion,
@@ -9,219 +8,75 @@ import {
 	AccordionItem,
 } from "@/lib/components/accordion";
 
-import { MARKETING_STATS } from "@llmgateway/shared";
-
 const faqData = [
 	{
-		question: "What makes LLM Gateway different from OpenRouter?",
+		question: "PShareHub AI Gateway là gì?",
 		answer:
-			"Unlike OpenRouter, LLM Gateway offers: Full self-hosting under an AGPLv3 license – run the gateway entirely on your infra. Deeper, real-time cost & latency analytics for every request. Bring Your Own Keys for free. Flexible enterprise add-ons (dedicated shard, custom SLAs).",
+			"PShareHub AI Gateway là bản xem trước của cổng API, chuyển yêu cầu đến các upstream do người vận hành cấu hình.",
 	},
 	{
-		question: "What models do you support?",
-		answer: `We support ${MARKETING_STATS.models} models across ${MARKETING_STATS.providers} providers—including GPT-4o, Claude, Gemini, Llama, Mistral, and more. We add new releases within 48 hours of launch.`,
-	},
-	{
-		question: "What is your uptime guarantee?",
+		question: "Gateway hỗ trợ định dạng API nào?",
 		answer:
-			"Our public status page posts real-time metrics. Enterprise Cloud contracts include a 99.9% uptime SLA; pay-as-you-go has no SLA, and self-host installations depend on your infrastructure.",
+			"Bản xem trước cung cấp endpoint Anthropic Messages và adapter OpenAI Chat Completions, có hỗ trợ phản hồi streaming.",
 	},
 	{
-		question: "How much does it cost?",
-		answer: `Credits: Pay-as-you-go with a flat 5% platform fee. BYOK: Use your own provider API keys for free. Enterprise: Custom SLA, dedicated infrastructure, and volume discounts. Self-host: Deploy the core gateway free under AGPLv3; enterprise features need a license. Request logs are metadata only by default; on Enterprise, full data retention is billed at ${MARKETING_STATS.dataStoragePrice} in both credits and BYOK modes.`,
+		question: "Làm thế nào để truy cập?",
+		answer:
+			"Hiện chưa có thông tin truy cập API công khai. Gateway cần người vận hành cấu hình thông tin upstream trước khi chuyển tiếp yêu cầu.",
+	},
+	{
+		question: "Chi phí sử dụng là bao nhiêu?",
+		answer:
+			"PShareHub chưa công bố giá hoặc kích hoạt dịch vụ gateway có phí. Nếu dịch vụ được mở sau này, phí sử dụng sẽ phụ thuộc vào nhà cung cấp được cấu hình.",
 	},
 ];
 
-const faqSchema = {
-	"@context": "https://schema.org",
-	"@type": "FAQPage",
-	mainEntity: faqData.map((item) => ({
-		"@type": "Question",
-		name: item.question,
-		acceptedAnswer: {
-			"@type": "Answer",
-			text: item.answer,
-		},
-	})),
-};
-
 export function Faq() {
 	return (
-		<section className="w-full py-20 md:py-32 bg-background" id="faq">
-			<script
-				type="application/ld+json"
-				// eslint-disable-next-line @eslint-react/dom/no-dangerously-set-innerhtml
-				dangerouslySetInnerHTML={{
-					__html: JSON.stringify(faqSchema),
-				}}
-			/>
-			<div className="container mx-auto px-4 md:px-6">
-				<div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16">
-					{/* Left column: sticky heading */}
+		<section className="py-24 md:py-32">
+			<div className="container mx-auto px-4">
+				<div className="grid gap-12 lg:grid-cols-5">
 					<div className="lg:col-span-2 lg:sticky lg:top-24 lg:self-start">
 						<h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground">
-							Common questions
+							Câu hỏi thường gặp
 						</h2>
 						<p className="mt-4 text-muted-foreground">
-							Everything you need to know about pricing, models, and getting
-							started.
+							Thông tin về định dạng API, cách truy cập và chi phí sử dụng.
 						</p>
 						<p className="mt-6 text-sm text-muted-foreground">
-							Can't find an answer?{" "}
+							Chưa tìm thấy câu trả lời?{" "}
 							<a
-								href="mailto:contact@llmgateway.io"
+								href="https://psharehub.com/"
 								className="text-foreground underline underline-offset-4"
 							>
-								Contact us
+								Truy cập PShareHub
 							</a>
 						</p>
 					</div>
-
-					{/* Right column: accordion */}
 					<div className="lg:col-span-3">
-						<Accordion
-							type="single"
-							collapsible
-							className="w-full"
-							defaultValue="item-1"
-						>
-							{/* Item 1 */}
-							<AccordionItem value="item-1" className="py-5 border-border/50">
-								<AccordionPrimitive.Header className="flex">
-									<AccordionPrimitive.Trigger className="focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 items-center justify-between gap-4 rounded-md py-2 text-left font-display text-lg md:text-xl font-medium leading-7 transition-all outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 [&>svg>path:last-child]:origin-center [&>svg>path:last-child]:transition-all [&>svg>path:last-child]:duration-200 [&[data-state=open]>svg]:rotate-180 [&[data-state=open]>svg>path:last-child]:rotate-90 [&[data-state=open]>svg>path:last-child]:opacity-0 text-foreground">
-										What makes LLM Gateway different from OpenRouter?
-										<PlusIcon
-											size={18}
-											className="pointer-events-none shrink-0 opacity-60 transition-transform duration-200"
-											aria-hidden="true"
-										/>
-									</AccordionPrimitive.Trigger>
-								</AccordionPrimitive.Header>
-								<AccordionContent className="overflow-hidden transition-all data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up text-base text-muted-foreground leading-relaxed pb-2">
-									<div className="border-l-2 border-foreground/10 pl-4">
-										<p>Unlike OpenRouter, we offer:</p>
-										<ul className="list-disc pl-6 mt-2 space-y-1">
-											<li>
-												Full <strong>self-hosting</strong> under an AGPLv3
-												license – run the gateway entirely on your infra.
-											</li>
-											<li>
-												Deeper, real-time{" "}
-												<strong>cost & latency analytics</strong> for every
-												request
-											</li>
-											<li>
-												<strong>Bring Your Own Keys</strong> – use your own
-												provider API keys for free
-											</li>
-											<li>
-												Flexible <strong>enterprise add-ons</strong> (dedicated
-												shard, custom SLAs)
-											</li>
-										</ul>
-									</div>
-								</AccordionContent>
-							</AccordionItem>
-
-							{/* Item 2 */}
-							<AccordionItem value="item-2" className="py-5 border-border/50">
-								<AccordionPrimitive.Header className="flex">
-									<AccordionPrimitive.Trigger className="focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 items-center justify-between gap-4 rounded-md py-2 text-left font-display text-lg md:text-xl font-medium leading-7 transition-all outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 [&>svg>path:last-child]:origin-center [&>svg>path:last-child]:transition-all [&>svg>path:last-child]:duration-200 [&[data-state=open]>svg]:rotate-180 [&[data-state=open]>svg>path:last-child]:rotate-90 [&[data-state=open]>svg>path:last-child]:opacity-0 text-foreground">
-										What models do you support?
-										<PlusIcon
-											size={18}
-											className="pointer-events-none shrink-0 opacity-60 transition-transform duration-200"
-											aria-hidden="true"
-										/>
-									</AccordionPrimitive.Trigger>
-								</AccordionPrimitive.Header>
-								<AccordionContent className="overflow-hidden transition-all data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up text-base text-muted-foreground leading-relaxed pb-2">
-									<div className="border-l-2 border-foreground/10 pl-4">
-										{faqData[1].answer} Check the{" "}
-										<Link href="/models" className="underline">
-											models page
-										</Link>{" "}
-										for the full list.
-									</div>
-								</AccordionContent>
-							</AccordionItem>
-
-							{/* Item 3 */}
-							<AccordionItem value="item-3" className="py-5 border-border/50">
-								<AccordionPrimitive.Header className="flex">
-									<AccordionPrimitive.Trigger className="focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 items-center justify-between gap-4 rounded-md py-2 text-left font-display text-lg md:text-xl font-medium leading-7 transition-all outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 [&>svg>path:last-child]:origin-center [&>svg>path:last-child]:transition-all [&>svg>path:last-child]:duration-200 [&[data-state=open]>svg]:rotate-180 [&[data-state=open]>svg>path:last-child]:rotate-90 [&[data-state=open]>svg>path:last-child]:opacity-0 text-foreground">
-										What is your uptime guarantee?
-										<PlusIcon
-											size={18}
-											className="pointer-events-none shrink-0 opacity-60 transition-transform duration-200"
-											aria-hidden="true"
-										/>
-									</AccordionPrimitive.Trigger>
-								</AccordionPrimitive.Header>
-								<AccordionContent className="overflow-hidden transition-all data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up text-base text-muted-foreground leading-relaxed pb-2">
-									<div className="border-l-2 border-foreground/10 pl-4">
-										Our public status page posts real-time metrics. Enterprise
-										Cloud contracts include a <strong>99.9% uptime SLA</strong>;
-										pay-as-you-go has no SLA, and self-host installations depend
-										on your infrastructure.
-									</div>
-								</AccordionContent>
-							</AccordionItem>
-
-							{/* Item 4 */}
-							<AccordionItem value="item-4" className="py-5 border-border/50">
-								<AccordionPrimitive.Header className="flex">
-									<AccordionPrimitive.Trigger className="focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 items-center justify-between gap-4 rounded-md py-2 text-left font-display text-lg md:text-xl font-medium leading-7 transition-all outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 [&>svg>path:last-child]:origin-center [&>svg>path:last-child]:transition-all [&>svg>path:last-child]:duration-200 [&[data-state=open]>svg]:rotate-180 [&[data-state=open]>svg>path:last-child]:rotate-90 [&[data-state=open]>svg>path:last-child]:opacity-0 text-foreground">
-										How much does it cost?
-										<PlusIcon
-											size={18}
-											className="pointer-events-none shrink-0 opacity-60 transition-transform duration-200"
-											aria-hidden="true"
-										/>
-									</AccordionPrimitive.Trigger>
-								</AccordionPrimitive.Header>
-								<AccordionContent className="overflow-hidden transition-all data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up text-base text-muted-foreground leading-relaxed pb-2">
-									<div className="border-l-2 border-foreground/10 pl-4">
-										<p>Our pricing is simple and transparent:</p>
-										<ul className="list-disc pl-6 mt-2 space-y-1">
-											<li>
-												<strong>Credits – 5% fee:</strong> Pay-as-you-go credits
-												to use any model with a flat 5% platform fee on
-												purchases. Non-US issued cards incur an additional 1.5%
-												international card fee, shown clearly in the top-up
-												breakdown before checkout.
-											</li>
-											<li>
-												<strong>Bring Your Own Keys – free:</strong> Use your
-												own LLM provider API keys (OpenAI, Anthropic, Google,
-												etc.) and pay providers directly. Usage tracking and
-												analytics included at no extra cost.
-											</li>
-											<li>
-												<strong>Enterprise:</strong> Custom SLA, dedicated
-												infrastructure, bring-your-own cloud capacity, and
-												volume discounts. Contact sales for a tailored quote.
-											</li>
-											<li>
-												<strong>Self-host:</strong> Deploy the AGPLv3-licensed
-												gateway on your own infrastructure for free. Enterprise
-												features need a license.
-											</li>
-										</ul>
-										<p className="mt-2">
-											Request logs are metadata only by default. On Enterprise,{" "}
-											<a
-												href="https://docs.llmgateway.io/features/data-retention#storage-pricing"
-												className="underline"
-											>
-												full data retention
-											</a>{" "}
-											is billed at {MARKETING_STATS.dataStoragePrice} in both
-											credits and BYOK modes.
-										</p>
-									</div>
-								</AccordionContent>
-							</AccordionItem>
+						<Accordion type="single" collapsible className="w-full">
+							{faqData.map((item, index) => (
+								<AccordionItem
+									key={item.question}
+									value={`item-${index + 1}`}
+									className="py-5 border-border/50"
+								>
+									<AccordionPrimitive.Header className="flex">
+										<AccordionPrimitive.Trigger className="focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 items-center justify-between gap-4 rounded-md py-2 text-left font-display text-lg md:text-xl font-medium leading-7 transition-all outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 [&>svg>path:last-child]:origin-center [&>svg>path:last-child]:transition-all [&>svg>path:last-child]:duration-200 [&[data-state=open]>svg]:rotate-180 [&[data-state=open]>svg>path:last-child]:rotate-90 [&[data-state=open]>svg>path:last-child]:opacity-0 text-foreground">
+											{item.question}
+											<PlusIcon
+												size={18}
+												className="pointer-events-none shrink-0 opacity-60 transition-transform duration-200"
+											/>
+										</AccordionPrimitive.Trigger>
+									</AccordionPrimitive.Header>
+									<AccordionContent className="overflow-hidden transition-all data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up text-base text-muted-foreground leading-relaxed pb-2">
+										<div className="border-l-2 border-foreground/10 pl-4">
+											{item.answer}
+										</div>
+									</AccordionContent>
+								</AccordionItem>
+							))}
 						</Accordion>
 					</div>
 				</div>

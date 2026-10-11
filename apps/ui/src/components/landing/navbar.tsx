@@ -53,7 +53,6 @@ import { useAppConfig } from "@/lib/config";
 import { useSystemBanner } from "@/lib/system-banner-context";
 import { cn } from "@/lib/utils";
 
-import { MARKETING_STATS } from "@llmgateway/shared";
 import { SystemBannerBar } from "@llmgateway/shared/system-banner";
 
 import { ProviderPromoBanner } from "./provider-promo-banner";
@@ -165,7 +164,8 @@ export const Navbar = ({
 		{
 			title: "AI Gateway",
 			href: "/products/ai-gateway",
-			description: `Route requests to ${MARKETING_STATS.models} models through one API.`,
+			description:
+				"Route compatible requests through configured upstream providers.",
 			icon: Network,
 			gradient:
 				"hover:from-violet-500/20 hover:to-purple-600/30 hover:shadow-violet-500/10 group-hover/product:text-violet-500 dark:group-hover/product:text-violet-400",
@@ -227,7 +227,7 @@ export const Navbar = ({
 		{
 			title: "Changelog",
 			href: "/changelog",
-			description: "What's new in LLM Gateway across releases.",
+			description: "Thông tin cập nhật về PShareHub AI Gateway.",
 			icon: ScrollText,
 			gradient:
 				"hover:from-violet-500/20 hover:to-purple-600/30 hover:shadow-violet-500/10 group-hover/product:text-violet-500 dark:group-hover/product:text-violet-400",
@@ -287,7 +287,7 @@ export const Navbar = ({
 		{
 			title: "Apps",
 			href: "/apps",
-			description: "Browse apps and tools that work with LLM Gateway.",
+			description: "Khám phá ứng dụng và công cụ của PShareHub AI Gateway.",
 			icon: LayoutGrid,
 			gradient:
 				"hover:from-pink-500/20 hover:to-rose-600/30 hover:shadow-pink-500/10 group-hover/product:text-pink-500 dark:group-hover/product:text-pink-400",
@@ -345,7 +345,7 @@ export const Navbar = ({
 		{
 			title: "MCP Server",
 			href: "/mcp",
-			description: "Connect AI assistants to LLM Gateway models over MCP.",
+			description: "Kết nối trợ lý AI với gateway qua MCP.",
 			icon: Server,
 			gradient:
 				"hover:from-cyan-500/20 hover:to-blue-600/30 hover:shadow-cyan-500/10 group-hover/product:text-cyan-500 dark:group-hover/product:text-cyan-400",
@@ -354,7 +354,7 @@ export const Navbar = ({
 			title: "CLI",
 			href: "https://docs.llmgateway.io/developers/cli",
 			description:
-				"Launch Claude Code, Codex and more pre-wired to LLM Gateway.",
+				"Khởi chạy Claude Code, Codex và các công cụ đã cấu hình gateway.",
 			icon: Terminal,
 			gradient:
 				"hover:from-slate-500/20 hover:to-zinc-600/30 hover:shadow-slate-500/10 group-hover/product:text-slate-500 dark:group-hover/product:text-slate-300",
@@ -371,7 +371,7 @@ export const Navbar = ({
 		{
 			title: "AI SDK Provider",
 			href: "https://github.com/theopenco/llmgateway-ai-sdk-provider",
-			description: "Use LLM Gateway with Vercel's AI SDK.",
+			description: "Dùng PShareHub AI Gateway với Vercel AI SDK.",
 			icon: Zap,
 			gradient:
 				"hover:from-amber-500/20 hover:to-orange-600/30 hover:shadow-amber-500/10 group-hover/product:text-amber-500 dark:group-hover/product:text-amber-400",
