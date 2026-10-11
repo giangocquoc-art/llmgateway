@@ -157,7 +157,7 @@ export function Providers({
 								{process.env.NODE_ENV === "development" && (
 									<ReactQueryDevtools buttonPosition="bottom-left" />
 								)}
-								<ChatSupport />
+								{config.chatSupportEnabled && <ChatSupport />}
 							</QueryClientProvider>
 							<Toaster />
 							<SonnerToaster richColors position="bottom-right" />

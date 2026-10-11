@@ -17,6 +17,7 @@ export interface AppConfig {
 	githubAuth: boolean;
 	googleAuth: boolean;
 	ssoEnabled: boolean;
+	chatSupportEnabled: boolean;
 }
 
 export function getConfig(): AppConfig {
@@ -49,5 +50,6 @@ export function getConfig(): AppConfig {
 		githubAuth: !!process.env.GITHUB_CLIENT_ID,
 		googleAuth: !!process.env.GOOGLE_CLIENT_ID,
 		ssoEnabled: process.env.SSO_ENABLED === "true",
+		chatSupportEnabled: process.env.CHAT_SUPPORT_ENABLED !== "false",
 	};
 }
