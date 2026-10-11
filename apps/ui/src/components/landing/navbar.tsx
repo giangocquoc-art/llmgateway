@@ -34,9 +34,7 @@ import { usePostHog } from "posthog-js/react";
 import { useEffect, useState } from "react";
 
 import { PShareHubLogo } from "@/components/branding/psharehub-logo";
-import { AuthLink } from "@/components/shared/auth-link";
 import { ModelSearch } from "@/components/shared/model-search";
-import { useSessionStatus } from "@/hooks/useUser";
 import { Button } from "@/lib/components/button";
 import {
 	NavigationMenu,
@@ -143,8 +141,6 @@ export const Navbar = ({
 }) => {
 	const config = useAppConfig();
 	const posthog = usePostHog();
-	const { isAuthenticated: hasSession, isLoading } = useSessionStatus();
-	const isAuthenticated = hasSession && !isLoading;
 
 	const trackNav = (link: string) => {
 		posthog.capture("nav_link_clicked", { link, area: "navbar" });
@@ -761,33 +757,21 @@ export const Navbar = ({
 
 								<ThemeToggle />
 
-								{isAuthenticated ? (
-									<Button
-										asChild
-										className="bg-zinc-900 dark:bg-white text-white dark:text-black hover:bg-zinc-700 dark:hover:bg-zinc-200 font-medium w-full md:w-fit"
-									>
-										<Link href="/dashboard" prefetch={true}>
-											Dashboard
-										</Link>
-									</Button>
-								) : (
-									<>
-										<Link
-											href="/login"
-											prefetch={true}
-											className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden nav:block whitespace-nowrap"
-										>
-											Log In
-										</Link>
+								<a
+									href="https://api.psharehub.com/admin/studio/"
+									className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden nav:block whitespace-nowrap"
+								>
+									Đăng nhập quản trị
+								</a>
 
-										<Button
-											asChild
-											className="bg-zinc-900 dark:bg-white text-white dark:text-black hover:bg-zinc-700 dark:hover:bg-zinc-200 font-medium w-full md:w-fit"
-										>
-											<AuthLink href="/signup">Get Started</AuthLink>
-										</Button>
-									</>
-								)}
+								<Button
+									asChild
+									className="bg-zinc-900 dark:bg-white text-white dark:text-black hover:bg-zinc-700 dark:hover:bg-zinc-200 font-medium w-full md:w-fit"
+								>
+									<a href="https://api.psharehub.com/admin/studio/">
+										Mở Gateway Console
+									</a>
+								</Button>
 							</div>
 						</div>
 					</div>

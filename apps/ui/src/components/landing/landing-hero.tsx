@@ -70,9 +70,7 @@ export function LandingHero() {
 									{/* Outer glow ring */}
 									<div className="absolute -inset-3 animate-pulse rounded-full bg-[#ffad4e]/30 blur-xl" />
 									<a
-										href="https://github.com/giangocquoc-art/llmgateway/tree/psharehub/branding-vietnamese-workers"
-										target="_blank"
-										rel="noopener noreferrer"
+										href="https://api.psharehub.com/admin/studio/"
 										className="group relative"
 									>
 										<ShimmerButton
@@ -80,7 +78,7 @@ export function LandingHero() {
 											className="px-10 py-3 shadow-2xl shadow-[#6045e8]/25 md:px-12 md:py-4"
 										>
 											<span className="flex items-center gap-3 text-center text-xl leading-none font-bold tracking-tight whitespace-pre-wrap text-white md:text-2xl">
-												<span>Xem mã nguồn gateway</span>
+												<span>Mở Gateway Console</span>
 												<ArrowRight className="size-6 md:size-7 transition-transform group-hover:translate-x-1" />
 											</span>
 										</ShimmerButton>
