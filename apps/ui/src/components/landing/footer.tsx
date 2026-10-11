@@ -784,9 +784,20 @@ export default function Footer() {
 
 				{/* Bottom bar */}
 				<div className="border-t border-border/50 pt-8 mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-					<p className="text-muted-foreground text-sm">
-						&copy; {new Date().getFullYear()} LLM Gateway. All rights reserved.
-					</p>
+					<div className="flex flex-col items-center gap-2 text-center sm:flex-row sm:gap-4">
+						<p className="text-muted-foreground text-sm">
+							&copy; {new Date().getFullYear()} PShareHub AI Gateway. UI based
+							on LLM Gateway (AGPLv3).
+						</p>
+						<a
+							href="https://github.com/giangocquoc-art/llmgateway/tree/psharehub/branding-vietnamese-workers"
+							target="_blank"
+							rel="noreferrer"
+							className="text-muted-foreground text-sm underline underline-offset-4 hover:text-foreground"
+						>
+							Source code
+						</a>
+					</div>
 				</div>
 			</div>
 		</footer>
