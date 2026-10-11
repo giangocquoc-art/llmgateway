@@ -9,46 +9,34 @@ export function PShareHubLogo({
 }) {
 	if (compact) {
 		return (
-			<>
-				<Image
-					src="/brand/logo-black.svg"
-					alt="PShareHub"
-					width={28}
-					height={30}
-					className={`dark:hidden ${className ?? ""}`}
-				/>
-				<Image
-					src="/brand/logo-white.svg"
-					alt=""
-					aria-hidden="true"
-					width={28}
-					height={30}
-					className={`hidden dark:block ${className ?? ""}`}
-				/>
-			</>
+			<Image
+				src="/favicon/chui-brand-mark.svg"
+				alt="Chúi, linh vật PShareHub"
+				width={30}
+				height={30}
+				className={className}
+			/>
 		);
 	}
 
 	return (
-		<span className="inline-flex flex-col items-start gap-0.5">
+		<span className="inline-flex items-center gap-2.5">
 			<Image
-				src="/brand/logo-with-name-black.svg"
-				alt="PShareHub"
-				width={148}
-				height={23}
-				priority
-				className={`h-auto w-[148px] dark:hidden ${className ?? ""}`}
-			/>
-			<Image
-				src="/brand/logo-with-name-white.svg"
+				src="/favicon/chui-brand-mark.svg"
 				alt=""
 				aria-hidden="true"
-				width={148}
-				height={23}
-				className={`hidden h-auto w-[148px] dark:block ${className ?? ""}`}
+				width={34}
+				height={34}
+				priority
+				className="size-[34px] shrink-0 rounded-full"
 			/>
-			<span className="pl-0.5 font-sans text-[9px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-				AI Gateway
+			<span className="flex flex-col gap-0.5 leading-none">
+				<span className="font-display text-[20px] font-extrabold tracking-[-0.06em] text-foreground">
+					PShare<span className="text-primary">Hub</span>
+				</span>
+				<span className="font-sans text-[9px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+					AI Gateway
+				</span>
 			</span>
 		</span>
 	);

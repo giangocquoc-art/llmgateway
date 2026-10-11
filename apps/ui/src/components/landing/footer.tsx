@@ -53,41 +53,6 @@ export default function Footer() {
 								</svg>
 							</a>
 						</div>
-						<a
-							href="https://status.llmgateway.io/"
-							target="_blank"
-							rel="noopener noreferrer"
-							className="mt-6 inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/40 px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
-						>
-							System status
-						</a>
-						<div className="mt-6 flex items-center gap-3">
-							{/* Per AICPA guidelines the SOC logo must link to aicpa.org/soc4so */}
-							<a
-								href="https://www.aicpa.org/soc4so"
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								<img
-									src="/badges/aicpa-soc.png"
-									alt="AICPA SOC for Service Organizations badge"
-									width={56}
-									height={56}
-									loading="lazy"
-									className="h-14 w-14"
-								/>
-							</a>
-							<a
-								href="https://security.llmgateway.io/"
-								target="_blank"
-								rel="noopener noreferrer"
-								className="text-xs leading-snug text-muted-foreground transition-colors hover:text-foreground"
-							>
-								SOC 2 Type II
-								<br />
-								compliant
-							</a>
-						</div>
 					</div>
 
 					<div className="w-full md:w-auto grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 text-muted-foreground">
@@ -402,29 +367,9 @@ export default function Footer() {
 
 						<div>
 							<h3 className="font-display text-sm font-semibold mb-4 text-foreground">
-								Compliance
+								Information
 							</h3>
 							<ul className="space-y-2">
-								<li>
-									<a
-										href="https://security.llmgateway.io/"
-										target="_blank"
-										rel="noopener noreferrer"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-									>
-										Trust Center
-									</a>
-								</li>
-								<li>
-									<a
-										href="https://security.llmgateway.io/"
-										target="_blank"
-										rel="noopener noreferrer"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-									>
-										Security Portal
-									</a>
-								</li>
 								<li>
 									<Link
 										href="/legal/terms"
@@ -460,26 +405,6 @@ export default function Footer() {
 									>
 										Sub-processors
 									</Link>
-								</li>
-								<li>
-									<a
-										href="https://security.llmgateway.io/"
-										target="_blank"
-										rel="noopener noreferrer"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-									>
-										SOC 2 Type II
-									</a>
-								</li>
-								<li>
-									<a
-										href="https://status.llmgateway.io/"
-										target="_blank"
-										rel="noopener noreferrer"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-									>
-										Status
-									</a>
 								</li>
 							</ul>
 						</div>

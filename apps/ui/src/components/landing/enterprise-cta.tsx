@@ -111,13 +111,15 @@ export function EnterpriseCTA() {
 						preset="fade"
 						className="mt-8 flex items-center justify-center gap-6 text-sm text-muted-foreground"
 					>
-						<span>Custom SLAs</span>
+						<span>One API endpoint</span>
 						<span className="h-3 w-px bg-border" />
-						<span>Priority support</span>
+						<span>Provider routing</span>
 						<span className="h-3 w-px bg-border" />
-						<span>SOC 2 Type II compliant</span>
+						<span>Open source (AGPLv3)</span>
 						<span className="h-3 w-px bg-border hidden sm:block" />
-						<span className="hidden sm:inline">On-boarding assistance</span>
+						<span className="hidden sm:inline">
+							Bring your own provider keys
+						</span>
 					</AnimatedGroup>
 				</div>
 			</div>
