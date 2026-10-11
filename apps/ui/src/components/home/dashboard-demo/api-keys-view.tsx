@@ -126,7 +126,7 @@ export function ApiKeysView() {
 					<div>
 						<h2 className="text-3xl font-bold tracking-tight">API Keys</h2>
 						<p className="text-muted-foreground">
-							Create and manage API keys to authenticate requests to LLM Gateway
+							Quản lý API key để xác thực yêu cầu gửi đến PShareHub AI Gateway
 						</p>
 					</div>
 					<Button

@@ -1,7 +1,5 @@
 import { ImageResponse } from "next/og";
 
-import { LogoLockup } from "@/lib/icons/Logo";
-
 import { ogIconSize } from "@llmgateway/shared/components";
 
 export const providerOgSize = {
@@ -12,7 +10,7 @@ export const providerOgSize = {
 export const providerOgContentType = "image/png";
 
 /** Accent used when a provider carries no brand colour of its own. */
-export const defaultProviderAccent = "#38BDF8";
+export const defaultProviderAccent = "#6045E8";
 
 const FONT_STACK = "system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
 
@@ -144,9 +142,9 @@ export function providerOgCard({
 				height: "100%",
 				display: "flex",
 				flexDirection: "column",
-				background: "#050506",
-				backgroundImage: `radial-gradient(760px 520px at 8% -10%, ${hexToRgba(accent, 0.28)}, transparent 62%), radial-gradient(680px 520px at 108% 116%, rgba(99,102,241,0.18), transparent 60%)`,
-				color: "#ffffff",
+				background: "#101c3a",
+				backgroundImage: `radial-gradient(760px 520px at 8% -10%, ${hexToRgba(accent, 0.28)}, transparent 62%), radial-gradient(680px 520px at 108% 116%, rgba(57,198,202,0.18), transparent 60%)`,
+				color: "#f7f9ff",
 				fontFamily: FONT_STACK,
 				padding: "52px 64px 48px 74px",
 				boxSizing: "border-box",
@@ -212,7 +210,10 @@ export function providerOgCard({
 					gap: 18,
 				}}
 			>
-				<LogoLockup style={{ width: 210, height: 32 }} />
+				<div style={{ display: "flex", fontSize: 26, fontWeight: 800 }}>
+					<span>PShare</span>
+					<span style={{ color: "#9b89ff" }}>Hub</span>
+				</div>
 				<span style={{ display: "flex", color: "#374151", fontSize: 22 }}>
 					/
 				</span>
@@ -400,7 +401,7 @@ export function providerOgCard({
 				}}
 			>
 				<span style={{ display: "flex", color: "#ffffff", fontWeight: 600 }}>
-					llmgateway.io
+					ai.psharehub.com
 				</span>
 				<span style={{ display: "flex", color: "#6B7280" }}>
 					One API. Every model.

@@ -32,26 +32,34 @@ export default function Footer() {
 							>
 								<GithubIcon className="h-4 w-4" />
 							</a>
-							<a
-								href={config.twitterUrl}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="flex h-9 w-9 items-center justify-center rounded-full border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
-								aria-label="X"
-							>
-								<XIcon className="h-4 w-4" />
-							</a>
-							<a
-								href={config.discordUrl}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="flex h-9 w-9 items-center justify-center rounded-full border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
-								aria-label="Discord"
-							>
-								<svg className="h-4 w-4" viewBox="0 0 15 15" aria-hidden="true">
-									<use href="/landing-icons.svg#discord" />
-								</svg>
-							</a>
+							{config.twitterUrl ? (
+								<a
+									href={config.twitterUrl}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="flex h-9 w-9 items-center justify-center rounded-full border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
+									aria-label="X"
+								>
+									<XIcon className="h-4 w-4" />
+								</a>
+							) : null}
+							{config.discordUrl ? (
+								<a
+									href={config.discordUrl}
+									target="_blank"
+									rel="noopener noreferrer"
+									className="flex h-9 w-9 items-center justify-center rounded-full border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
+									aria-label="Discord"
+								>
+									<svg
+										className="h-4 w-4"
+										viewBox="0 0 15 15"
+										aria-hidden="true"
+									>
+										<use href="/landing-icons.svg#discord" />
+									</svg>
+								</a>
+							) : null}
 						</div>
 					</div>
 
@@ -132,15 +140,7 @@ export default function Footer() {
 										Partners
 									</Link>
 								</li>
-								<li>
-									<Link
-										href="/products/lounge"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Lounge
-									</Link>
-								</li>
+
 								<li>
 									<Link
 										href="/changelog"
@@ -150,15 +150,7 @@ export default function Footer() {
 										Changelog
 									</Link>
 								</li>
-								<li>
-									<Link
-										href="/products/devpass"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										DevPass
-									</Link>
-								</li>
+
 								<li>
 									<Link
 										href="/models/compare"
@@ -317,26 +309,7 @@ export default function Footer() {
 										GitHub
 									</a>
 								</li>
-								<li>
-									<a
-										href={config.discordUrl}
-										target="_blank"
-										rel="noopener noreferrer"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-									>
-										Discord
-									</a>
-								</li>
-								<li>
-									<a
-										href={config.twitterUrl}
-										target="_blank"
-										rel="noopener noreferrer"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-									>
-										Twitter
-									</a>
-								</li>
+
 								<li>
 									<Link
 										href="/about"

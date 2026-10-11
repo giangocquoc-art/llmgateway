@@ -1,7 +1,5 @@
 import { ImageResponse } from "next/og";
 
-import Logo, { LogoLockup } from "@/lib/icons/Logo";
-
 import { MARKETING_STATS } from "@llmgateway/shared";
 
 export const ogSize = {
@@ -19,8 +17,9 @@ interface OgImageOptions {
 
 /**
  * Shared OpenGraph image template so every marketing page renders a
- * consistent, on-brand 1200x630 card with the LLM Gateway logo in the
- * top-left corner and a faint logo watermark in the opposite corner.
+ * consistent PShareHub branded 1200x630 card. Keep this template to text and
+ * CSS primitives because Satori cannot reliably render the mascot's embedded
+ * WebP SVG on Cloudflare Workers.
  */
 export function ogImage({ eyebrow, title, subtitle }: OgImageOptions) {
 	return new ImageResponse(
@@ -32,41 +31,32 @@ export function ogImage({ eyebrow, title, subtitle }: OgImageOptions) {
 				flexDirection: "column",
 				justifyContent: "space-between",
 				position: "relative",
-				background: "#000000",
+				background: "#101c3a",
 				backgroundImage:
-					"radial-gradient(1100px 620px at 82% -12%, rgba(56,189,248,0.22), transparent 60%), radial-gradient(900px 620px at -8% 112%, rgba(139,92,246,0.20), transparent 55%)",
+					"radial-gradient(1100px 620px at 82% -12%, rgba(96,69,232,0.28), transparent 60%), radial-gradient(900px 620px at -8% 112%, rgba(57,198,202,0.16), transparent 55%)",
 				color: "#ffffff",
 				fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
 				padding: 72,
 				boxSizing: "border-box",
 			}}
 		>
-			{/* Faint logo watermark in the bottom-right corner */}
-			<div
-				style={{
-					position: "absolute",
-					right: -70,
-					bottom: -90,
-					display: "flex",
-					color: "#ffffff",
-					opacity: 0.04,
-				}}
-			>
-				<Logo style={{ width: 440, height: 440 }} />
-			</div>
-
-			{/* Header: official horizontal lockup + eyebrow */}
+			{/* Header uses a text lockup so Satori does not need to parse the mascot SVG. */}
 			<div
 				style={{
 					display: "flex",
 					flexDirection: "row",
 					alignItems: "center",
-					gap: 14,
+					gap: 18,
 				}}
 			>
-				<LogoLockup style={{ width: 236, height: 36 }} />
-				<span style={{ color: "#4B5563", fontSize: 24 }}>/</span>
-				<span style={{ color: "#9CA3AF", fontSize: 24 }}>{eyebrow}</span>
+				<div style={{ display: "flex", fontSize: 30, fontWeight: 800 }}>
+					<span>PShare</span>
+					<span style={{ color: "#9b89ff" }}>Hub</span>
+				</div>
+				<span style={{ color: "rgba(255,255,255,0.4)", fontSize: 24 }}>/</span>
+				<span style={{ color: "rgba(226,232,255,0.72)", fontSize: 24 }}>
+					{eyebrow}
+				</span>
 			</div>
 
 			{/* Main: title + subtitle */}
@@ -114,8 +104,10 @@ export function ogImage({ eyebrow, title, subtitle }: OgImageOptions) {
 					color: "#9CA3AF",
 				}}
 			>
-				<span style={{ color: "#ffffff", fontWeight: 600 }}>llmgateway.io</span>
-				<span>{`One API. ${MARKETING_STATS.models} models.`}</span>
+				<span style={{ color: "#ffffff", fontWeight: 600 }}>
+					ai.psharehub.com
+				</span>
+				<span>{`Một API. ${MARKETING_STATS.models} mô hình.`}</span>
 			</div>
 		</div>,
 		ogSize,

@@ -1,7 +1,5 @@
 import { ImageResponse } from "next/og";
 
-import Logo from "@/lib/icons/Logo";
-
 export const size = {
 	width: 1200,
 	height: 630,
@@ -63,7 +61,7 @@ export default function RankingsOgImage() {
 				}}
 			>
 				<div style={{ display: "flex", color: "#ffffff" }}>
-					<Logo style={{ width: 44, height: 44 }} />
+					<span style={{ fontSize: 22, fontWeight: 800 }}>PSH</span>
 				</div>
 				<div
 					style={{
@@ -74,7 +72,7 @@ export default function RankingsOgImage() {
 						fontSize: 24,
 					}}
 				>
-					<span style={{ color: "#ffffff", fontWeight: 600 }}>LLM Gateway</span>
+					<span style={{ color: "#ffffff", fontWeight: 600 }}>PShareHub</span>
 					<span style={{ color: "#4B5563" }}>/</span>
 					<span style={{ color: "#9CA3AF" }}>Rankings</span>
 				</div>

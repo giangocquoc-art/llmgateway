@@ -1856,7 +1856,7 @@ export const SDK_SETTINGS = {
 	],
 	brandName: "Trợ lý minh họa",
 	supportEmail: "billing@psharehub.com",
-	descriptorSuffix: "ACME AI",
+	descriptorSuffix: "PSHAREHUB AI",
 	platformKeys: [
 		{
 			id: "pk_live",

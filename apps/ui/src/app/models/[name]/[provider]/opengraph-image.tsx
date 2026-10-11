@@ -1,7 +1,6 @@
 import { ImageResponse } from "next/og";
 
 import { discountFraction, getEffectiveProviderDiscount } from "@/lib/discount";
-import Logo from "@/lib/icons/Logo";
 import { getCheapestOgMapping, getModelOgData } from "@/lib/model-og";
 import { getOgModelFamilyIcon, getOgProviderIcon } from "@/lib/og-icons";
 import { formatContextSize } from "@/lib/utils";
@@ -794,7 +793,7 @@ export default async function ModelProviderOgImage({ params }: ImageProps) {
 								color: "#ffffff",
 							}}
 						>
-							<Logo style={{ width: 40, height: 40 }} />
+							<span style={{ fontSize: 20, fontWeight: 800 }}>PSH</span>
 						</div>
 						<span
 							style={{
@@ -803,7 +802,7 @@ export default async function ModelProviderOgImage({ params }: ImageProps) {
 								color: "#E5E7EB",
 							}}
 						>
-							LLM Gateway
+							PShareHub AI Gateway
 						</span>
 					</div>
 					<span
@@ -812,7 +811,7 @@ export default async function ModelProviderOgImage({ params }: ImageProps) {
 							color: "#6B7280",
 						}}
 					>
-						llmgateway.io
+						ai.psharehub.com
 					</span>
 				</div>
 			</div>,

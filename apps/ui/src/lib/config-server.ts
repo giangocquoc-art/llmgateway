@@ -21,30 +21,25 @@ export interface AppConfig {
 }
 
 export function getConfig(): AppConfig {
-	const apiUrl = process.env.API_URL ?? "http://localhost:4002";
+	const apiUrl = process.env.API_URL ?? "https://api.psharehub.com";
 	return {
 		hosted: process.env.HOSTED === "true",
-		appUrl: process.env.APP_URL ?? "http://localhost:3002",
+		appUrl: process.env.APP_URL ?? "https://ai.psharehub.com",
 		apiUrl,
 		apiBackendUrl: process.env.API_BACKEND_URL ?? apiUrl,
-		gatewayUrl: process.env.GATEWAY_URL ?? "http://localhost:4001",
+		gatewayUrl: process.env.GATEWAY_URL ?? "https://api.psharehub.com",
 		githubUrl:
-			process.env.GITHUB_URL ?? "https://github.com/theopenco/llmgateway",
-		discordUrl: process.env.DISCORD_URL ?? "https://llmgateway.io/discord",
-		twitterUrl: process.env.TWITTER_URL ?? "https://x.com/llmgateway",
-		docsUrl: process.env.DOCS_URL ?? "http://localhost:3005",
-		playgroundUrl: process.env.PLAYGROUND_URL ?? "http://localhost:3003",
-		devpassUrl:
-			process.env.CODE_URL ??
-			(process.env.NODE_ENV === "development"
-				? "http://localhost:3004"
-				: "https://devpass.llmgateway.io"),
-		airsideUrl:
-			process.env.AIRSIDE_URL ??
-			(process.env.NODE_ENV === "development"
-				? "http://localhost:3007"
-				: "https://airside.llmgateway.io"),
-		adminUrl: process.env.ADMIN_URL ?? "http://localhost:3006",
+			process.env.GITHUB_URL ?? "https://github.com/giangocquoc-art/llmgateway",
+		discordUrl: process.env.DISCORD_URL ?? "",
+		twitterUrl: process.env.TWITTER_URL ?? "",
+		docsUrl:
+			process.env.DOCS_URL ??
+			"https://github.com/giangocquoc-art/llmgateway#readme",
+		playgroundUrl:
+			process.env.PLAYGROUND_URL ?? "https://api.psharehub.com/admin/studio/",
+		devpassUrl: process.env.CODE_URL ?? "",
+		airsideUrl: process.env.AIRSIDE_URL ?? "",
+		adminUrl: process.env.ADMIN_URL ?? "https://api.psharehub.com/admin",
 		posthogKey: process.env.POSTHOG_KEY,
 		posthogHost: process.env.POSTHOG_HOST,
 		githubAuth: !!process.env.GITHUB_CLIENT_ID,

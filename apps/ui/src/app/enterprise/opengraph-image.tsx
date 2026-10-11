@@ -1,7 +1,5 @@
 import { ImageResponse } from "next/og";
 
-import Logo from "@/lib/icons/Logo";
-
 export const size = {
 	width: 1200,
 	height: 630,
@@ -18,9 +16,11 @@ export default async function EnterpriseOgImage() {
 				flexDirection: "column",
 				justifyContent: "center",
 				alignItems: "center",
-				background: "#000000",
-				color: "white",
-				fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+				background: "#101c3a",
+				backgroundImage:
+					"radial-gradient(900px 520px at 88% -8%, rgba(96,69,232,0.3), transparent 62%), radial-gradient(760px 520px at -6% 112%, rgba(57,198,202,0.16), transparent 60%)",
+				color: "#f7f9ff",
+				fontFamily: "sans-serif",
 			}}
 		>
 			<div
@@ -31,17 +31,9 @@ export default async function EnterpriseOgImage() {
 					gap: 40,
 				}}
 			>
-				<div
-					style={{
-						width: 120,
-						height: 120,
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
-						color: "#ffffff",
-					}}
-				>
-					<Logo style={{ width: 120, height: 120 }} />
+				<div style={{ display: "flex", fontSize: 48, fontWeight: 800 }}>
+					<span>PShare</span>
+					<span style={{ color: "#9b89ff" }}>Hub</span>
 				</div>
 				<h1
 					style={{
@@ -52,7 +44,7 @@ export default async function EnterpriseOgImage() {
 						color: "#ffffff",
 					}}
 				>
-					Enterprise
+					PShareHub AI Gateway
 				</h1>
 				<p
 					style={{
@@ -63,7 +55,7 @@ export default async function EnterpriseOgImage() {
 						textAlign: "center",
 					}}
 				>
-					Production-grade LLM routing at scale
+					Cổng API hỗ trợ Anthropic Messages và OpenAI Chat Completions.
 				</p>
 			</div>
 		</div>,

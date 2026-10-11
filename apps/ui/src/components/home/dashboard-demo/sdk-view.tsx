@@ -121,9 +121,9 @@ export function SdkView() {
 									<div>
 										<h4 className="font-medium">Receipts &amp; branding</h4>
 										<p className="text-sm text-muted-foreground">
-											LLM Gateway is the merchant of record and stays on every
-											receipt. These fields tell your end-users which product
-											the charge came from.
+											Tên thương hiệu và email hỗ trợ xuất hiện trên biên nhận
+											của người dùng cuối khi tích hợp hệ thống thanh toán của
+											bạn.
 										</p>
 									</div>
 									<Field

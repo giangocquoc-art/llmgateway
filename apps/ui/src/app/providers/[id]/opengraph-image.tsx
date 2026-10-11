@@ -1,4 +1,3 @@
-import { getOgProviderIcon } from "@/lib/og-icons";
 import {
 	defaultProviderAccent,
 	providerOgCard,
@@ -14,7 +13,6 @@ import {
 	getProviderCountries,
 	providers as providerDefinitions,
 } from "@llmgateway/models";
-import { ogIconSize } from "@llmgateway/shared/components";
 
 export const size = providerOgSize;
 export const contentType = providerOgContentType;
@@ -58,12 +56,11 @@ export default async function ProviderOgImage({ params }: ImageProps) {
 		return providerOgCard({
 			eyebrow: "Provider directory",
 			title: "Provider not found",
-			subtitle: "Browse every provider routed by LLM Gateway.",
-			stats: [{ label: "Directory", value: "llmgateway.io/providers" }],
+			subtitle: "Browse providers available through PShareHub AI Gateway.",
+			stats: [{ label: "Directory", value: "ai.psharehub.com/providers" }],
 		});
 	}
 
-	const Icon = getOgProviderIcon(provider.id);
 	const modelCount = activeModelCounts[provider.id] ?? 0;
 	const headquarters = provider.headquarters
 		? (countryNames.get(provider.headquarters) ?? provider.headquarters)
@@ -90,7 +87,6 @@ export default async function ProviderOgImage({ params }: ImageProps) {
 		title: provider.name,
 		subtitle: toTagline(provider.description),
 		accent: provider.color ?? defaultProviderAccent,
-		mark: <Icon {...ogIconSize(Icon, 68)} />,
 		chips,
 		stats: [
 			"managedInAirside" in provider && provider.managedInAirside

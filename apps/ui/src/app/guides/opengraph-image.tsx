@@ -1,7 +1,5 @@
 import { ImageResponse } from "next/og";
 
-import Logo from "@/lib/icons/Logo";
-
 import {
 	AnthropicIcon,
 	AutohandIcon,
@@ -86,7 +84,7 @@ export default async function GuidesOgImage() {
 						color: "#ffffff",
 					}}
 				>
-					<Logo style={{ width: 48, height: 48 }} />
+					<span style={{ fontSize: 24, fontWeight: 800 }}>PSH</span>
 				</div>
 				<div
 					style={{
@@ -98,7 +96,7 @@ export default async function GuidesOgImage() {
 						color: "#9CA3AF",
 					}}
 				>
-					<span style={{ color: "#ffffff", fontWeight: 600 }}>LLM Gateway</span>
+					<span style={{ color: "#ffffff", fontWeight: 600 }}>PShareHub</span>
 					<span style={{ opacity: 0.6 }}>•</span>
 					<span>Guides</span>
 				</div>

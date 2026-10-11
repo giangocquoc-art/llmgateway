@@ -4,7 +4,7 @@ import { ogContentType, ogSize } from "@/lib/og";
 export const size = ogSize;
 export const contentType = ogContentType;
 export const alt =
-	"LLM Gateway: company-wide AI, live in weeks, not quarters. Start a 30-day production pilot.";
+	"PShareHub AI Gateway preview for Anthropic Messages and OpenAI Chat Completions.";
 
 export default function Image() {
 	return homeOgImage();

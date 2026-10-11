@@ -125,7 +125,7 @@ export function CostBreakdownCard({
 	if (storageCost > 0) {
 		sorted.push({
 			model: "storage",
-			provider: "LLM Gateway",
+			provider: "PShareHub AI Gateway",
 			cost: storageCost,
 		});
 	}

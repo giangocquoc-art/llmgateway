@@ -3,42 +3,14 @@ import { join } from "node:path";
 
 import { ImageResponse } from "next/og";
 
-import { LogoLockup } from "@/lib/icons/Logo";
 import { ogSize } from "@/lib/og";
-
-import { MARKETING_STATS } from "@llmgateway/shared";
 
 import type { ReactNode } from "react";
 
-const INK = "#09090b";
-const PAPER = "#f4f1e8";
-const MUTED = "rgba(244,241,232,0.64)";
-const FAINT = "rgba(244,241,232,0.42)";
-const AMBER = "#fcd34d";
-
-const fontDir = join(process.cwd(), "src/assets/og-fonts");
-const fontFiles = Promise.all([
-	readFile(join(fontDir, "PlusJakartaSans-Medium.ttf")),
-	readFile(join(fontDir, "PlusJakartaSans-ExtraBold.ttf")),
-	readFile(join(fontDir, "InstrumentSerif-Italic.ttf")),
-	readFile(join(fontDir, "GeistMono-Medium.ttf")),
-]);
-
-async function loadFonts() {
-	const [jakartaMedium, jakartaExtraBold, serifItalic, monoMedium] =
-		await fontFiles;
-	return [
-		{ name: "Jakarta", data: jakartaMedium, weight: 500 as const },
-		{ name: "Jakarta", data: jakartaExtraBold, weight: 800 as const },
-		{
-			name: "Serif",
-			data: serifItalic,
-			weight: 400 as const,
-			style: "italic" as const,
-		},
-		{ name: "Mono", data: monoMedium, weight: 500 as const },
-	];
-}
+const INK = "#101c3a";
+const PAPER = "#f7f9ff";
+const MUTED = "rgba(226,232,255,0.78)";
+const FAINT = "rgba(226,232,255,0.48)";
 
 const BARCODE = [3, 1, 2, 1, 4, 1, 1, 3, 2, 1, 1, 2, 3, 1, 2, 1, 1, 4, 1, 2];
 
@@ -79,7 +51,6 @@ async function renderCard({
 	glow: string;
 	children: ReactNode;
 }) {
-	const fonts = await loadFonts();
 	return new ImageResponse(
 		<div
 			style={{
@@ -89,9 +60,9 @@ async function renderCard({
 				flexDirection: "column",
 				position: "relative",
 				background: INK,
-				backgroundImage: `radial-gradient(900px 520px at 88% -8%, ${glow}, transparent 62%), radial-gradient(760px 520px at -6% 112%, rgba(245,184,61,0.14), transparent 60%)`,
+				backgroundImage: `radial-gradient(900px 520px at 88% -8%, ${glow}, transparent 62%), radial-gradient(760px 520px at -6% 112%, rgba(57,198,202,0.14), transparent 60%)`,
 				color: PAPER,
-				fontFamily: "Jakarta",
+				fontFamily: "sans-serif",
 				padding: "56px 64px",
 			}}
 		>
@@ -102,8 +73,9 @@ async function renderCard({
 					justifyContent: "space-between",
 				}}
 			>
-				<div style={{ display: "flex", color: "#ffffff" }}>
-					<LogoLockup style={{ width: 236, height: 36 }} />
+				<div style={{ display: "flex", fontSize: 30, fontWeight: 800 }}>
+					<span>PShare</span>
+					<span style={{ color: "#9b89ff" }}>Hub</span>
 				</div>
 				<div
 					style={{
@@ -113,18 +85,18 @@ async function renderCard({
 						color: MUTED,
 					}}
 				>
-					llmgateway.io
+					ai.psharehub.com
 				</div>
 			</div>
 			{children}
 		</div>,
-		{ ...ogSize, fonts },
+		ogSize,
 	);
 }
 
 export async function homeOgImage() {
 	return await renderCard({
-		glow: "rgba(245,184,61,0.24)",
+		glow: "rgba(96,69,232,0.24)",
 		children: (
 			<div
 				style={{
@@ -143,7 +115,7 @@ export async function homeOgImage() {
 						gap: 20,
 					}}
 				>
-					<Eyebrow>Enterprise AI gateway</Eyebrow>
+					<Eyebrow>PShareHub AI Gateway · Bản xem trước</Eyebrow>
 					<div
 						style={{
 							display: "flex",
@@ -154,18 +126,18 @@ export async function homeOgImage() {
 							lineHeight: 1.02,
 						}}
 					>
-						<span>Company-wide AI,</span>
+						<span>Một API,</span>
 						<span
 							style={{
 								fontFamily: "Serif",
 								fontStyle: "italic",
 								fontWeight: 400,
 								letterSpacing: "-0.02em",
-								color: AMBER,
+								color: "#39c6ca",
 								marginTop: 6,
 							}}
 						>
-							live in weeks, not quarters.
+							nhiều giao thức.
 						</span>
 					</div>
 					<div
@@ -176,7 +148,8 @@ export async function homeOgImage() {
 							color: MUTED,
 						}}
 					>
-						{`One OpenAI-compatible gateway to ${MARKETING_STATS.models} models from ${MARKETING_STATS.providers} providers. SSO, audit logs and guardrails on Enterprise.`}
+						Cổng API xem trước hỗ trợ Anthropic Messages và OpenAI Chat
+						Completions. Cần cấu hình quyền truy cập upstream để xử lý yêu cầu.
 					</div>
 				</div>
 				<div
@@ -185,10 +158,10 @@ export async function homeOgImage() {
 						flexDirection: "column",
 						width: 396,
 						borderRadius: 22,
-						background: "#fffdf7",
-						color: "#111113",
+						background: "#ffffff",
+						color: INK,
 						padding: "26px 28px",
-						boxShadow: "0 40px 90px -30px rgba(245,184,61,0.45)",
+						boxShadow: "0 40px 90px -30px rgba(96,69,232,0.3)",
 					}}
 				>
 					<div
@@ -198,11 +171,11 @@ export async function homeOgImage() {
 							fontFamily: "Mono",
 							fontSize: 13,
 							letterSpacing: "0.18em",
-							color: "rgba(17,17,19,0.5)",
+							color: "rgba(16,28,58,0.62)",
 						}}
 					>
-						<span>● BOARDING PASS</span>
-						<span>ENTERPRISE PILOT</span>
+						<span>● API GATEWAY</span>
+						<span>PREVIEW</span>
 					</div>
 					<div
 						style={{
@@ -213,12 +186,12 @@ export async function homeOgImage() {
 							letterSpacing: "-0.035em",
 						}}
 					>
-						30-day production pilot
+						Giao thức tích hợp
 					</div>
 					{[
-						["WEEK 1", "Traffic live"],
-						["WEEK 2", "Controls on"],
-						["DAY 30", "You decide"],
+						["ANTHROPIC", "Messages API"],
+						["OPENAI", "Chat Completions"],
+						["UPSTREAM", "Cần cấu hình khóa"],
 					].map(([when, what]) => (
 						<div
 							key={when}
@@ -232,11 +205,11 @@ export async function homeOgImage() {
 							<span
 								style={{
 									display: "flex",
-									width: 78,
+									width: 110,
 									fontFamily: "Mono",
 									fontSize: 14,
 									letterSpacing: "0.12em",
-									color: "#b45309",
+									color: "#6045e8",
 								}}
 							>
 								{when}
@@ -248,7 +221,7 @@ export async function homeOgImage() {
 						style={{
 							display: "flex",
 							marginTop: 22,
-							borderTop: "2px dashed rgba(17,17,19,0.16)",
+							borderTop: "2px dashed rgba(16,28,58,0.16)",
 						}}
 					/>
 					<div
@@ -258,12 +231,13 @@ export async function homeOgImage() {
 							marginTop: 20,
 							padding: "14px 0",
 							borderRadius: 999,
-							background: AMBER,
+							background: "#6045e8",
+							color: "#ffffff",
 							fontSize: 20,
 							fontWeight: 800,
 						}}
 					>
-						Start your 30-day pilot →
+						API hỗ trợ Anthropic và OpenAI
 					</div>
 				</div>
 			</div>

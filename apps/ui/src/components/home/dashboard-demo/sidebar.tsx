@@ -44,12 +44,6 @@ import {
 } from "@/lib/components/tooltip";
 import Logo, { LogoLockup } from "@/lib/icons/Logo";
 
-import {
-	AirsideLogo,
-	DevPassLogo,
-	LoungeLogo,
-} from "@llmgateway/shared/product-logos";
-
 import { READ_ONLY_MESSAGE, useDemo } from "./context";
 import {
 	ORGANIZATION_NAVIGATION,
@@ -81,27 +75,9 @@ import {
 const PRODUCTS = [
 	{
 		id: "gateway",
-		name: "LLM Gateway",
-		description: "API routing and usage",
+		name: "PShareHub AI Gateway",
+		description: "Cổng API và mức sử dụng",
 		icon: Logo,
-	},
-	{
-		id: "devpass",
-		name: "DevPass",
-		description: "Plans for coding agents",
-		icon: DevPassLogo,
-	},
-	{
-		id: "airside",
-		name: "Airside",
-		description: "Serve models as a carrier",
-		icon: AirsideLogo,
-	},
-	{
-		id: "lounge",
-		name: "The Lounge",
-		description: "Chat and create with AI",
-		icon: LoungeLogo,
 	},
 ] as const;
 
@@ -288,7 +264,7 @@ export function ProductSwitcherMenu({
 		<DropdownMenu>
 			<DropdownMenuTrigger
 				asChild
-				aria-label="Switch product, current product LLM Gateway"
+				aria-label="Switch product, current product PShareHub AI Gateway"
 			>
 				{children}
 			</DropdownMenuTrigger>
@@ -300,7 +276,7 @@ export function ProductSwitcherMenu({
 				className="w-72 max-w-[calc(100vw-2rem)] rounded-xl p-2"
 			>
 				<DropdownMenuLabel className="px-2 pb-2 text-xs font-medium text-muted-foreground">
-					Switch product
+					Sản phẩm
 				</DropdownMenuLabel>
 				{PRODUCTS.map((product) => (
 					<DropdownMenuItem
@@ -309,7 +285,7 @@ export function ProductSwitcherMenu({
 						onSelect={() =>
 							product.id === "gateway"
 								? navigate("")
-								: notify(`${product.name} has its own dashboard.`)
+								: notify("Sản phẩm này chưa khả dụng trong bản xem trước.")
 						}
 					>
 						<span className="flex size-9 shrink-0 items-center justify-center rounded-lg border bg-background">
