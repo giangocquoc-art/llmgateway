@@ -19,16 +19,16 @@ export const DEMO_OPENED_AT = Date.UTC(2026, 8, 27, 14, 20);
 const HISTORY_DAYS = 640;
 
 export const DEMO_ORG = {
-	id: "acme",
-	name: "Acme Corp",
+	id: "psharehub-demo",
+	name: "PShareHub · Dữ liệu minh họa",
 	logo: null,
 	credits: 8420.5,
 };
 
 export const DEMO_USER = {
-	name: "Maya Patel",
-	email: "maya@acme.com",
-	initials: "MP",
+	name: "Người dùng mẫu",
+	email: "demo@psharehub.com",
+	initials: "ND",
 };
 
 export interface DemoProject {
@@ -39,9 +39,9 @@ export interface DemoProject {
 }
 
 export const DEMO_PROJECTS: DemoProject[] = [
-	{ id: "production-api", name: "Production API", scale: 1, salt: 0 },
-	{ id: "internal-tools", name: "Internal Tools", scale: 0.24, salt: 409 },
-	{ id: "staging", name: "Staging", scale: 0.06, salt: 811 },
+	{ id: "du-an-mau", name: "Dự án minh họa", scale: 1, salt: 0 },
+	{ id: "cong-cu-noi-bo", name: "Công cụ nội bộ", scale: 0.24, salt: 409 },
+	{ id: "thu-nghiem", name: "Môi trường thử nghiệm", scale: 0.06, salt: 811 },
 ];
 
 interface DemoModel {
@@ -246,10 +246,10 @@ export const DEMO_API_KEYS: DemoApiKey[] = [
 ];
 
 const USER_SHARES = [
-	{ id: "usr_leo", name: "Leo Martin", share: 0.31 },
-	{ id: "usr_sam", name: "Sam Okafor", share: 0.43 },
-	{ id: "usr_priya", name: "Priya Shah", share: 0.18 },
-	{ id: "usr_maya", name: "Maya Patel", share: 0.08 },
+	{ id: "usr_leo", name: "Người dùng mẫu 4", share: 0.31 },
+	{ id: "usr_sam", name: "Người dùng mẫu 2", share: 0.43 },
+	{ id: "usr_priya", name: "Người dùng mẫu 3", share: 0.18 },
+	{ id: "usr_maya", name: "Người dùng mẫu", share: 0.08 },
 ];
 
 function random(seed: number, salt = 0) {
@@ -1301,9 +1301,9 @@ export interface DemoAuditLog {
 	resourceName: string | null;
 }
 
-const MAYA = { name: "Maya Patel", email: "maya@acme.com" };
-const SAM = { name: "Sam Okafor", email: "sam@acme.com" };
-const PRIYA = { name: "Priya Shah", email: "priya@acme.com" };
+const MAYA = { name: "Người dùng mẫu", email: "demo@psharehub.com" };
+const SAM = { name: "Người dùng mẫu 2", email: "sam@psharehub.com" };
+const PRIYA = { name: "Người dùng mẫu 3", email: "priya@psharehub.com" };
 
 export const AUDIT_LOGS: DemoAuditLog[] = [
 	{
@@ -1322,7 +1322,7 @@ export const AUDIT_LOGS: DemoAuditLog[] = [
 		action: "scim.user.provision",
 		resourceType: "scim_user",
 		resourceId: "u3Fh8sK1wR",
-		resourceName: "ana@acme.com",
+		resourceName: "ana@psharehub.com",
 	},
 	{
 		id: "al_3",
@@ -1331,7 +1331,7 @@ export const AUDIT_LOGS: DemoAuditLog[] = [
 		action: "team_member.invite",
 		resourceType: "team_invite",
 		resourceId: "i9Tb4nM6cZ",
-		resourceName: "noah@acme.com",
+		resourceName: "noah@psharehub.com",
 	},
 	{
 		id: "al_4",
@@ -1340,7 +1340,7 @@ export const AUDIT_LOGS: DemoAuditLog[] = [
 		action: "organization_team.budget_update",
 		resourceType: "organization_team",
 		resourceId: "t2Lp7dQ3vX",
-		resourceName: "Research",
+		resourceName: "Nghiên cứu",
 	},
 	{
 		id: "al_5",
@@ -1349,7 +1349,7 @@ export const AUDIT_LOGS: DemoAuditLog[] = [
 		action: "sso.sign_in",
 		resourceType: "sso_session",
 		resourceId: null,
-		resourceName: "acme-okta",
+		resourceName: "psharehub-demo-okta",
 	},
 	{
 		id: "al_6",
@@ -1367,7 +1367,7 @@ export const AUDIT_LOGS: DemoAuditLog[] = [
 		action: "team_member.budget_update",
 		resourceType: "team_member",
 		resourceId: "m6Yc1gP5sD",
-		resourceName: "leo@acme.com",
+		resourceName: "leo@psharehub.com",
 	},
 	{
 		id: "al_8",
@@ -1403,7 +1403,7 @@ export const AUDIT_LOGS: DemoAuditLog[] = [
 		action: "project.create",
 		resourceType: "project",
 		resourceId: "j5Ud2mA8tC",
-		resourceName: "Internal Tools",
+		resourceName: "Công cụ nội bộ",
 	},
 	{
 		id: "al_12",
@@ -1466,8 +1466,8 @@ export const DEMO_MEMBERS: DemoMember[] = [
 	{
 		id: "mem_maya",
 		userId: "usr_maya",
-		name: "Maya Patel",
-		email: "maya@acme.com",
+		name: "Người dùng mẫu",
+		email: "demo@psharehub.com",
 		role: "owner",
 		team: null,
 		projects: null,
@@ -1477,8 +1477,8 @@ export const DEMO_MEMBERS: DemoMember[] = [
 	{
 		id: "mem_sam",
 		userId: "usr_sam",
-		name: "Sam Okafor",
-		email: "sam@acme.com",
+		name: "Người dùng mẫu 2",
+		email: "sam@psharehub.com",
 		role: "admin",
 		team: null,
 		projects: null,
@@ -1488,22 +1488,22 @@ export const DEMO_MEMBERS: DemoMember[] = [
 	{
 		id: "mem_priya",
 		userId: "usr_priya",
-		name: "Priya Shah",
-		email: "priya@acme.com",
+		name: "Người dùng mẫu 3",
+		email: "priya@psharehub.com",
 		role: "project_admin",
 		team: null,
-		projects: ["Production API", "Internal Tools"],
+		projects: ["Dự án minh họa", "Công cụ nội bộ"],
 		budget: null,
 		teamBudget: null,
 	},
 	{
 		id: "mem_leo",
 		userId: "usr_leo",
-		name: "Leo Martin",
-		email: "leo@acme.com",
+		name: "Người dùng mẫu 4",
+		email: "leo@psharehub.com",
 		role: "developer",
-		team: "Support",
-		projects: ["Production API"],
+		team: "Hỗ trợ",
+		projects: ["Dự án minh họa"],
 		budget: {
 			usageLimit: 500,
 			periodUsageLimit: 50,
@@ -1516,11 +1516,11 @@ export const DEMO_MEMBERS: DemoMember[] = [
 	{
 		id: "mem_ana",
 		userId: "usr_ana",
-		name: "Ana Ruiz",
-		email: "ana@acme.com",
+		name: "Người dùng mẫu 5",
+		email: "ana@psharehub.com",
 		role: "developer",
-		team: "Research",
-		projects: ["Production API", "Internal Tools"],
+		team: "Nghiên cứu",
+		projects: ["Dự án minh họa", "Công cụ nội bộ"],
 		budget: DEFAULT_DEVELOPER_BUDGET,
 		teamBudget: RESEARCH_BUDGET,
 	},
@@ -1531,31 +1531,31 @@ export const SEAT_LIMIT = 100;
 export const DEMO_TEAMS = [
 	{
 		id: "team_support",
-		name: "Support",
+		name: "Hỗ trợ",
 		members: 1,
-		projects: ["Production API"],
+		projects: ["Dự án minh họa"],
 		iamRules: 2,
 	},
 	{
 		id: "team_research",
-		name: "Research",
+		name: "Nghiên cứu",
 		members: 1,
-		projects: ["Production API", "Internal Tools"],
+		projects: ["Dự án minh họa", "Công cụ nội bộ"],
 		iamRules: 1,
 	},
 	{
 		id: "team_growth",
 		name: "Growth",
 		members: 0,
-		projects: ["Internal Tools"],
+		projects: ["Công cụ nội bộ"],
 		iamRules: 0,
 	},
 ];
 
 export const SSO_CONNECTION = {
-	providerId: "acme-okta",
+	providerId: "psharehub-demo-okta",
 	providerType: "okta" as const,
-	domains: ["acme.com", "acme-labs.com"],
+	domains: ["psharehub.com", "psharehub-demo-labs.com"],
 	enforced: true,
 };
 
@@ -1566,8 +1566,8 @@ export const SSO_ROLE_MAPPINGS = [
 ];
 
 export const SSO_TEAM_MAPPINGS = [
-	{ id: "tm_1", groupName: "Support Engineering", teamName: "Support" },
-	{ id: "tm_2", groupName: "ML Research", teamName: "Research" },
+	{ id: "tm_1", groupName: "Hỗ trợ Engineering", teamName: "Hỗ trợ" },
+	{ id: "tm_2", groupName: "ML Nghiên cứu", teamName: "Nghiên cứu" },
 ];
 
 export const ANNOUNCEMENTS: {
@@ -1850,9 +1850,12 @@ export const SMART_ROUTING_MODELS = [
 export const SDK_SETTINGS = {
 	markupPercent: 15,
 	bonusPercent: 0,
-	allowedOrigins: ["https://app.acme.com", "https://staging.acme.com"],
-	brandName: "Acme Assist",
-	supportEmail: "billing@acme.com",
+	allowedOrigins: [
+		"https://app.psharehub.com",
+		"https://staging.psharehub.com",
+	],
+	brandName: "Trợ lý minh họa",
+	supportEmail: "billing@psharehub.com",
 	descriptorSuffix: "ACME AI",
 	platformKeys: [
 		{

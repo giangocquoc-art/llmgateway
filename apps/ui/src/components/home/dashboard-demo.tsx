@@ -160,7 +160,7 @@ export function DashboardDemo() {
 		}
 		track("view_unavailable", target);
 		notify(
-			`${findNavLink(target)?.label ?? "This page"} isn't part of this demo.`,
+			`${findNavLink(target)?.label ?? "Trang này"} không nằm trong bản xem thử này.`,
 		);
 	};
 
@@ -205,10 +205,10 @@ export function DashboardDemo() {
 						</div>
 						<div className="mx-auto hidden min-w-0 max-w-md flex-1 items-center justify-center gap-1.5 rounded-md border border-border bg-background px-3 py-1 font-mono text-[11px] text-muted-foreground @xl/demo:flex">
 							<Lock className="size-3 shrink-0" />
-							<span className="truncate">llmgateway.io/dashboard/{path}</span>
+							<span className="truncate">ai.psharehub.com/demo/{path}</span>
 						</div>
 						<span className="ml-auto hidden shrink-0 font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground @md/demo:inline @xl/demo:ml-0">
-							Sample data · read-only
+							DỮ LIỆU MINH HỌA · CHỈ XEM
 						</span>
 						{unlocked && (
 							<div className="ml-auto flex shrink-0 items-center gap-1 @md/demo:ml-0">
@@ -219,13 +219,15 @@ export function DashboardDemo() {
 									cta="get_api_key"
 									className="inline-flex h-7 items-center gap-1.5 rounded-md bg-foreground px-2.5 text-xs font-semibold text-background transition-colors hover:bg-foreground/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 								>
-									Get started
+									Bắt đầu
 									<ArrowRight className="size-3.5" />
 								</TrackedLink>
 								<button
 									type="button"
 									onClick={toggleFullscreen}
-									aria-label={fullscreen ? "Exit full screen" : "Full screen"}
+									aria-label={
+										fullscreen ? "Thoát toàn màn hình" : "Toàn màn hình"
+									}
 									className="inline-flex h-7 items-center gap-1.5 rounded-md border border-border bg-background px-2 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 								>
 									{fullscreen ? (
@@ -234,13 +236,13 @@ export function DashboardDemo() {
 										<Maximize2 className="size-3.5" />
 									)}
 									<span className="hidden @xl/demo:inline">
-										{fullscreen ? "Exit full screen" : "Full screen"}
+										{fullscreen ? "Thoát toàn màn hình" : "Toàn màn hình"}
 									</span>
 								</button>
 								<button
 									type="button"
 									onClick={lock}
-									aria-label="Lock demo"
+									aria-label="Lock"
 									className="inline-flex h-7 items-center gap-1.5 rounded-md border border-border bg-background px-2 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 								>
 									<Lock className="size-3.5" />
@@ -288,7 +290,7 @@ export function DashboardDemo() {
 										cta="demo_notice_signup"
 										className="shrink-0 font-medium underline underline-offset-4"
 									>
-										Try it free
+										Dùng thử
 									</TrackedLink>
 									<button
 										type="button"
@@ -309,14 +311,15 @@ export function DashboardDemo() {
 							>
 								<span className="flex flex-col items-center gap-3 rounded-2xl border border-border bg-background/90 px-6 py-5 text-center shadow-xl backdrop-blur-sm transition-transform group-hover:-translate-y-0.5 group-focus-visible:ring-2 group-focus-visible:ring-ring">
 									<span className="text-base font-semibold">
-										Explore the dashboard
+										Khám phá bảng điều khiển
 									</span>
 									<span className="max-w-64 text-sm text-muted-foreground">
-										A read-only copy with sample data. Click through every page.
+										Bản xem thử chỉ đọc với dữ liệu minh họa. Hãy chọn các mục
+										để khám phá.
 									</span>
 									<span className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-2.5 text-sm font-semibold text-background">
 										<MousePointerClick className="size-4" />
-										Start demo
+										Bắt đầu xem thử
 									</span>
 								</span>
 							</button>

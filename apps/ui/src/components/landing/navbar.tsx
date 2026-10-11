@@ -6,7 +6,6 @@ import {
 	BookOpen,
 	Bot,
 	Boxes,
-	Building2,
 	Calculator,
 	ChevronDown,
 	Clock,
@@ -24,8 +23,6 @@ import {
 	ScrollText,
 	Server,
 	Terminal,
-	Shield,
-	ShieldCheck,
 	Sparkles,
 	Trophy,
 	Wrench,
@@ -165,7 +162,7 @@ export const Navbar = ({
 			title: "AI Gateway",
 			href: "/products/ai-gateway",
 			description:
-				"Route compatible requests through configured upstream providers.",
+				"Chuyển tiếp yêu cầu tương thích đến các upstream đã cấu hình.",
 			icon: Network,
 			gradient:
 				"hover:from-violet-500/20 hover:to-purple-600/30 hover:shadow-violet-500/10 group-hover/product:text-violet-500 dark:group-hover/product:text-violet-400",
@@ -208,15 +205,6 @@ export const Navbar = ({
 		external?: boolean;
 	}> = [
 		{
-			title: "Enterprise",
-			href: "/enterprise",
-			description:
-				"Custom billing, SSO, guardrails and priority support for teams.",
-			icon: Building2,
-			gradient:
-				"hover:from-blue-500/20 hover:to-blue-600/30 hover:shadow-blue-500/10 group-hover/product:text-blue-500 dark:group-hover/product:text-blue-400",
-		},
-		{
 			title: "Blog",
 			href: "/blog",
 			description: "Product updates, tutorials, benchmarks, and announcements.",
@@ -240,24 +228,6 @@ export const Navbar = ({
 			icon: Blocks,
 			gradient:
 				"hover:from-indigo-500/20 hover:to-blue-600/30 hover:shadow-indigo-500/10 group-hover/product:text-indigo-500 dark:group-hover/product:text-indigo-400",
-		},
-		{
-			title: "Reliability",
-			href: "/reliability",
-			description:
-				"Automatic failover to another provider, for models with more than one, when one errors or times out.",
-			icon: ShieldCheck,
-			gradient:
-				"hover:from-emerald-500/20 hover:to-teal-600/30 hover:shadow-emerald-500/10 group-hover/product:text-emerald-500 dark:group-hover/product:text-emerald-400",
-		},
-		{
-			title: "Guardrails",
-			href: "/features/guardrails",
-			description:
-				"Enterprise: flag PII, secrets and common prompt-injection phrases before a provider sees them.",
-			icon: Shield,
-			gradient:
-				"hover:from-rose-500/20 hover:to-red-600/30 hover:shadow-rose-500/10 group-hover/product:text-rose-500 dark:group-hover/product:text-rose-400",
 		},
 		{
 			title: "Providers",

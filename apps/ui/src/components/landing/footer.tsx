@@ -168,15 +168,6 @@ export default function Footer() {
 										Compare Models
 									</Link>
 								</li>
-								<li>
-									<Link
-										href="/enterprise"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Enterprise
-									</Link>
-								</li>
 							</ul>
 						</div>
 
