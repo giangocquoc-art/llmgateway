@@ -44,6 +44,21 @@ function markdownPreferred(accept: string | null): boolean {
 
 export function proxy(request: NextRequest) {
 	const { pathname, searchParams } = request.nextUrl;
+	const accountAuthPages = [
+		"/login",
+		"/signup",
+		"/forgot-password",
+		"/reset-password",
+	];
+	if (
+		process.env.ACCOUNT_AUTH_ENABLED === "false" &&
+		accountAuthPages.includes(pathname)
+	) {
+		return NextResponse.redirect(
+			"https://api.psharehub.com/admin/studio/",
+			302,
+		);
+	}
 
 	// Better Auth appends `?error=<code>` (and sometimes `?error_description=`)
 	// to the post-OAuth callback URL when a social sign-in fails (e.g.

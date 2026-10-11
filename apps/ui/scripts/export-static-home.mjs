@@ -7,27 +7,27 @@ const nextCli = resolve(appRoot, "node_modules/next/dist/bin/next");
 const assetsPath = resolve(appRoot, ".open-next/assets");
 const port = 3987;
 const origin = `http://127.0.0.1:${port}`;
-const publicPages = [
-	["/", "index.html"],
-	["/login", "login"],
-	["/signup", "signup"],
-	["/forgot-password", "forgot-password"],
-	["/reset-password", "reset-password"],
-];
+const publicPages = [["/", "index.html"]];
 
-const server = spawn(process.execPath, [nextCli, "start", "--hostname", "127.0.0.1", "--port", String(port)], {
-	cwd: appRoot,
-	stdio: "inherit",
-	env: {
-		...process.env,
-		HOSTNAME: "127.0.0.1",
-		PORT: String(port),
-		HOSTED: "true",
-		CLIENT_IP_HEADER: "CF-Connecting-IP",
-		APP_URL: "https://ai.psharehub.com",
-		GATEWAY_URL: "https://api.psharehub.com",
+const server = spawn(
+	process.execPath,
+	[nextCli, "start", "--hostname", "127.0.0.1", "--port", String(port)],
+	{
+		cwd: appRoot,
+		stdio: "inherit",
+		env: {
+			...process.env,
+			HOSTNAME: "127.0.0.1",
+			PORT: String(port),
+			HOSTED: "true",
+			ACCOUNT_AUTH_ENABLED: "false",
+			CHAT_SUPPORT_ENABLED: "false",
+			CLIENT_IP_HEADER: "CF-Connecting-IP",
+			APP_URL: "https://ai.psharehub.com",
+			GATEWAY_URL: "https://api.psharehub.com",
+		},
 	},
-});
+);
 
 try {
 	await mkdir(assetsPath, { recursive: true });
@@ -42,7 +42,8 @@ try {
 			});
 			serverReady = response.ok;
 		} catch {}
-		if (!serverReady) await new Promise((resolvePromise) => setTimeout(resolvePromise, 1_000));
+		if (!serverReady)
+			await new Promise((resolvePromise) => setTimeout(resolvePromise, 1_000));
 	}
 	if (!serverReady) throw new Error("Next server did not become ready");
 

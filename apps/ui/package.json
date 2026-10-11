@@ -16,7 +16,8 @@
 		"generate": "openapi-typescript ../api/openapi.json -o ./src/lib/api/v1.d.ts && tsx src/scripts/generate-provider-sprites.ts",
 		"lint": "eslint . && prettier --check .",
 		"start": "next start",
-		"test:e2e": "playwright test"
+		"test:e2e": "playwright test",
+		"test:preview": "vitest run --config vitest-preview.config.mts"
 	},
 	"dependencies": {
 		"@ai-sdk/react": "4.0.99",

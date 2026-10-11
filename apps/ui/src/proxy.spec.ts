@@ -5,6 +5,29 @@ import { proxy } from "./proxy";
 
 afterEach(() => vi.unstubAllEnvs());
 
+describe("preview account auth routing", () => {
+	test.each(["/login", "/signup", "/forgot-password", "/reset-password"])(
+		"sends %s to the Access-protected gateway console when account auth is disabled",
+		(pathname) => {
+			vi.stubEnv("ACCOUNT_AUTH_ENABLED", "false");
+			const response = proxy(
+				new NextRequest(`https://ai.psharehub.com${pathname}`),
+			);
+			expect(response.status).toBe(302);
+			expect(response.headers.get("location")).toBe(
+				"https://api.psharehub.com/admin/studio/",
+			);
+		},
+	);
+
+	test("keeps auth routes unchanged when account auth is enabled", () => {
+		vi.stubEnv("ACCOUNT_AUTH_ENABLED", "true");
+		const response = proxy(new NextRequest("https://ai.psharehub.com/login"));
+		expect(response.headers.get("location")).toBeNull();
+		expect(response.headers.get("x-middleware-next")).toBe("1");
+	});
+});
+
 describe("MCP gateway configuration", () => {
 	test.each([undefined, ""])(
 		"rejects missing production gateway configuration: %s",

@@ -7,6 +7,12 @@ import { prerenderedModelOgMappings } from "./src/lib/model-og-params";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+	// This PShareHub deployment uses Cloudflare Access for operator login.
+	// The upstream account-auth and support APIs are not part of this Worker.
+	env: {
+		ACCOUNT_AUTH_ENABLED: "false",
+		CHAT_SUPPORT_ENABLED: "false",
+	},
 	outputFileTracingRoot: join(__dirname, "../../"),
 	distDir: process.env.NODE_ENV === "development" ? ".next-dev" : ".next",
 	output: "standalone",
