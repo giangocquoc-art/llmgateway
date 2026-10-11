@@ -51,6 +51,7 @@ import {
 } from "@/components/dashboard/animated-nav-icons";
 import { ProductSwitcher } from "@/components/dashboard/product-switcher";
 import { ReferralDialog } from "@/components/dashboard/referral-dialog";
+import { LanguagePicker } from "@/components/language-picker";
 import { useDashboardNavigation } from "@/hooks/useDashboardNavigation";
 import { useUser } from "@/hooks/useUser";
 import { clearLastUsedProjectCookiesAction } from "@/lib/actions/last-used-project";
@@ -94,6 +95,7 @@ import {
 	TooltipTrigger,
 } from "@/lib/components/tooltip";
 import { useAppConfig } from "@/lib/config";
+import { useLanguage } from "@/lib/language";
 import { buildUrlWithParams } from "@/lib/navigation-utils";
 
 import { isOrganizationAdmin } from "@llmgateway/shared/organization-roles";
@@ -365,6 +367,7 @@ function DashboardSidebarHeader({
 	onSearchSubmit: () => void;
 	searchInputRef: React.RefObject<HTMLInputElement | null>;
 }) {
+	const { t } = useLanguage();
 	return (
 		<SidebarHeader>
 			<SidebarMenu>
@@ -384,7 +387,7 @@ function DashboardSidebarHeader({
 				<Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-[calc(50%+2px)] text-muted-foreground" />
 				<SidebarInput
 					ref={searchInputRef}
-					placeholder="Search links..."
+					placeholder={t("nav.Search links...", "Search links...")}
 					value={searchQuery}
 					onChange={(e) => onSearchQueryChange(e.target.value)}
 					onKeyDown={(e) => {
@@ -396,7 +399,7 @@ function DashboardSidebarHeader({
 						}
 					}}
 					className="pl-8 pr-8"
-					aria-label="Search sidebar links"
+					aria-label={t("nav.Search links...", "Search sidebar links")}
 				/>
 				{!searchQuery && (
 					<kbd className="pointer-events-none absolute right-4 top-1/2 -translate-y-[calc(50%+2px)] rounded border border-border bg-muted px-1.5 font-mono text-[0.65rem] text-muted-foreground">
@@ -534,23 +537,21 @@ function NavigationItem({
 	isActive: (path: string) => boolean;
 	onClick: () => void;
 }) {
+	const { t } = useLanguage();
 	const { buildUrl } = useDashboardNavigation();
 	const href = buildUrl(item.href);
 	const [isHovered, setIsHovered] = useState(false);
+	const label = t(`nav.${item.label}`, item.label);
 
 	return (
 		<SidebarMenuItem
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
 		>
-			<SidebarMenuButton
-				asChild
-				isActive={isActive(item.href)}
-				tooltip={item.label}
-			>
+			<SidebarMenuButton asChild isActive={isActive(item.href)} tooltip={label}>
 				<Link href={href} onClick={onClick} prefetch={true}>
 					<item.icon isHovered={isHovered} />
-					<span>{item.label}</span>
+					<span>{label}</span>
 				</Link>
 			</SidebarMenuButton>
 		</SidebarMenuItem>
@@ -568,6 +569,7 @@ function ProjectSettingsSection({
 	toggleSidebar: () => void;
 	showEnterpriseBadge: boolean;
 }) {
+	const { t } = useLanguage();
 	const { buildUrl } = useDashboardNavigation();
 	const [isHovered, setIsHovered] = useState(false);
 
@@ -579,7 +581,7 @@ function ProjectSettingsSection({
 			<SidebarMenuButton
 				asChild
 				isActive={isActive("settings/preferences")}
-				tooltip="Settings"
+				tooltip={t("nav.Settings", "Settings")}
 			>
 				<Link
 					href={buildUrl("settings/preferences")}
@@ -591,7 +593,7 @@ function ProjectSettingsSection({
 					prefetch={true}
 				>
 					<AnimatedSettings isHovered={isHovered} />
-					<span>Settings</span>
+					<span>{t("nav.Settings", "Settings")}</span>
 				</Link>
 			</SidebarMenuButton>
 			<SidebarMenuSub className="ml-7">
@@ -607,7 +609,7 @@ function ProjectSettingsSection({
 								}}
 								prefetch={true}
 							>
-								<span>{item.label}</span>
+								<span>{t(`nav.${item.label}`, item.label)}</span>
 								{"enterpriseOnly" in item &&
 									item.enterpriseOnly &&
 									showEnterpriseBadge && <EnterpriseIndicator />}
@@ -653,14 +655,16 @@ function OrgNavItem({
 	toggleSidebar: () => void;
 	showEnterpriseBadge?: boolean;
 }) {
+	const { t } = useLanguage();
 	const [isHovered, setIsHovered] = useState(false);
+	const translatedLabel = t(`nav.${label}`, label);
 
 	return (
 		<SidebarMenuItem
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
 		>
-			<SidebarMenuButton asChild isActive={isActive} tooltip={label}>
+			<SidebarMenuButton asChild isActive={isActive} tooltip={translatedLabel}>
 				<Link
 					href={href as Route}
 					onClick={() => {
@@ -671,7 +675,7 @@ function OrgNavItem({
 					prefetch={true}
 				>
 					<Icon isHovered={isHovered} />
-					<span>{label}</span>
+					<span>{translatedLabel}</span>
 					{showEnterpriseBadge && <EnterpriseIndicator />}
 				</Link>
 			</SidebarMenuButton>
@@ -692,6 +696,7 @@ function OrganizationSection({
 	searchParams: ReadonlyURLSearchParams;
 	isEnterprise: boolean;
 }) {
+	const { t } = useLanguage();
 	const { buildOrgUrl } = useDashboardNavigation();
 	const [settingsHovered, setSettingsHovered] = useState(false);
 
@@ -700,7 +705,7 @@ function OrganizationSection({
 	return (
 		<SidebarGroup>
 			<SidebarGroupLabel className="text-muted-foreground px-2 text-xs font-medium">
-				Organization
+				{t("nav.Organization", "Organization")}
 			</SidebarGroupLabel>
 			<SidebarGroupContent className="mt-2">
 				<SidebarMenu>
@@ -727,7 +732,7 @@ function OrganizationSection({
 							isActive={ORGANIZATION_SETTINGS.some((item) =>
 								isActive(item.href),
 							)}
-							tooltip="Settings"
+							tooltip={t("nav.Settings", "Settings")}
 						>
 							<Link
 								href={buildOrgUrl("org/billing")}
@@ -739,7 +744,7 @@ function OrganizationSection({
 								prefetch={true}
 							>
 								<AnimatedSettings isHovered={settingsHovered} />
-								<span>Settings</span>
+								<span>{t("nav.Settings", "Settings")}</span>
 							</Link>
 						</SidebarMenuButton>
 						<SidebarMenuSub className="ml-7">
@@ -763,7 +768,7 @@ function OrganizationSection({
 											}}
 											prefetch={true}
 										>
-											<span>{item.label}</span>
+											<span>{t(`nav.${item.label}`, item.label)}</span>
 											{"enterpriseOnly" in item &&
 												item.enterpriseOnly &&
 												showEnterpriseBadge && <EnterpriseIndicator />}
@@ -791,18 +796,19 @@ function DeveloperOrgSection({
 	toggleSidebar: () => void;
 	isEnterprise: boolean;
 }) {
+	const { t } = useLanguage();
 	const { buildOrgUrl } = useDashboardNavigation();
 
 	return (
 		<SidebarGroup>
 			<SidebarGroupLabel className="text-muted-foreground px-2 text-xs font-medium">
-				Organization
+				{t("nav.Organization", "Organization")}
 			</SidebarGroupLabel>
 			<SidebarGroupContent className="mt-2">
 				<SidebarMenu>
 					<OrgNavItem
 						href={buildOrgUrl("org/models")}
-						label="Models"
+						label={t("nav.Models", "Models")}
 						icon={AnimatedBotMessageSquare}
 						isActive={isActive("org/models")}
 						isMobile={isMobile}
@@ -811,7 +817,7 @@ function DeveloperOrgSection({
 					{isEnterprise && (
 						<OrgNavItem
 							href={buildOrgUrl("org/skills")}
-							label="Skills"
+							label={t("nav.Skills", "Skills")}
 							icon={AnimatedTerminal}
 							isActive={isActive("org/skills")}
 							isMobile={isMobile}
@@ -840,7 +846,9 @@ function ToolsResourceItem({
 	isMobile: boolean;
 	toggleSidebar: () => void;
 }) {
+	const { t } = useLanguage();
 	const [isHovered, setIsHovered] = useState(false);
+	const translatedLabel = t(`nav.${item.label}`, item.label);
 
 	return (
 		<SidebarMenuItem
@@ -851,7 +859,7 @@ function ToolsResourceItem({
 				<SidebarMenuButton
 					asChild
 					isActive={isActive(item.href)}
-					tooltip={item.label}
+					tooltip={translatedLabel}
 				>
 					<Link
 						href={item.href as Route}
@@ -863,11 +871,11 @@ function ToolsResourceItem({
 						prefetch={true}
 					>
 						<item.icon isHovered={isHovered} />
-						<span>{item.label}</span>
+						<span>{translatedLabel}</span>
 					</Link>
 				</SidebarMenuButton>
 			) : (
-				<SidebarMenuButton asChild tooltip={item.label}>
+				<SidebarMenuButton asChild tooltip={translatedLabel}>
 					<a
 						href={item.href}
 						target="_blank"
@@ -879,7 +887,7 @@ function ToolsResourceItem({
 						}}
 					>
 						<item.icon isHovered={isHovered} />
-						<span>{item.label}</span>
+						<span>{translatedLabel}</span>
 						<ExternalLink className="ml-auto h-3 w-3 group-data-[collapsible=icon]:hidden" />
 					</a>
 				</SidebarMenuButton>
@@ -1001,6 +1009,7 @@ function UserDropdownMenu({
 	toggleSidebar: () => void;
 	onLogout: () => void;
 }) {
+	const { t } = useLanguage();
 	const { buildUrl, buildOrgUrl } = useDashboardNavigation();
 	const searchParams = useSearchParams();
 
@@ -1069,14 +1078,14 @@ function UserDropdownMenu({
 								prefetch={true}
 							>
 								<item.icon className="mr-2 h-4 w-4" />
-								{item.label}
+								{t(`nav.${item.label}`, item.label)}
 							</Link>
 						</DropdownMenuItem>
 					);
 				})}
 				<DropdownMenuSeparator />
 				<DropdownMenuItem onClick={onLogout}>
-					<span>Log out</span>
+					<span>{t("nav.Log out", "Log out")}</span>
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>
@@ -1177,6 +1186,7 @@ export function DashboardSidebar({
 	selectedOrganization,
 }: DashboardSidebarProps) {
 	const { isMobile, toggleSidebar } = useSidebar();
+	const { t } = useLanguage();
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 	const router = useRouter();
@@ -1540,7 +1550,7 @@ export function DashboardSidebar({
 					<>
 						<SidebarGroup>
 							<SidebarGroupLabel className="text-muted-foreground px-2 text-xs font-medium">
-								Project
+								{t("nav.Project", "Project")}
 							</SidebarGroupLabel>
 							<SidebarGroupContent className="mt-2">
 								<SidebarMenu>
@@ -1592,6 +1602,7 @@ export function DashboardSidebar({
 			</SidebarContent>
 
 			<SidebarFooter>
+				<LanguagePicker />
 				{/* Org credits + upgrade prompts are org-level; hide them from
 				    project-scoped developers. */}
 				{isOrgAdmin && (

@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 
+import { LocalizedText } from "@/components/localized-text";
 import { ReadonlyIdField } from "@/components/settings/readonly-id-field";
 import {
 	Card,
@@ -29,14 +30,26 @@ export default async function PreferencesPage({
 			<div className="flex-1 space-y-4 p-4 pt-6 md:p-8">
 				<div className="max-w-3xl mx-auto space-y-6">
 					<div className="flex items-center justify-between">
-						<h2 className="text-3xl font-bold tracking-tight">Preferences</h2>
+						<h2 className="text-3xl font-bold tracking-tight">
+							<LocalizedText
+								translationKey="settings.title"
+								fallback="Preferences"
+							/>
+						</h2>
 					</div>
 					<Card>
 						<CardHeader>
-							<CardTitle>Project ID</CardTitle>
+							<CardTitle>
+								<LocalizedText
+									translationKey="settings.projectId"
+									fallback="Project ID"
+								/>
+							</CardTitle>
 							<CardDescription>
-								Use this ID when referencing your project in the API or with
-								support.
+								<LocalizedText
+									translationKey="settings.projectIdDescription"
+									fallback="Use this ID when referencing your project in the API or with support."
+								/>
 							</CardDescription>
 						</CardHeader>
 						<CardContent>
@@ -50,9 +63,17 @@ export default async function PreferencesPage({
 
 					<Card>
 						<CardHeader>
-							<CardTitle>Project Name</CardTitle>
+							<CardTitle>
+								<LocalizedText
+									translationKey="settings.projectName"
+									fallback="Project Name"
+								/>
+							</CardTitle>
 							<CardDescription>
-								Update your project's display name
+								<LocalizedText
+									translationKey="settings.projectNameDescription"
+									fallback="Update your project's display name"
+								/>
 							</CardDescription>
 						</CardHeader>
 						<CardContent>
@@ -64,9 +85,17 @@ export default async function PreferencesPage({
 
 					<Card>
 						<CardHeader>
-							<CardTitle>Project Mode</CardTitle>
+							<CardTitle>
+								<LocalizedText
+									translationKey="settings.projectMode"
+									fallback="Project Mode"
+								/>
+							</CardTitle>
 							<CardDescription>
-								Configure how your organization handles projects
+								<LocalizedText
+									translationKey="settings.projectModeDescription"
+									fallback="Configure how your organization handles projects"
+								/>
 							</CardDescription>
 						</CardHeader>
 						<CardContent>
@@ -78,9 +107,17 @@ export default async function PreferencesPage({
 
 					<Card>
 						<CardHeader>
-							<CardTitle>Caching</CardTitle>
+							<CardTitle>
+								<LocalizedText
+									translationKey="settings.caching"
+									fallback="Caching"
+								/>
+							</CardTitle>
 							<CardDescription>
-								Configure provider prompt caching and gateway response caching
+								<LocalizedText
+									translationKey="settings.cachingDescription"
+									fallback="Configure provider prompt caching and gateway response caching"
+								/>
 							</CardDescription>
 						</CardHeader>
 						<CardContent>
@@ -92,9 +129,17 @@ export default async function PreferencesPage({
 
 					<Card className="border-destructive/20">
 						<CardHeader>
-							<CardTitle className="text-destructive">Danger Zone</CardTitle>
+							<CardTitle className="text-destructive">
+								<LocalizedText
+									translationKey="settings.dangerZone"
+									fallback="Danger Zone"
+								/>
+							</CardTitle>
 							<CardDescription>
-								Irreversible and destructive actions
+								<LocalizedText
+									translationKey="settings.irreversible"
+									fallback="Irreversible and destructive actions"
+								/>
 							</CardDescription>
 						</CardHeader>
 						<CardContent>

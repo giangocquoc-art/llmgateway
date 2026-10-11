@@ -10,6 +10,17 @@ const nextConfig: NextConfig = {
 	outputFileTracingRoot: join(__dirname, "../../"),
 	distDir: process.env.NODE_ENV === "development" ? ".next-dev" : ".next",
 	output: "standalone",
+	// Cloudflare Workers uses OpenNext's image handler, not Next's native
+	// Sharp optimizer. Exclude platform-specific binaries from server traces.
+	outputFileTracingExcludes: {
+		"/*": [
+			"../../node_modules/.pnpm/sharp@*/**",
+			"../../node_modules/.pnpm/@img+sharp-*/**",
+			"../../node_modules/.pnpm/next@*/node_modules/sharp/**",
+			"../../node_modules/.pnpm/next@*/node_modules/sharp",
+			"../../node_modules/.pnpm/node_modules/sharp",
+		],
+	},
 	productionBrowserSourceMaps: true,
 	typedRoutes: true,
 	reactStrictMode: true,

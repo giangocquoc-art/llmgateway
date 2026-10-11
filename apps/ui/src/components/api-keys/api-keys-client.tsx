@@ -14,11 +14,13 @@ import {
 	CardHeader,
 } from "@/lib/components/card";
 import { useApi } from "@/lib/fetch-client";
+import { useLanguage } from "@/lib/language";
 import { extractOrgAndProjectFromPath } from "@/lib/navigation-utils";
 
 import type { Project, ApiKey } from "@/lib/types";
 
 export function ApiKeysClient({ initialData }: { initialData: ApiKey[] }) {
+	const { t } = useLanguage();
 	const pathname = usePathname();
 
 	// Extract project and org IDs directly from URL to avoid dashboard state conflicts
@@ -80,9 +82,14 @@ export function ApiKeysClient({ initialData }: { initialData: ApiKey[] }) {
 			<div className="flex flex-col space-y-4 p-4 pt-6 md:p-8">
 				<div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
 					<div>
-						<h2 className="text-3xl font-bold tracking-tight">API Keys</h2>
+						<h2 className="text-3xl font-bold tracking-tight">
+							{t("apikeys.title", "API Keys")}
+						</h2>
 						<p className="text-muted-foreground">
-							Create and manage API keys to authenticate requests to LLM Gateway
+							{t(
+								"apikeys.description",
+								"Create and manage API keys to authenticate requests to LLM Gateway",
+							)}
 						</p>
 					</div>
 					{selectedProject && (
@@ -109,7 +116,7 @@ export function ApiKeysClient({ initialData }: { initialData: ApiKey[] }) {
 								className="cursor-pointer flex items-center space-x-1 w-full md:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
 							>
 								<Orbit className=" h-4 w-4 mt-0.5" />
-								Create API Key
+								{t("apikeys.create", "Create API Key")}
 							</Button>
 						</CreateApiKeyDialog>
 					)}
@@ -122,7 +129,7 @@ export function ApiKeysClient({ initialData }: { initialData: ApiKey[] }) {
 								<CardDescription>
 									{!selectedProject && (
 										<span className="text-amber-600">
-											Loading project information...
+											{t("dashboard.loading", "Loading project information...")}
 										</span>
 									)}
 								</CardDescription>
@@ -140,7 +147,7 @@ export function ApiKeysClient({ initialData }: { initialData: ApiKey[] }) {
 					<div className="md:hidden">
 						{!selectedProject && (
 							<div className="text-amber-600 mb-4">
-								Loading project information...
+								{t("dashboard.loading", "Loading project information...")}
 							</div>
 						)}
 						<ApiKeysList

@@ -1,4 +1,5 @@
 import { Zap, Shield, Globe } from "lucide-react";
+import Image from "next/image";
 
 import { TweetCard } from "@/lib/components/tweet-card";
 import { TESTIMONIAL_TWEET_IDS } from "@/lib/testimonials";
@@ -14,43 +15,52 @@ export async function AuthBrandPanel({
 	const tweetId = randomItem(TESTIMONIAL_TWEET_IDS)!;
 
 	return (
-		<div className="relative hidden w-1/2 overflow-hidden bg-gradient-to-br from-zinc-100 via-zinc-50 to-zinc-100 dark:from-zinc-900 dark:via-zinc-800 dark:to-zinc-900 lg:flex lg:flex-col lg:justify-between">
+		<div className="relative hidden w-1/2 overflow-hidden bg-gradient-to-br from-[#f6f4ee] via-white to-[#e8e2ff] dark:from-[#151c38] dark:via-[#101c3a] dark:to-[#24315c] lg:flex lg:flex-col lg:justify-between">
 			{/* Decorative grid */}
 			<div
 				className="absolute inset-0 opacity-[0.03]"
 				style={{
 					backgroundImage:
-						"linear-gradient(rgba(0,0,0,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,.1) 1px, transparent 1px)",
+						"linear-gradient(rgba(96,69,232,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(96,69,232,.08) 1px, transparent 1px)",
 					backgroundSize: "64px 64px",
 				}}
 			/>
 			{/* Gradient orbs */}
-			<div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-primary/20 blur-[128px]" />
-			<div className="absolute -bottom-32 -right-32 h-96 w-96 rounded-full bg-primary/10 blur-[128px]" />
+			<div className="absolute -left-32 -top-32 h-96 w-96 rounded-full bg-primary/15 blur-[128px]" />
+			<div className="absolute -bottom-32 -right-32 h-96 w-96 rounded-full bg-[#d9eee0]/70 blur-[128px] dark:bg-primary/15" />
+			<Image
+				src="/favicon/chui-web-v21.webp"
+				alt=""
+				aria-hidden="true"
+				width={330}
+				height={392}
+				priority
+				className="pointer-events-none absolute bottom-8 right-6 z-0 h-[min(36vh,360px)] w-auto object-contain opacity-90 xl:right-12"
+			/>
 
 			<div className="relative z-10 flex flex-1 flex-col justify-center px-12 xl:px-16">
 				<div>
 					<p className="mb-4 text-sm font-medium uppercase tracking-widest text-primary">
-						LLM Gateway
+						PShareHub AI Gateway
 					</p>
 					{variant === "signup" ? (
 						<>
-							<p className="font-display text-4xl font-bold leading-tight tracking-tight text-zinc-900 dark:text-white xl:text-5xl">
+							<p className="font-display text-4xl font-bold leading-tight tracking-tight text-[#151c38] dark:text-white xl:text-5xl">
 								One API for
 								<br />
 								{MARKETING_STATS.models} models.
 							</p>
-							<p className="mt-4 max-w-md text-lg text-zinc-500 dark:text-zinc-400">
+							<p className="mt-4 max-w-md text-lg text-[#5d6680] dark:text-[#b9c2dd]">
 								Route requests across providers, cut costs with smart caching,
 								and ship AI features without vendor lock-in.
 							</p>
 						</>
 					) : (
 						<>
-							<p className="font-display text-4xl font-bold leading-tight tracking-tight text-zinc-900 dark:text-white xl:text-5xl">
+							<p className="font-display text-4xl font-bold leading-tight tracking-tight text-[#151c38] dark:text-white xl:text-5xl">
 								Welcome back.
 							</p>
-							<p className="mt-4 max-w-md text-lg text-zinc-500 dark:text-zinc-400">
+							<p className="mt-4 max-w-md text-lg text-[#5d6680] dark:text-[#b9c2dd]">
 								Pick up where you left off.
 							</p>
 						</>
@@ -59,26 +69,32 @@ export async function AuthBrandPanel({
 
 				{variant === "signup" && (
 					<div className="mt-12 grid grid-cols-3 gap-6">
-						<div className="rounded-lg border border-zinc-200 bg-white/50 dark:border-zinc-700/50 dark:bg-zinc-800/50 p-4">
+						<div className="rounded-lg border border-[#d9d8d1] bg-white/75 p-4 dark:border-white/10 dark:bg-[#151c38]/75">
 							<Zap className="mb-2 h-5 w-5 text-primary" />
-							<p className="text-2xl font-bold tabular-nums text-zinc-900 dark:text-white">
+							<p className="text-2xl font-bold tabular-nums text-[#151c38] dark:text-white">
 								{MARKETING_STATS.tokensRouted}
 							</p>
-							<p className="text-xs text-zinc-500">Tokens routed</p>
+							<p className="text-xs text-[#5d6680] dark:text-[#b9c2dd]">
+								Tokens routed
+							</p>
 						</div>
-						<div className="rounded-lg border border-zinc-200 bg-white/50 dark:border-zinc-700/50 dark:bg-zinc-800/50 p-4">
+						<div className="rounded-lg border border-[#d9d8d1] bg-white/75 p-4 dark:border-white/10 dark:bg-[#151c38]/75">
 							<Shield className="mb-2 h-5 w-5 text-primary" />
-							<p className="text-2xl font-bold tabular-nums text-zinc-900 dark:text-white">
+							<p className="text-2xl font-bold tabular-nums text-[#151c38] dark:text-white">
 								{MARKETING_STATS.models}
 							</p>
-							<p className="text-xs text-zinc-500">Models</p>
+							<p className="text-xs text-[#5d6680] dark:text-[#b9c2dd]">
+								Models
+							</p>
 						</div>
-						<div className="rounded-lg border border-zinc-200 bg-white/50 dark:border-zinc-700/50 dark:bg-zinc-800/50 p-4">
+						<div className="rounded-lg border border-[#d9d8d1] bg-white/75 p-4 dark:border-white/10 dark:bg-[#151c38]/75">
 							<Globe className="mb-2 h-5 w-5 text-primary" />
-							<p className="text-2xl font-bold tabular-nums text-zinc-900 dark:text-white">
+							<p className="text-2xl font-bold tabular-nums text-[#151c38] dark:text-white">
 								{MARKETING_STATS.providers}
 							</p>
-							<p className="text-xs text-zinc-500">LLM providers</p>
+							<p className="text-xs text-[#5d6680] dark:text-[#b9c2dd]">
+								LLM providers
+							</p>
 						</div>
 					</div>
 				)}
@@ -87,7 +103,7 @@ export async function AuthBrandPanel({
 				<div className="mt-8">
 					<TweetCard
 						id={tweetId}
-						className="w-full rounded-xl border-zinc-200 bg-white/30 dark:border-zinc-700/50 dark:bg-zinc-800/30 shadow-none [&_a]:text-zinc-500 dark:[&_a]:text-zinc-400 [&_img]:border-zinc-200 dark:[&_img]:border-zinc-700"
+						className="w-full rounded-xl border-[#d9d8d1] bg-white/70 shadow-none dark:border-white/10 dark:bg-[#151c38]/70 [&_a]:text-[#5d6680] dark:[&_a]:text-[#b9c2dd] [&_img]:border-[#d9d8d1] dark:[&_img]:border-white/10"
 					/>
 				</div>
 			</div>

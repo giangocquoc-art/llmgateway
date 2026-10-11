@@ -15,6 +15,7 @@ import { classifyChannel } from "@/lib/attribution";
 import { Toaster } from "@/lib/components/toaster";
 import { toast } from "@/lib/components/use-toast";
 import { AppConfigProvider } from "@/lib/config";
+import { LanguageProvider } from "@/lib/language";
 import { SystemBannerProvider } from "@/lib/system-banner-context";
 
 import { TimeZoneProvider } from "@llmgateway/shared";
@@ -132,39 +133,41 @@ export function Providers({
 
 	return (
 		<TimeZoneProvider initial={timeZone}>
-			<AppConfigProvider config={config}>
-				<SystemBannerProvider banner={systemBanner}>
-					<ThemeProvider
-						attribute="class"
-						defaultTheme="system"
-						enableSystem
-						storageKey="theme"
-					>
-						<QueryClientProvider client={queryClient}>
-							<PostHogProvider client={posthog}>
-								{children}
-								{/* Gated on init: posthog-js drops captures fired before
+			<LanguageProvider>
+				<AppConfigProvider config={config}>
+					<SystemBannerProvider banner={systemBanner}>
+						<ThemeProvider
+							attribute="class"
+							defaultTheme="system"
+							enableSystem
+							storageKey="theme"
+						>
+							<QueryClientProvider client={queryClient}>
+								<PostHogProvider client={posthog}>
+									{children}
+									{/* Gated on init: posthog-js drops captures fired before
 						    init(), and the OAuth signup event has exactly one
 						    chance to fire. */}
-								{posthogReady && (
-									<Suspense>
-										<SignupMethodTracker />
-									</Suspense>
+									{posthogReady && (
+										<Suspense>
+											<SignupMethodTracker />
+										</Suspense>
+									)}
+								</PostHogProvider>
+								{process.env.NODE_ENV === "development" && (
+									<ReactQueryDevtools buttonPosition="bottom-left" />
 								)}
-							</PostHogProvider>
-							{process.env.NODE_ENV === "development" && (
-								<ReactQueryDevtools buttonPosition="bottom-left" />
-							)}
-							<ChatSupport />
-						</QueryClientProvider>
-						<Toaster />
-						<SonnerToaster richColors position="bottom-right" />
-						<Suspense>
-							<ReferralHandler />
-						</Suspense>
-					</ThemeProvider>
-				</SystemBannerProvider>
-			</AppConfigProvider>
+								<ChatSupport />
+							</QueryClientProvider>
+							<Toaster />
+							<SonnerToaster richColors position="bottom-right" />
+							<Suspense>
+								<ReferralHandler />
+							</Suspense>
+						</ThemeProvider>
+					</SystemBannerProvider>
+				</AppConfigProvider>
+			</LanguageProvider>
 		</TimeZoneProvider>
 	);
 }

@@ -60,6 +60,7 @@ import {
 } from "@/lib/components/card";
 import { Skeleton } from "@/lib/components/skeleton";
 import { useApi } from "@/lib/fetch-client";
+import { useLanguage } from "@/lib/language";
 import { applyUsageModeToDaily } from "@/lib/usage-mode";
 import { cn } from "@/lib/utils";
 
@@ -220,6 +221,7 @@ export function DashboardClient({
 	initialActivityRange,
 	initialActivityTimeZone,
 }: DashboardClientProps) {
+	const { t } = useLanguage();
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const { buildUrl, buildOrgUrl } = useDashboardNavigation();
@@ -607,7 +609,7 @@ export function DashboardClient({
 										className="flex items-center"
 									>
 										<Key className="mr-2 h-4 w-4" />
-										Create API Key
+										{t("dashboard.createApiKey", "Create API Key")}
 									</Button>
 								</CreateApiKeyDialog>
 								{isOrgAdmin && <TopUpCreditsButton />}
@@ -639,19 +641,22 @@ export function DashboardClient({
 					>
 						{isOrgAdmin && (
 							<MetricCard
-								label="Organization Credits"
+								label={t(
+									"dashboard.organizationCredits",
+									"Organization Credits",
+								)}
 								value={`$${
 									selectedOrganization
 										? formatCredits(Number(selectedOrganization.credits))
 										: "0.00"
 								}`}
-								subtitle="Available balance"
+								subtitle={t("dashboard.availableBalance", "Available balance")}
 								icon={<CreditCard className="h-4 w-4" />}
 								accent="blue"
 							/>
 						)}
 						<MetricCard
-							label="Total Requests"
+							label={t("dashboard.totalRequests", "Total Requests")}
 							value={formatNumber(totalRequests)}
 							subtitle={
 								totalRequests > 0
@@ -667,10 +672,10 @@ export function DashboardClient({
 						<MetricCard
 							label={
 								usageMode === "credits"
-									? "Credits Spend"
+									? t("dashboard.creditsSpend", "Credits Spend")
 									: usageMode === "api-keys"
-										? "BYOK Usage"
-										: "Total Spend"
+										? t("dashboard.byokUsage", "BYOK Usage")
+										: t("dashboard.totalSpend", "Total Spend")
 							}
 							value={`$${totalSpend.toFixed(2)}`}
 							subtitle={
@@ -699,9 +704,12 @@ export function DashboardClient({
 							isLoading={isLoading}
 						/>
 						<MetricCard
-							label="Total Savings"
+							label={t("dashboard.totalSavings", "Total Savings")}
 							value={`$${totalSavings.toFixed(4)}`}
-							subtitle="Discounts this period"
+							subtitle={t(
+								"dashboard.discountsThisPeriod",
+								"Discounts this period",
+							)}
 							icon={<TrendingDown className="h-4 w-4" />}
 							accent="green"
 							delta={pctChange(totalSavings, prevSavings)}
@@ -713,31 +721,33 @@ export function DashboardClient({
 						<CardContent className="grid grid-cols-2 gap-x-4 gap-y-5 lg:grid-cols-4 lg:gap-0 lg:divide-x lg:divide-border/60">
 							<StatCell
 								icon={ArrowDownToLine}
-								label="Input tokens"
+								label={t("dashboard.inputTokens", "Input tokens")}
 								value={formatTokens(totalInputTokens)}
 								sub={`$${totalInputCost.toFixed(2)} spend`}
 								isLoading={isLoading}
 							/>
 							<StatCell
 								icon={ArrowUpFromLine}
-								label="Output tokens"
+								label={t("dashboard.outputTokens", "Output tokens")}
 								value={formatTokens(totalOutputTokens)}
 								sub={`$${totalOutputCost.toFixed(2)} spend`}
 								isLoading={isLoading}
 							/>
 							<StatCell
 								icon={Server}
-								label="Cached tokens"
+								label={t("dashboard.cachedTokens", "Cached tokens")}
 								value={formatTokens(totalCachedTokens)}
 								sub={`$${totalCachedInputCost.toFixed(2)} • included in input`}
 								isLoading={isLoading}
 							/>
 							<StatCell
 								icon={Crown}
-								label="Top model"
+								label={t("dashboard.topModel", "Top model")}
 								value={mostUsedModel || "—"}
 								sub={
-									mostUsedProvider ? `via ${mostUsedProvider}` : "No usage yet"
+									mostUsedProvider
+										? `via ${mostUsedProvider}`
+										: t("dashboard.noUsageYet", "No usage yet")
 								}
 								isLoading={isLoading}
 							/>

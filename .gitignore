@@ -7,6 +7,8 @@ apps/**/*.js
 !apps/playground/public/worklets/*.js
 *spec.yaml
 .turbo/
+.open-next/
+**/.wrangler/
 .pnpm-store/
 .idea/
 openapi.json

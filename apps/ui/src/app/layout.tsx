@@ -1,4 +1,4 @@
-import localFont from "next/font/local";
+﻿import localFont from "next/font/local";
 
 import { Providers } from "@/components/providers";
 import { getConfig } from "@/lib/config-server";
@@ -8,16 +8,10 @@ import { getTimeZonePreference } from "@/lib/timezone-server";
 import { MARKETING_STATS } from "@llmgateway/shared";
 
 import "./globals.css";
+import "./psharehub-brand-fonts.css";
 
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-
-const inter = localFont({
-	variable: "--font-inter",
-	src: "../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2",
-	weight: "100 900",
-	display: "swap",
-});
 
 const geistMono = localFont({
 	// globals.css maps the Tailwind token: --font-mono: var(--font-geist-mono).
@@ -29,28 +23,21 @@ const geistMono = localFont({
 	display: "swap",
 });
 
-const plusJakarta = localFont({
-	variable: "--font-display",
-	src: "../../node_modules/@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2",
-	weight: "200 800",
-	display: "swap",
-});
-
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-	metadataBase: new URL("https://llmgateway.io"),
+	metadataBase: new URL("https://ai.psharehub.com"),
 	title: {
-		default: `LLM Gateway — Open-Source LLM API Gateway for ${MARKETING_STATS.models} Models`,
-		template: "%s | LLM Gateway",
+		default: `PShareHub AI Gateway — Open-Source AI Gateway for ${MARKETING_STATS.models} Models`,
+		template: "%s | PShareHub AI Gateway",
 	},
-	description: `Open-source LLM API gateway: route requests to ${MARKETING_STATS.models} models from ${MARKETING_STATS.providers} providers, including OpenAI, Anthropic and Google, through one OpenAI-compatible API.`,
-	authors: [{ name: "LLM Gateway" }],
-	creator: "LLM Gateway",
-	publisher: "LLM Gateway",
+	description: `Open-source AI gateway: route requests to ${MARKETING_STATS.models} models from ${MARKETING_STATS.providers} providers, including OpenAI, Anthropic and Google, through one OpenAI-compatible API.`,
+	authors: [{ name: "PShareHub AI Gateway" }],
+	creator: "PShareHub AI Gateway",
+	publisher: "PShareHub AI Gateway",
 	icons: {
 		icon: [
-			{ url: "/favicon/favicon.ico?v=1", sizes: "any" },
+			{ url: "/favicon/chui-brand-mark.svg", type: "image/svg+xml" },
 			{
 				url: "/favicon/favicon-16x16.png?v=1",
 				sizes: "16x16",
@@ -69,18 +56,18 @@ export const metadata: Metadata = {
 		canonical: "./",
 	},
 	openGraph: {
-		title: `LLM Gateway — Open-Source LLM API Gateway for ${MARKETING_STATS.models} Models`,
-		description: `Open-source LLM API gateway: route requests to ${MARKETING_STATS.models} models from ${MARKETING_STATS.providers} providers, including OpenAI, Anthropic and Google, through one OpenAI-compatible API.`,
+		title: `PShareHub AI Gateway — Open-Source AI Gateway for ${MARKETING_STATS.models} Models`,
+		description: `Open-source AI gateway: route requests to ${MARKETING_STATS.models} models from ${MARKETING_STATS.providers} providers, including OpenAI, Anthropic and Google, through one OpenAI-compatible API.`,
 		type: "website",
-		url: "https://llmgateway.io",
-		siteName: "LLM Gateway",
+		url: "https://ai.psharehub.com",
+		siteName: "PShareHub AI Gateway",
 		locale: "en_US",
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: `LLM Gateway — Open-Source LLM API Gateway for ${MARKETING_STATS.models} Models`,
-		description: `Open-source LLM API gateway: route requests to ${MARKETING_STATS.models} models from ${MARKETING_STATS.providers} providers through one OpenAI-compatible API.`,
-		creator: "@llmgateway",
+		title: `PShareHub AI Gateway — Open-Source AI Gateway for ${MARKETING_STATS.models} Models`,
+		description: `Open-source AI gateway: route requests to ${MARKETING_STATS.models} models from ${MARKETING_STATS.providers} providers through one OpenAI-compatible API.`,
+		creator: "@psharehub",
 	},
 	robots: {
 		index: true,
@@ -95,55 +82,19 @@ export const metadata: Metadata = {
 	},
 };
 
-const organizationSchema = {
-	"@context": "https://schema.org",
-	"@type": "Organization",
-	"@id": "https://llmgateway.io/#organization",
-	name: "LLM Gateway",
-	alternateName: "LLMGateway",
-	url: "https://llmgateway.io",
-	logo: {
-		"@type": "ImageObject",
-		url: "https://llmgateway.io/favicon/android-chrome-512x512.png",
-		width: 512,
-		height: 512,
-	},
-	description:
-		"Route, manage, and analyze your LLM requests across multiple providers with a unified API interface.",
-	sameAs: [
-		"https://x.com/llmgateway",
-		"https://github.com/theopenco/llmgateway",
-	],
-	legalName: "Polar Lights LLC",
-	address: {
-		"@type": "PostalAddress",
-		streetAddress: "16192 Coastal Highway",
-		addressLocality: "Lewes",
-		addressRegion: "DE",
-		postalCode: "19958",
-		addressCountry: "US",
-	},
-	contactPoint: {
-		"@type": "ContactPoint",
-		email: "contact@llmgateway.io",
-		contactType: "customer support",
-		url: "https://llmgateway.io/contact",
-	},
-};
-
 const websiteSchema = {
 	"@context": "https://schema.org",
 	"@type": "WebSite",
-	"@id": "https://llmgateway.io/#website",
-	publisher: { "@id": "https://llmgateway.io/#organization" },
-	name: "LLM Gateway",
-	alternateName: ["LLMGateway", "llmgateway.io"],
-	url: "https://llmgateway.io",
+	"@id": "https://ai.psharehub.com/#website",
+	publisher: { "@type": "Organization", name: "PShareHub AI Gateway" },
+	name: "PShareHub AI Gateway",
+	alternateName: ["PShareHub AI Gateway", "ai.psharehub.com"],
+	url: "https://ai.psharehub.com",
 	potentialAction: {
 		"@type": "SearchAction",
 		target: {
 			"@type": "EntryPoint",
-			urlTemplate: "https://llmgateway.io/models?q={search_term_string}",
+			urlTemplate: "https://ai.psharehub.com/models?q={search_term_string}",
 		},
 		"query-input": "required name=search_term_string",
 	},
@@ -161,11 +112,7 @@ export default async function RootLayout({
 	]);
 
 	return (
-		<html
-			lang="en"
-			className={`${inter.variable} ${geistMono.variable} ${plusJakarta.variable}`}
-			suppressHydrationWarning
-		>
+		<html lang="en" className={geistMono.variable} suppressHydrationWarning>
 			<head>
 				<link
 					rel="service-desc"
@@ -175,13 +122,6 @@ export default async function RootLayout({
 				<link rel="service-doc" href="/developers" />
 				<link rel="preconnect" href="https://internal.llmgateway.io" />
 				<link rel="preconnect" href="https://docs.llmgateway.io" />
-				<script
-					type="application/ld+json"
-					// eslint-disable-next-line @eslint-react/dom/no-dangerously-set-innerhtml
-					dangerouslySetInnerHTML={{
-						__html: JSON.stringify(organizationSchema),
-					}}
-				/>
 				<script
 					type="application/ld+json"
 					// eslint-disable-next-line @eslint-react/dom/no-dangerously-set-innerhtml

@@ -39,6 +39,7 @@ import {
 	TabsTrigger,
 } from "@/lib/components/tabs";
 import { useApi } from "@/lib/fetch-client";
+import { useLanguage } from "@/lib/language";
 import { USAGE_MODE_ALL_TRAFFIC_NOTE } from "@/lib/usage-mode";
 
 import {
@@ -85,6 +86,7 @@ export function UsageClient({
 	initialActivityData,
 	projectId,
 }: UsageClientProps) {
+	const { t } = useLanguage();
 	const router = useRouter();
 	const { timeZone: displayTimeZone } = useDisplayTimeZone();
 	const searchParams = useSearchParams();
@@ -172,7 +174,9 @@ export function UsageClient({
 		<div className="flex flex-col">
 			<div className="flex-1 space-y-4 p-4 pt-6 md:p-8">
 				<div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-					<h2 className="text-3xl font-bold tracking-tight">Usage & Metrics</h2>
+					<h2 className="text-3xl font-bold tracking-tight">
+						{t("dashboard.usageMetrics", "Usage & Metrics")}
+					</h2>
 					<div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
 						<Select
 							value={apiKeyId ?? "all"}
@@ -181,10 +185,14 @@ export function UsageClient({
 							}
 						>
 							<SelectTrigger size="sm" className="w-full sm:w-[180px]">
-								<SelectValue placeholder="All API Keys" />
+								<SelectValue
+									placeholder={t("usage.apiKeysAll", "All API Keys")}
+								/>
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value="all">All API Keys</SelectItem>
+								<SelectItem value="all">
+									{t("usage.apiKeysAll", "All API Keys")}
+								</SelectItem>
 								{apiKeys.map((key) => (
 									<SelectItem key={key.id} value={key.id}>
 										{key.description}
@@ -198,18 +206,29 @@ export function UsageClient({
 				</div>
 				<Tabs defaultValue="requests" className="space-y-4">
 					<TabsList className="max-w-full overflow-x-auto">
-						<TabsTrigger value="requests">Requests</TabsTrigger>
-						<TabsTrigger value="models">Models</TabsTrigger>
-						<TabsTrigger value="errors">Errors</TabsTrigger>
-						<TabsTrigger value="cache">Cache</TabsTrigger>
-						<TabsTrigger value="costs">Costs</TabsTrigger>
+						<TabsTrigger value="requests">
+							{t("usage.requests", "Requests")}
+						</TabsTrigger>
+						<TabsTrigger value="models">
+							{t("usage.models", "Models")}
+						</TabsTrigger>
+						<TabsTrigger value="errors">
+							{t("usage.errors", "Errors")}
+						</TabsTrigger>
+						<TabsTrigger value="cache">{t("usage.cache", "Cache")}</TabsTrigger>
+						<TabsTrigger value="costs">{t("usage.costs", "Costs")}</TabsTrigger>
 					</TabsList>
 					<TabsContent value="requests" className="space-y-4">
 						<Card>
 							<CardHeader>
-								<CardTitle>Request Volume</CardTitle>
+								<CardTitle>
+									{t("usage.requestVolume", "Request Volume")}
+								</CardTitle>
 								<CardDescription>
-									Number of API requests over time
+									{t(
+										"usage.requestsOverTime",
+										"Number of API requests over time",
+									)}
 								</CardDescription>
 							</CardHeader>
 							<CardContent className="h-[400px]">
@@ -224,8 +243,10 @@ export function UsageClient({
 					<TabsContent value="models" className="space-y-4">
 						<Card>
 							<CardHeader>
-								<CardTitle>Top Used Models</CardTitle>
-								<CardDescription>Usage breakdown by model</CardDescription>
+								<CardTitle>{t("usage.topModels", "Top Used Models")}</CardTitle>
+								<CardDescription>
+									{t("usage.breakdownByModel", "Usage breakdown by model")}
+								</CardDescription>
 							</CardHeader>
 							<CardContent>
 								<ModelUsageTable
@@ -239,9 +260,12 @@ export function UsageClient({
 					<TabsContent value="errors" className="space-y-4">
 						<Card>
 							<CardHeader>
-								<CardTitle>Error Rate</CardTitle>
+								<CardTitle>{t("usage.errorRate", "Error Rate")}</CardTitle>
 								<CardDescription>
-									API request error rate over time
+									{t(
+										"usage.errorRateDescription",
+										"API request error rate over time",
+									)}
 									{usageMode !== "total" && ` — ${USAGE_MODE_ALL_TRAFFIC_NOTE}`}
 								</CardDescription>
 							</CardHeader>
@@ -257,9 +281,12 @@ export function UsageClient({
 					<TabsContent value="cache" className="space-y-4">
 						<Card>
 							<CardHeader>
-								<CardTitle>Cache Rate</CardTitle>
+								<CardTitle>{t("usage.cacheRate", "Cache Rate")}</CardTitle>
 								<CardDescription>
-									API request cache rate over time
+									{t(
+										"usage.cacheRateDescription",
+										"API request cache rate over time",
+									)}
 									{usageMode !== "total" && ` — ${USAGE_MODE_ALL_TRAFFIC_NOTE}`}
 								</CardDescription>
 							</CardHeader>
@@ -275,9 +302,14 @@ export function UsageClient({
 					<TabsContent value="costs" className="space-y-4">
 						<Card>
 							<CardHeader>
-								<CardTitle>Cost Breakdown</CardTitle>
+								<CardTitle>
+									{t("usage.costBreakdown", "Cost Breakdown")}
+								</CardTitle>
 								<CardDescription>
-									Estimated costs by provider and model
+									{t(
+										"usage.estimatedCosts",
+										"Estimated costs by provider and model",
+									)}
 								</CardDescription>
 							</CardHeader>
 							<CardContent>

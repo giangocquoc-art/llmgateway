@@ -54,6 +54,7 @@ import {
 } from "@/lib/components/tooltip";
 import { toast } from "@/lib/components/use-toast";
 import { useApi } from "@/lib/fetch-client";
+import { useLanguage } from "@/lib/language";
 import { extractOrgAndProjectFromPath } from "@/lib/navigation-utils";
 import { cn } from "@/lib/utils";
 
@@ -186,6 +187,7 @@ export function ApiKeysList({
 	selectedProject,
 	initialData,
 }: ApiKeysListProps) {
+	const { t } = useLanguage();
 	const queryClient = useQueryClient();
 	const api = useApi();
 	const pathname = usePathname();
@@ -340,7 +342,10 @@ export function ApiKeysList({
 					<KeyIcon className="h-10 w-10 text-gray-500" />
 				</div>
 				<p className="text-gray-400 mb-6">
-					Please select a project to view API keys.
+					{t(
+						"apikeys.selectProject",
+						"Please select a project to view API keys.",
+					)}
 				</p>
 			</div>
 		);
@@ -353,7 +358,9 @@ export function ApiKeysList({
 				<div className="mb-4">
 					<KeyIcon className="h-10 w-10 text-gray-500" />
 				</div>
-				<p className="text-gray-400 mb-6">Loading API keys...</p>
+				<p className="text-gray-400 mb-6">
+					{t("apikeys.loading", "Loading API keys...")}
+				</p>
 			</div>
 		);
 	}
@@ -366,7 +373,10 @@ export function ApiKeysList({
 					<KeyIcon className="h-10 w-10 text-gray-500" />
 				</div>
 				<p className="text-gray-400 mb-6">
-					Failed to load API keys. Please try again.
+					{t(
+						"apikeys.loadFailed",
+						"Failed to load API keys. Please try again.",
+					)}
 				</p>
 			</div>
 		);
@@ -680,7 +690,9 @@ export function ApiKeysList({
 				<div className="mb-4">
 					<KeyIcon className="h-10 w-10 text-gray-500" />
 				</div>
-				<p className="text-gray-400 mb-6">No API keys have been created yet.</p>
+				<p className="text-gray-400 mb-6">
+					{t("apikeys.empty", "No API keys have been created yet.")}
+				</p>
 				<CreateApiKeyDialog
 					selectedProject={selectedProject}
 					disabled={
@@ -700,7 +712,7 @@ export function ApiKeysList({
 						className="cursor-pointer flex items-center gap-2 bg-white text-black px-4 py-2 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
 					>
 						<PlusIcon className="h-5 w-5" />
-						Create API Key
+						{t("apikeys.create", "Create API Key")}
 					</Button>
 				</CreateApiKeyDialog>
 			</div>
@@ -732,7 +744,7 @@ export function ApiKeysList({
 					>
 						<TabsList className="flex space-x-2 w-full md:w-fit">
 							<TabsTrigger value="all">
-								All{" "}
+								{t("apikeys.all", "All")}{" "}
 								<Badge
 									variant={statusFilter === "all" ? "default" : "outline"}
 									className="text-xs"
@@ -742,7 +754,7 @@ export function ApiKeysList({
 							</TabsTrigger>
 							{activeKeys.length > 0 && (
 								<TabsTrigger value="active">
-									Active{" "}
+									{t("apikeys.active", "Active")}{" "}
 									<Badge
 										variant={statusFilter === "active" ? "default" : "outline"}
 										className="text-xs"
@@ -753,7 +765,7 @@ export function ApiKeysList({
 							)}
 							{inactiveKeys.length > 0 && (
 								<TabsTrigger value="inactive">
-									Inactive{" "}
+									{t("apikeys.inactive", "Inactive")}{" "}
 									<Badge
 										variant={
 											statusFilter === "inactive" ? "default" : "outline"

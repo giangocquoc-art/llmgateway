@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Check, ChevronsUpDown } from "lucide-react";
 import Link from "next/link";
@@ -20,7 +20,7 @@ import type { ReactElement } from "react";
 const products = [
 	{
 		id: "gateway",
-		name: "LLM Gateway",
+		name: "PShareHub AI Gateway",
 		description: "API routing and usage",
 		icon: Logo,
 	},

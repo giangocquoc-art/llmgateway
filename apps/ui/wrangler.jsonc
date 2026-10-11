@@ -1,0 +1,19 @@
+{
+	"$schema": "../../node_modules/wrangler/config-schema.json",
+	"name": "psharehub-ai-dashboard",
+	"main": ".open-next/worker.js",
+	"compatibility_date": "2026-10-11",
+	"compatibility_flags": ["nodejs_compat"],
+	"vars": {
+		"HOSTED": "true",
+		"CLIENT_IP_HEADER": "CF-Connecting-IP",
+		"APP_URL": "https://ai.psharehub.com",
+		"GATEWAY_URL": "https://api.psharehub.com"
+	},
+	"workers_dev": true,
+	"preview_urls": false,
+	"assets": {
+		"directory": ".open-next/assets",
+		"binding": "ASSETS"
+	}
+}

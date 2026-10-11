@@ -10,6 +10,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { LanguagePicker } from "@/components/language-picker";
 import { SocialAuthButtons } from "@/components/social-auth-buttons";
 import { useSessionStatus, useUser } from "@/hooks/useUser";
 import { useAuth } from "@/lib/auth-client";
@@ -33,6 +34,7 @@ import { Switch } from "@/lib/components/switch";
 import { toast } from "@/lib/components/use-toast";
 import { useAppConfig } from "@/lib/config";
 import { useFetchClient } from "@/lib/fetch-client";
+import { useLanguage } from "@/lib/language";
 
 import type { Route } from "next";
 
@@ -58,6 +60,7 @@ const createFormSchema = (isHosted: boolean) =>
 	});
 
 export default function Signup() {
+	const { t } = useLanguage();
 	const queryClient = useQueryClient();
 	const router = useRouter();
 	const searchParams = useSearchParams();
@@ -129,9 +132,11 @@ export default function Signup() {
 					}
 
 					toast({
-						title: "Account created",
-						description:
+						title: t("auth.accountCreated", "Account created"),
+						description: t(
+							"auth.verifyEmail",
 							"Please check your email to verify your account before signing in.",
+						),
 					});
 					router.push(signupTarget as Route);
 				},
@@ -156,6 +161,9 @@ export default function Signup() {
 
 	return (
 		<div className="mx-auto w-full max-w-[400px]">
+			<div className="mb-4 flex justify-end">
+				<LanguagePicker />
+			</div>
 			{/* Mobile brand header */}
 			<div className="mb-6 lg:hidden">
 				<p className="text-sm font-medium uppercase tracking-widest text-primary">
@@ -165,10 +173,13 @@ export default function Signup() {
 
 			<div className="flex flex-col space-y-2">
 				<h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-					Create your free account
+					{t("auth.signupTitle", "Create your free account")}
 				</h1>
 				<p className="text-sm text-muted-foreground">
-					No credit card required. Start building in seconds.
+					{t(
+						"auth.signupDescription",
+						"No credit card required. Start building in seconds.",
+					)}
 				</p>
 			</div>
 
@@ -180,7 +191,9 @@ export default function Signup() {
 							name="name"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Name (optional)</FormLabel>
+									<FormLabel>
+										{t("auth.nameOptional", "Name (optional)")}
+									</FormLabel>
 									<FormControl>
 										<Input
 											placeholder="John Doe"
@@ -197,7 +210,7 @@ export default function Signup() {
 							name="email"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Email</FormLabel>
+									<FormLabel>{t("auth.email", "Email")}</FormLabel>
 									<FormControl>
 										<Input
 											placeholder="name@example.com"
@@ -215,7 +228,7 @@ export default function Signup() {
 							name="password"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Password</FormLabel>
+									<FormLabel>{t("auth.password", "Password")}</FormLabel>
 									<div className="relative">
 										<FormControl>
 											<Input
@@ -240,12 +253,12 @@ export default function Signup() {
 												<Eye className="h-4 w-4 text-muted-foreground" />
 											)}
 											<span className="sr-only">
-												{showPassword ? "Hide password" : "Show password"}
+												{showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
 											</span>
 										</Button>
 									</div>
 									<p className="text-xs text-muted-foreground">
-										Minimum 12 characters
+										{t("auth.passwordMin12Hint", "Minimum 12 characters")}
 									</p>
 									<FormMessage />
 								</FormItem>
@@ -264,7 +277,7 @@ export default function Signup() {
 											/>
 										</FormControl>
 										<FormLabel className="text-sm font-normal text-muted-foreground cursor-pointer">
-											Subscribe to product updates
+											{t("auth.newsletter", "Subscribe to product updates")}
 										</FormLabel>
 									</div>
 								</FormItem>
@@ -274,10 +287,10 @@ export default function Signup() {
 							{isLoading ? (
 								<>
 									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-									Creating account...
+									{t("auth.creatingAccount", "Creating account...")}
 								</>
 							) : (
-								"Start free"
+								t("auth.startFree", "Start free")
 							)}
 						</Button>
 					</form>
@@ -289,7 +302,9 @@ export default function Signup() {
 						<span className="w-full border-t" />
 					</div>
 					<div className="relative flex justify-center text-xs uppercase">
-						<span className="bg-background px-2 text-muted-foreground">Or</span>
+						<span className="bg-background px-2 text-muted-foreground">
+							{t("auth.or", "Or")}
+						</span>
 					</div>
 				</div>
 
@@ -303,12 +318,12 @@ export default function Signup() {
 					requestSignUp
 				/>
 				<p className="text-center text-xs leading-relaxed text-muted-foreground">
-					By signing up, you agree to the{" "}
+					{t("auth.termsAgreement", "By signing up, you agree to the")}{" "}
 					<Link
 						href="/legal/terms"
 						className="underline underline-offset-4 hover:text-foreground"
 					>
-						LLM Gateway Terms of Use
+						{t("auth.terms", "LLM Gateway Terms of Use")}
 					</Link>
 					.
 				</p>
@@ -319,7 +334,7 @@ export default function Signup() {
 					href={getAuthPagePath("/login", redirectTarget) as Route}
 					className="hover:text-foreground underline underline-offset-4 transition-colors"
 				>
-					Already have an account? Sign in
+					{t("auth.signInPrompt", "Already have an account? Sign in")}
 				</Link>
 			</p>
 		</div>

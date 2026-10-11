@@ -18,6 +18,7 @@ import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { LanguagePicker } from "@/components/language-picker";
 import { SocialAuthButtons } from "@/components/social-auth-buttons";
 import { useSessionStatus, useUser } from "@/hooks/useUser";
 import { useAuth } from "@/lib/auth-client";
@@ -39,6 +40,7 @@ import {
 import { Input } from "@/lib/components/input";
 import { toast } from "@/lib/components/use-toast";
 import { useAppConfig } from "@/lib/config";
+import { useLanguage } from "@/lib/language";
 
 import type { Route } from "next";
 
@@ -52,6 +54,7 @@ const formSchema = z.object({
 });
 
 export default function Login() {
+	const { t } = useLanguage();
 	const queryClient = useQueryClient();
 	const router = useRouter();
 	const posthog = usePostHog();
@@ -249,6 +252,9 @@ export default function Login() {
 
 	return (
 		<div className="mx-auto w-full max-w-[400px]">
+			<div className="mb-4 flex justify-end">
+				<LanguagePicker />
+			</div>
 			{/* Mobile brand header */}
 			<div className="mb-6 lg:hidden">
 				<p className="text-sm font-medium uppercase tracking-widest text-primary">
@@ -258,10 +264,13 @@ export default function Login() {
 
 			<div className="flex flex-col space-y-2">
 				<h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-					Sign in
+					{t("auth.loginTitle", "Sign in")}
 				</h1>
 				<p className="text-sm text-muted-foreground">
-					Enter your credentials to access your dashboard
+					{t(
+						"auth.loginPrompt",
+						"Enter your credentials to access your dashboard",
+					)}
 				</p>
 			</div>
 
@@ -274,7 +283,7 @@ export default function Login() {
 							name="email"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Email</FormLabel>
+									<FormLabel>{t("auth.email", "Email")}</FormLabel>
 									<FormControl>
 										<Input
 											placeholder="name@example.com"
@@ -293,12 +302,12 @@ export default function Login() {
 							render={({ field }) => (
 								<FormItem>
 									<div className="flex items-center justify-between">
-										<FormLabel>Password</FormLabel>
+										<FormLabel>{t("auth.password", "Password")}</FormLabel>
 										<Link
 											href="/forgot-password"
 											className="text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
 										>
-											Forgot password?
+											{t("auth.forgotPassword", "Forgot password?")}
 										</Link>
 									</div>
 									<div className="relative">
@@ -325,7 +334,7 @@ export default function Login() {
 												<Eye className="h-4 w-4 text-muted-foreground" />
 											)}
 											<span className="sr-only">
-												{showPassword ? "Hide password" : "Show password"}
+												{showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
 											</span>
 										</Button>
 									</div>
@@ -337,11 +346,11 @@ export default function Login() {
 							{isLoading ? (
 								<>
 									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-									Signing in...
+									{t("auth.signingIn", "Signing in...")}
 								</>
 							) : (
 								<>
-									Sign in
+									{t("auth.signIn", "Sign in")}
 									<ArrowRight className="ml-2 h-4 w-4" />
 								</>
 							)}
@@ -355,7 +364,9 @@ export default function Login() {
 						<span className="w-full border-t" />
 					</div>
 					<div className="relative flex justify-center text-xs uppercase">
-						<span className="bg-background px-2 text-muted-foreground">Or</span>
+						<span className="bg-background px-2 text-muted-foreground">
+							{t("auth.or", "Or")}
+						</span>
 					</div>
 				</div>
 
@@ -379,7 +390,7 @@ export default function Login() {
 					) : (
 						<KeySquare className="mr-2 h-4 w-4" />
 					)}
-					Sign in with passkey
+					{t("auth.signInPasskey", "Sign in with passkey")}
 				</Button>
 
 				{ssoEnabled && (
@@ -394,7 +405,7 @@ export default function Login() {
 						) : (
 							<Building2 className="mr-2 h-4 w-4" />
 						)}
-						Sign in with SSO
+						{t("auth.signInSso", "Sign in with SSO")}
 					</Button>
 				)}
 			</div>
@@ -404,7 +415,7 @@ export default function Login() {
 					href={getAuthPagePath("/signup", redirectTarget) as Route}
 					className="hover:text-foreground underline underline-offset-4 transition-colors"
 				>
-					Don&apos;t have an account? Sign up
+					{t("auth.signUpPrompt", "Don't have an account? Sign up")}
 				</Link>
 			</p>
 		</div>

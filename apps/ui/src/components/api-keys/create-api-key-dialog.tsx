@@ -24,6 +24,7 @@ import {
 } from "@/lib/components/tooltip";
 import { toast } from "@/lib/components/use-toast";
 import { useApi } from "@/lib/fetch-client";
+import { useLanguage } from "@/lib/language";
 
 import {
 	ApiKeyLimitFields,
@@ -53,6 +54,7 @@ export function CreateApiKeyDialog({
 	disabled = false,
 	disabledMessage,
 }: CreateApiKeyDialogProps) {
+	const { t } = useLanguage();
 	const queryClient = useQueryClient();
 	const posthog = usePostHog();
 	const [open, setOpen] = useState(false);
@@ -198,11 +200,14 @@ export function CreateApiKeyDialog({
 				{step === "form" ? (
 					<>
 						<DialogHeader>
-							<DialogTitle>Create API Key</DialogTitle>
+							<DialogTitle>{t("apikeys.create", "Create API Key")}</DialogTitle>
 							<DialogDescription>
-								Create a new API key to access LLM Gateway.
+								{t(
+									"apikeys.createDescription",
+									"Create a new API key to access LLM Gateway.",
+								)}
 								<span className="block mt-1">
-									Project: {selectedProject.name}
+									{t("apikeys.project", "Project")}: {selectedProject.name}
 								</span>
 								<span className="block mt-2 text-xs">
 									💡 After creation, you can configure IAM rules to control
@@ -212,10 +217,15 @@ export function CreateApiKeyDialog({
 						</DialogHeader>
 						<form onSubmit={handleSubmit} className="space-y-4 py-4">
 							<div className="space-y-2">
-								<Label htmlFor="name">API Key Name</Label>
+								<Label htmlFor="name">
+									{t("apikeys.name", "API Key Name")}
+								</Label>
 								<Input
 									id="name"
-									placeholder="e.g. Production API Key"
+									placeholder={t(
+										"apikeys.namePlaceholder",
+										"e.g. Production API Key",
+									)}
 									value={name}
 									onChange={(e) => setName(e.target.value)}
 									disabled={createApiKeyMutation.isPending}
@@ -232,7 +242,10 @@ export function CreateApiKeyDialog({
 								value={limitValue}
 								onChange={setLimitValue}
 								memberBudget={memberBudget}
-								memberBudgetLabel="Your personal or organization default policy"
+								memberBudgetLabel={t(
+									"apikeys.personalPolicy",
+									"Your personal or organization default policy",
+								)}
 								additionalBudgets={
 									teamBudget
 										? [
@@ -251,12 +264,12 @@ export function CreateApiKeyDialog({
 									disabled={createApiKeyMutation.isPending}
 									onClick={handleClose}
 								>
-									Cancel
+									{t("common.cancel", "Cancel")}
 								</Button>
 								<Button type="submit" disabled={createApiKeyMutation.isPending}>
 									{createApiKeyMutation.isPending
-										? "Creating..."
-										: "Create API Key"}
+										? t("common.creating", "Creating...")
+										: t("apikeys.create", "Create API Key")}
 								</Button>
 							</DialogFooter>
 						</form>
@@ -264,10 +277,14 @@ export function CreateApiKeyDialog({
 				) : (
 					<>
 						<DialogHeader>
-							<DialogTitle>API Key Created</DialogTitle>
+							<DialogTitle>
+								{t("apikeys.created", "API Key Created")}
+							</DialogTitle>
 							<DialogDescription>
-								Your API key has been created. Please copy it now as you won't
-								be able to see it again.
+								{t(
+									"apikeys.createdCopy",
+									"Your API key has been created. Please copy it now as you won't be able to see it again.",
+								)}
 								<span className="block mt-2 text-xs">
 									💡 You can now configure IAM rules for this key to control
 									model access from the API Keys page.
@@ -290,16 +307,22 @@ export function CreateApiKeyDialog({
 										onClick={copyToClipboard}
 									>
 										<Copy className="h-4 w-4" />
-										<span className="sr-only">Copy API key</span>
+										<span className="sr-only">
+											{t("apikeys.copy", "Copy API key")}
+										</span>
 									</Button>
 								</div>
 								<p className="text-muted-foreground text-xs">
-									Make sure to store this API key securely. You won't be able to
-									see it again.
+									{t(
+										"apikeys.storeSecurely",
+										"Make sure to store this API key securely. You won't be able to see it again.",
+									)}
 								</p>
 							</div>
 							<DialogFooter>
-								<Button onClick={handleClose}>Done</Button>
+								<Button onClick={handleClose}>
+									{t("common.done", "Done")}
+								</Button>
 							</DialogFooter>
 						</div>
 					</>
