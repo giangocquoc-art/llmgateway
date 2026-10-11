@@ -10,6 +10,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { PShareHubLogo } from "@/components/branding/psharehub-logo";
 import { LanguagePicker } from "@/components/language-picker";
 import { SocialAuthButtons } from "@/components/social-auth-buttons";
 import { useSessionStatus, useUser } from "@/hooks/useUser";
@@ -166,9 +167,7 @@ export default function Signup() {
 			</div>
 			{/* Mobile brand header */}
 			<div className="mb-6 lg:hidden">
-				<p className="text-sm font-medium uppercase tracking-widest text-primary">
-					LLM Gateway
-				</p>
+				<PShareHubLogo />
 			</div>
 
 			<div className="flex flex-col space-y-2">

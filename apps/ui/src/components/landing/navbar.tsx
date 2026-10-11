@@ -36,6 +36,7 @@ import Link from "next/link";
 import { usePostHog } from "posthog-js/react";
 import { useEffect, useState } from "react";
 
+import { PShareHubLogo } from "@/components/branding/psharehub-logo";
 import { AuthLink } from "@/components/shared/auth-link";
 import { ModelSearch } from "@/components/shared/model-search";
 import { useSessionStatus } from "@/hooks/useUser";
@@ -49,7 +50,6 @@ import {
 	NavigationMenuTrigger,
 } from "@/lib/components/navigation-menu";
 import { useAppConfig } from "@/lib/config";
-import { LogoLockup } from "@/lib/icons/Logo";
 import { useSystemBanner } from "@/lib/system-banner-context";
 import { cn } from "@/lib/utils";
 
@@ -468,7 +468,7 @@ export const Navbar = ({
 						{/* Logo */}
 						<div className="flex w-full justify-between nav:mr-4 nav:w-auto nav:shrink-0">
 							<Link href="/" className="flex items-center" prefetch={true}>
-								<LogoLockup className="h-6 w-auto shrink-0 text-black dark:text-white" />
+								<PShareHubLogo />
 							</Link>
 
 							<button

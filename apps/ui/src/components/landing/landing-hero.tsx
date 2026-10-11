@@ -1,5 +1,5 @@
 import { ArrowRight } from "lucide-react";
-import Link from "next/link";
+import Image from "next/image";
 
 import { DashboardDemo } from "@/components/home/dashboard-demo";
 import { AuthLink } from "@/components/shared/auth-link";
@@ -37,26 +37,18 @@ export function LandingHero() {
 						{/* Announcement badge - centered */}
 						<div className="mb-10 lg:mb-12 flex justify-center">
 							<div className="animate-hero-enter">
-								<Link
-									href="/blog/soc2-type-ii"
-									className="hover:bg-background dark:hover:border-t-border bg-muted group flex w-fit items-center gap-4 rounded-full border p-1 pl-4 shadow-md shadow-black/5 transition-all duration-300 dark:border-t-white/5 dark:shadow-zinc-950"
-								>
-									<span className="text-foreground text-sm">
-										LLM Gateway Is Now SOC 2 Type II Compliant
+								<div className="flex items-center gap-2 rounded-full border border-border/80 bg-background/75 px-4 py-2 shadow-sm shadow-[#101c3a]/5">
+									<Image
+										src="/favicon/chui-brand-mark.svg"
+										alt=""
+										aria-hidden="true"
+										width={22}
+										height={22}
+									/>
+									<span className="text-sm font-medium text-foreground">
+										PShareHub AI Gateway
 									</span>
-									<span className="dark:border-background block h-4 w-0.5 border-l bg-white dark:bg-zinc-700" />
-
-									<div className="bg-background group-hover:bg-muted size-6 overflow-hidden rounded-full duration-500">
-										<div className="flex w-12 -translate-x-1/2 duration-500 ease-in-out group-hover:translate-x-0">
-											<span className="flex size-6">
-												<ArrowRight className="m-auto size-3" />
-											</span>
-											<span className="flex size-6">
-												<ArrowRight className="m-auto size-3" />
-											</span>
-										</div>
-									</div>
-								</Link>
+								</div>
 							</div>
 						</div>
 
@@ -64,7 +56,7 @@ export function LandingHero() {
 						<div className="text-center max-w-4xl mx-auto">
 							<div>
 								<h1 className="text-balance text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground">
-									LLM Gateway — One API for {MARKETING_STATS.providers}{" "}
+									PShareHub AI Gateway — One API for {MARKETING_STATS.providers}{" "}
 									providers, including OpenAI, Anthropic, and Google
 								</h1>
 								<p className="mt-4 md:mt-6 max-w-2xl mx-auto text-balance text-base md:text-lg text-muted-foreground">
@@ -80,11 +72,11 @@ export function LandingHero() {
 								{/* Primary CTA - ShimmerButton with glow */}
 								<div className="relative">
 									{/* Outer glow ring */}
-									<div className="absolute -inset-3 bg-blue-500/30 rounded-full blur-xl animate-pulse" />
+									<div className="absolute -inset-3 animate-pulse rounded-full bg-[#ffad4e]/30 blur-xl" />
 									<AuthLink href="/signup" className="group relative">
 										<ShimmerButton
-											background="rgb(37, 99, 235)"
-											className="shadow-2xl shadow-blue-500/25 px-10 md:px-12 py-3 md:py-4"
+											background="#6045e8"
+											className="px-10 py-3 shadow-2xl shadow-[#6045e8]/25 md:px-12 md:py-4"
 										>
 											<span className="flex items-center gap-3 text-center text-xl leading-none font-bold tracking-tight whitespace-pre-wrap text-white md:text-2xl">
 												<span>Get My API Key</span>
