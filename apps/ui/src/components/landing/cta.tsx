@@ -29,8 +29,8 @@ export default function CallToAction() {
 						</h2>
 						<p className="text-lg text-muted-foreground max-w-xl mx-auto">
 							Cổng hỗ trợ Anthropic Messages và OpenAI Chat Completions với phản
-							hồi streaming. Bảng quản trị dành riêng cho chủ dự án; API công
-							khai và giá dịch vụ chưa được mở.
+							hồi theo luồng. Bảng quản trị dành cho chủ dự án; kết nối nhà cung
+							cấp để bắt đầu xử lý yêu cầu.
 						</p>
 					</AnimatedGroup>
 
@@ -39,7 +39,7 @@ export default function CallToAction() {
 						className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
 					>
 						<a
-							href="https://github.com/giangocquoc-art/llmgateway/tree/psharehub/branding-vietnamese-workers"
+							href="https://github.com/giangocquoc-art/llmgateway/tree/cf-ui-release"
 							target="_blank"
 							rel="noopener noreferrer"
 							className="w-full sm:w-auto"

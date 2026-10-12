@@ -25,8 +25,8 @@ const capabilities = [
 	},
 	{
 		icon: Building2,
-		title: "Dự phòng upstream",
-		description: "Có thể cấu hình nhiều tuyến upstream để chuyển tiếp.",
+		title: "Tuyến dự phòng",
+		description: "Chuyển sang tuyến khác khi tuyến chính gặp sự cố.",
 	},
 ];
 
@@ -47,11 +47,11 @@ export function EnterpriseCTA() {
 						<h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground">
 							Cổng API AI
 							<br />
-							sẵn sàng cho cấu hình upstream
+							kết nối mô hình AI
 						</h2>
 						<p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-							Cổng hỗ trợ các định dạng API phổ biến và chuyển yêu cầu tới
-							upstream do chủ dự án cấu hình.
+							Kết nối tài khoản nhà cung cấp trong bảng quản trị để chuyển tiếp
+							yêu cầu qua một giao diện API thống nhất.
 						</p>
 					</AnimatedGroup>
 
@@ -88,7 +88,7 @@ export function EnterpriseCTA() {
 							className="bg-foreground text-background hover:bg-foreground/90 px-8 py-6 text-base font-medium w-full sm:w-auto"
 							asChild
 						>
-							<Link href="https://github.com/giangocquoc-art/llmgateway/tree/psharehub/branding-vietnamese-workers">
+							<Link href="https://github.com/giangocquoc-art/llmgateway/tree/cf-ui-release">
 								Xem mã nguồn
 								<ArrowRight className="ml-2 h-4 w-4" />
 							</Link>
@@ -108,14 +108,14 @@ export function EnterpriseCTA() {
 						preset="fade"
 						className="mt-8 flex items-center justify-center gap-6 text-sm text-muted-foreground"
 					>
-						<span>Một endpoint API</span>
+						<span>Một địa chỉ API</span>
 						<span className="h-3 w-px bg-border" />
-						<span>Định tuyến upstream</span>
+						<span>Điều hướng yêu cầu</span>
 						<span className="h-3 w-px bg-border" />
 						<span>Mã nguồn mở (AGPLv3)</span>
 						<span className="h-3 w-px bg-border hidden sm:block" />
 						<span className="hidden sm:inline">
-							Cần cấu hình thông tin upstream
+							Cần kết nối nhà cung cấp AI
 						</span>
 					</AnimatedGroup>
 				</div>

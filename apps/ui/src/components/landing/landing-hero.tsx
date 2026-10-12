@@ -4,10 +4,10 @@ import Image from "next/image";
 import { ShimmerButton } from "@/lib/components/shimmer-button";
 
 const STATS = [
-	{ value: "Anthropic", label: "API Messages" },
+	{ value: "Anthropic", label: "Anthropic Messages" },
 	{ value: "OpenAI", label: "Tương thích Chat Completions" },
-	{ value: "Streaming", label: "Responses" },
-	{ value: "Upstream", label: "Có thể cấu hình tuyến dự phòng" },
+	{ value: "Streaming", label: "Phản hồi theo luồng" },
+	{ value: "Gateway", label: "Một địa chỉ API" },
 ];
 
 export function LandingHero() {
@@ -100,7 +100,7 @@ export function LandingHero() {
 													clipRule="evenodd"
 												/>
 											</svg>
-											API Anthropic Messages
+											Anthropic Messages API
 										</span>
 										<span className="flex items-center gap-1.5">
 											<svg
@@ -115,7 +115,7 @@ export function LandingHero() {
 													clipRule="evenodd"
 												/>
 											</svg>
-											OpenAI tương thích Chat Completions
+											API tương thích OpenAI
 										</span>
 										<span className="flex items-center gap-1.5">
 											<svg
@@ -130,7 +130,7 @@ export function LandingHero() {
 													clipRule="evenodd"
 												/>
 											</svg>
-											Cần cấu hình quyền truy cập upstream
+											Cần kết nối nhà cung cấp AI
 										</span>
 									</div>
 								</div>

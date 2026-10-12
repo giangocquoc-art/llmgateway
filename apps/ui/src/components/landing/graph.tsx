@@ -108,9 +108,8 @@ export function Graph() {
 								Một yêu cầu. Một cổng kết nối.
 							</h2>
 							<p className="mt-4 text-muted-foreground max-w-xl">
-								Ứng dụng gửi yêu cầu tới PShareHub AI Gateway, sau đó gateway
-								chuyển tới các tuyến upstream tương thích do người vận hành cấu
-								hình.
+								Ứng dụng gửi yêu cầu tới PShareHub AI Gateway. Gateway chuyển
+								tiếp yêu cầu tới nhà cung cấp AI đã được kết nối.
 							</p>
 						</div>
 						<div className="flex gap-8 lg:gap-12">

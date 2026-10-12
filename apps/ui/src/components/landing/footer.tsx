@@ -7,7 +7,7 @@ const footerLinks = [
 		label: "Bảng điều khiển API",
 	},
 	{
-		href: "https://github.com/giangocquoc-art/llmgateway/tree/psharehub/branding-vietnamese-workers",
+		href: "https://github.com/giangocquoc-art/llmgateway/tree/cf-ui-release",
 		label: "Mã nguồn",
 	},
 	{ href: "/legal/terms", label: "Điều khoản nền tảng gốc" },
@@ -27,8 +27,8 @@ export default function Footer() {
 							PShareHub AI Gateway
 						</a>
 						<p className="mt-2 max-w-md text-sm text-muted-foreground">
-							Cổng API AI của PShareHub. Truy cập và dịch vụ phụ thuộc vào cấu
-							hình upstream hiện có.
+							Cổng API AI của PShareHub. Kết nối tài khoản nhà cung cấp để bắt
+							đầu chuyển tiếp yêu cầu.
 						</p>
 					</div>
 					<nav aria-label="Liên kết cuối trang">
