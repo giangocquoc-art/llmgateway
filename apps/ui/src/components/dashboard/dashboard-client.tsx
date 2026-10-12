@@ -540,7 +540,9 @@ export function DashboardClient({
 				<div className="flex-1 space-y-4 p-4 pt-6 md:p-8">
 					<div className="flex flex-col md:flex-row items-center justify-between space-y-2">
 						<div>
-							<h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+							<h1 className="text-3xl font-bold tracking-tight">
+								{t("dashboard.title", "Dashboard")}
+							</h1>
 							<div className="h-5 w-48 bg-muted animate-pulse rounded mt-1" />
 						</div>
 					</div>
@@ -570,13 +572,16 @@ export function DashboardClient({
 			<div className="flex-1 space-y-4 p-4 pt-6 md:p-8">
 				<div className="flex flex-col md:flex-row items-center justify-between space-y-2">
 					<div>
-						<h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+						<h1 className="text-3xl font-bold tracking-tight">
+							{t("dashboard.title", "Dashboard")}
+						</h1>
 						{selectedProject && (
 							<p className="text-sm text-muted-foreground mt-1">
-								Project: {selectedProject.name}
+								{t("dashboard.project", "Project")}: {selectedProject.name}
 								{selectedOrganization && (
 									<span className="ml-2">
-										• Organization: {selectedOrganization.name}
+										• {t("dashboard.organization", "Organization")}:{" "}
+										{selectedOrganization.name}
 									</span>
 								)}
 							</p>
@@ -626,8 +631,8 @@ export function DashboardClient({
 					<UsageModeSelector />
 					{rangeDays <= 366 && (
 						<p className="text-xs text-muted-foreground">
-							Trends compare to {format(prevFrom, "MMM d")} –{" "}
-							{format(prevTo, "MMM d")}
+							{t("dashboard.trendsCompare", "Trends compare to")}{" "}
+							{format(prevFrom, "MMM d")} – {format(prevTo, "MMM d")}
 						</p>
 					)}
 				</div>
@@ -660,7 +665,7 @@ export function DashboardClient({
 							value={formatNumber(totalRequests)}
 							subtitle={
 								totalRequests > 0
-									? `${cacheHitRate.toFixed(1)}% cache hit rate • ${formatNumber(totalErrors)} errors`
+									? `${cacheHitRate.toFixed(1)}% ${t("dashboard.cacheHitRateLabel", "cache hit rate")} • ${formatNumber(totalErrors)} ${t("dashboard.errorCount", "errors")}`
 									: `${format(from, "MMM d")} – ${format(to, "MMM d")}`
 							}
 							icon={<Zap className="h-4 w-4" />}
@@ -682,17 +687,20 @@ export function DashboardClient({
 								usageMode === "total" &&
 								totalCreditsCost > 0 &&
 								totalApiKeysCost > 0
-									? `$${totalCreditsCost.toFixed(2)} credits • $${totalApiKeysCost.toFixed(2)} BYOK (not billed)`
+									? `$${totalCreditsCost.toFixed(2)} ${t("dashboard.credits", "credits")} • $${totalApiKeysCost.toFixed(2)} BYOK (${t("dashboard.notBilled", "not billed")})`
 									: usageMode === "api-keys" && totalCost > 0
-										? "Served by your provider keys — not billed to credits"
+										? t(
+												"dashboard.providerKeysUsage",
+												"Served by your provider keys — not billed to credits",
+											)
 										: totalRequests > 0
-											? `avg $${avgCostPerRequest.toFixed(4)} per request${
+											? `${t("dashboard.avgPerRequest", "avg")} $${avgCostPerRequest.toFixed(4)} ${t("dashboard.requestsLabel", "per request")}${
 													totalRequestCost > 0
-														? ` • $${totalRequestCost.toFixed(2)} requests`
+														? ` • $${totalRequestCost.toFixed(2)} ${t("dashboard.requestsLabel", "requests")}`
 														: ""
 												}${
 													totalDataStorageCost > 0
-														? ` • $${totalDataStorageCost.toFixed(4)} storage`
+														? ` • $${totalDataStorageCost.toFixed(4)} ${t("dashboard.storageLabel", "storage")}`
 														: ""
 												}`
 											: `${format(from, "MMM d")} – ${format(to, "MMM d")}`
@@ -723,21 +731,21 @@ export function DashboardClient({
 								icon={ArrowDownToLine}
 								label={t("dashboard.inputTokens", "Input tokens")}
 								value={formatTokens(totalInputTokens)}
-								sub={`$${totalInputCost.toFixed(2)} spend`}
+								sub={`$${totalInputCost.toFixed(2)} ${t("dashboard.spendLabel", "spend")}`}
 								isLoading={isLoading}
 							/>
 							<StatCell
 								icon={ArrowUpFromLine}
 								label={t("dashboard.outputTokens", "Output tokens")}
 								value={formatTokens(totalOutputTokens)}
-								sub={`$${totalOutputCost.toFixed(2)} spend`}
+								sub={`$${totalOutputCost.toFixed(2)} ${t("dashboard.spendLabel", "spend")}`}
 								isLoading={isLoading}
 							/>
 							<StatCell
 								icon={Server}
 								label={t("dashboard.cachedTokens", "Cached tokens")}
 								value={formatTokens(totalCachedTokens)}
-								sub={`$${totalCachedInputCost.toFixed(2)} • included in input`}
+								sub={`$${totalCachedInputCost.toFixed(2)} • ${t("dashboard.includedInInput", "included in input")}`}
 								isLoading={isLoading}
 							/>
 							<StatCell
@@ -746,7 +754,7 @@ export function DashboardClient({
 								value={mostUsedModel || "—"}
 								sub={
 									mostUsedProvider
-										? `via ${mostUsedProvider}`
+										? `${t("dashboard.via", "via")} ${mostUsedProvider}`
 										: t("dashboard.noUsageYet", "No usage yet")
 								}
 								isLoading={isLoading}
@@ -789,12 +797,16 @@ export function DashboardClient({
 													</div>
 													<div>
 														<CardTitle>
-															Top up to start making requests
+															{t(
+																"dashboard.topUpTitle",
+																"Top up to start making requests",
+															)}
 														</CardTitle>
 														<CardDescription className="mt-1">
-															Add credits to your organization to unlock all
-															paid models. Free models are always available via
-															the Lounge.
+															{t(
+																"dashboard.topUpDescription",
+																"Add credits to your organization to unlock all paid models. Free models are always available via the Lounge.",
+															)}
 														</CardDescription>
 													</div>
 												</div>
@@ -804,16 +816,19 @@ export function DashboardClient({
 													<div className="rounded-lg border border-border bg-background/60 p-3">
 														<div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
 															<Zap className="h-3.5 w-3.5" />
-															Pay as you go
+															{t("dashboard.payAsYouGo", "Pay as you go")}
 														</div>
 														<p className="mt-1 text-sm">
-															Credits never expire. Only pay for what you use.
+															{t(
+																"dashboard.creditsNeverExpire",
+																"Credits never expire. Only pay for what you use.",
+															)}
 														</p>
 													</div>
 													<div className="rounded-lg border border-border bg-background/60 p-3">
 														<div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
 															<Gift className="h-3.5 w-3.5" />
-															Free models
+															{t("dashboard.freeModels", "Free models")}
 														</div>
 														<p className="mt-1 text-sm">
 															Try{" "}
@@ -822,18 +837,24 @@ export function DashboardClient({
 																className="underline hover:text-foreground"
 																prefetch={true}
 															>
-																free models
+																{t("dashboard.models", "free models")}
 															</Link>{" "}
-															without topping up.
+															{t(
+																"dashboard.tryFreeModels",
+																"without topping up.",
+															)}
 														</p>
 													</div>
 													<div className="rounded-lg border border-border bg-background/60 p-3">
 														<div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
 															<CreditCard className="h-3.5 w-3.5" />
-															Secure checkout
+															{t("dashboard.secureCheckout", "Secure checkout")}
 														</div>
 														<p className="mt-1 text-sm">
-															Powered by Stripe. Cancel or refund anytime.
+															{t(
+																"dashboard.stripeCheckout",
+																"Powered by Stripe. Cancel or refund anytime.",
+															)}
 														</p>
 													</div>
 												</div>
@@ -850,7 +871,10 @@ export function DashboardClient({
 															rel="noopener noreferrer"
 														>
 															<FlaskConical className="mr-2 h-4 w-4" />
-															Try models in the Lounge
+															{t(
+																"dashboard.tryModelsLounge",
+																"Try models in the Lounge",
+															)}
 															<ExternalLink className="ml-1.5 h-3 w-3" />
 														</a>
 													</Button>
@@ -861,7 +885,7 @@ export function DashboardClient({
 															rel="noopener noreferrer"
 														>
 															<BookOpen className="mr-2 h-4 w-4" />
-															Docs
+															{t("dashboard.docs", "Docs")}
 															<ExternalLink className="ml-1.5 h-3 w-3" />
 														</a>
 													</Button>
@@ -874,11 +898,24 @@ export function DashboardClient({
 								return (
 									<Card className="min-w-0 lg:col-span-4">
 										<CardHeader>
-											<CardTitle>Get Started</CardTitle>
+											<CardTitle>
+												{t("dashboard.getStarted", "Get Started")}
+											</CardTitle>
 											<CardDescription>
 												{totalRequests > 0
-													? `You made ${totalRequests === 1 ? "your first call" : `${totalRequests} calls`} during setup! Now integrate LLM Gateway in your own code.`
-													: "Integrate LLM Gateway in 1 line — just change your base URL."}
+													? totalRequests === 1
+														? t(
+																"dashboard.setupFirstCall",
+																"You made your first call during setup! Now integrate LLM Gateway in your own code.",
+															)
+														: t(
+																"dashboard.setupCalls",
+																"You made {count} calls during setup! Now integrate LLM Gateway in your own code.",
+															).replace("{count}", String(totalRequests))
+													: t(
+															"dashboard.integrateInOneLine",
+															"Integrate LLM Gateway in 1 line — just change your base URL.",
+														)}
 											</CardDescription>
 										</CardHeader>
 										<CardContent className="space-y-4">
@@ -891,7 +928,7 @@ export function DashboardClient({
 														rel="noopener noreferrer"
 													>
 														<BookOpen className="mr-2 h-4 w-4" />
-														Docs
+														{t("dashboard.docs", "Docs")}
 														<ExternalLink className="ml-1.5 h-3 w-3" />
 													</a>
 												</Button>
@@ -906,14 +943,14 @@ export function DashboardClient({
 														rel="noopener noreferrer"
 													>
 														<FlaskConical className="mr-2 h-4 w-4" />
-														Lounge
+														{t("dashboard.lounge", "Lounge")}
 														<ExternalLink className="ml-1.5 h-3 w-3" />
 													</a>
 												</Button>
 												<Button asChild variant="outline" size="sm">
 													<Link href="/models" prefetch={true}>
 														<MessageSquare className="mr-2 h-4 w-4" />
-														Models
+														{t("dashboard.models", "Models")}
 													</Link>
 												</Button>
 											</div>
@@ -933,13 +970,24 @@ export function DashboardClient({
 								<CardHeader>
 									<div className="flex flex-wrap items-start justify-between gap-3">
 										<div>
-											<CardTitle>Usage Overview</CardTitle>
+											<CardTitle>
+												{t("dashboard.usageOverview", "Usage Overview")}
+											</CardTitle>
 											<CardDescription>
 												{metric === "costs"
 													? costView === "total"
-														? "Daily total inference spend (provider list price)"
-														: "Daily inference spend by token type"
-													: "Daily request volume"}
+														? t(
+																"dashboard.dailyInferenceSpend",
+																"Daily total inference spend (provider list price)",
+															)
+														: t(
+																"dashboard.dailySpendByToken",
+																"Daily inference spend by token type",
+															)
+													: t(
+															"dashboard.requestsByDay",
+															"Daily request volume",
+														)}
 											</CardDescription>
 										</div>
 										<div className="flex flex-wrap items-center justify-end gap-2">
@@ -956,7 +1004,12 @@ export function DashboardClient({
 																: "text-muted-foreground hover:text-foreground",
 														)}
 													>
-														{option}
+														{t(
+															option === "costs"
+																? "dashboard.costs"
+																: "dashboard.requestsTab",
+															option,
+														)}
 													</button>
 												))}
 											</div>
@@ -974,7 +1027,12 @@ export function DashboardClient({
 																	: "text-muted-foreground hover:text-foreground",
 															)}
 														>
-															{option}
+															{t(
+																option === "total"
+																	? "dashboard.total"
+																	: "dashboard.breakdown",
+																option,
+															)}
 														</button>
 													))}
 												</div>

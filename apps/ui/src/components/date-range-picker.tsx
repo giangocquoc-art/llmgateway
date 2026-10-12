@@ -30,6 +30,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/lib/components/popover";
+import { useLanguage } from "@/lib/language";
 import { cn } from "@/lib/utils";
 
 import {
@@ -53,6 +54,42 @@ interface DateRangePickerProps {
 
 function getQuarterLabel(date: Date): string {
 	return `Q${getQuarter(date)} ${format(date, "yyyy")}`;
+}
+
+function localizedPresetLabel(
+	preset: DatePreset,
+	t: (key: string, fallback?: string) => string,
+): string {
+	const keys: Record<string, [string, string]> = {
+		custom: ["date.custom", "Custom"],
+		today: ["date.today", "Today"],
+		this_week: ["date.thisWeek", "This week"],
+		this_month: ["date.thisMonth", "This month"],
+		this_year: ["date.thisYear", "This year"],
+		last_week: ["date.lastWeek", "Last week"],
+		last_month: ["date.lastMonth", "Last month"],
+		last_year: ["date.lastYear", "Last year"],
+		last_30_days: ["date.last30Days", "Last 30 days"],
+		last_90_days: ["date.last90Days", "Last 90 days"],
+		last_6_months: ["date.last6Months", "Last 6 months"],
+		all_time: ["date.allTime", "All time"],
+	};
+	const entry = keys[preset.value];
+	if (entry) {
+		return t(entry[0], entry[1]);
+	}
+	const quarterKeys: Record<string, [string, string]> = {
+		this_quarter: ["date.thisQuarter", "This quarter"],
+		last_quarter: ["date.lastQuarter", "Last quarter"],
+		"2_quarters_ago": ["date.twoQuartersAgo", "2 quarters ago"],
+		"3_quarters_ago": ["date.threeQuartersAgo", "3 quarters ago"],
+	};
+	const quarterEntry = quarterKeys[preset.value];
+	if (!quarterEntry) {
+		return preset.label;
+	}
+	const quarter = preset.label.match(/\((Q\d+ \d{4})\)/)?.[1];
+	return `${t(quarterEntry[0], quarterEntry[1])}${quarter ? ` (${quarter})` : ""}`;
 }
 
 /** `timeZone` anchors every preset on that zone's calendar day. The calendar
@@ -231,6 +268,7 @@ export function DayRangePicker({
 	onCancel,
 	applyLabel = "Apply range",
 }: DayRangePickerProps) {
+	const { t } = useLanguage();
 	const { timeZone } = useDisplayTimeZone();
 	const today = new Date(`${formatDayKey(new Date(), timeZone)}T00:00:00`);
 	const [range, setRange] = useState<DateRange | undefined>({ from, to });
@@ -241,18 +279,22 @@ export function DayRangePicker({
 			<div className="grid grid-cols-2 gap-2 px-3 pt-3 sm:px-0 sm:pt-0">
 				<div className="rounded-md border border-border/60 bg-muted/30 px-3 py-2">
 					<p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-						From
+						{t("date.from", "From")}
 					</p>
 					<p className="mt-0.5 text-sm font-medium tabular-nums">
-						{range?.from ? format(range.from, "MMM d, yyyy") : "Select a day"}
+						{range?.from
+							? format(range.from, "MMM d, yyyy")
+							: t("date.selectDay", "Select a day")}
 					</p>
 				</div>
 				<div className="rounded-md border border-border/60 bg-muted/30 px-3 py-2">
 					<p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-						To
+						{t("date.to", "To")}
 					</p>
 					<p className="mt-0.5 text-sm font-medium tabular-nums">
-						{range?.to ? format(range.to, "MMM d, yyyy") : "Select a day"}
+						{range?.to
+							? format(range.to, "MMM d, yyyy")
+							: t("date.selectDay", "Select a day")}
 					</p>
 				</div>
 			</div>
@@ -268,12 +310,12 @@ export function DayRangePicker({
 			/>
 			<div className="flex items-center justify-between border-t px-3 pt-3 sm:px-0">
 				<p className="text-xs text-muted-foreground">
-					Select a start and end day
+					{t("date.selectRange", "Select a start and end day")}
 				</p>
 				<div className="flex items-center gap-2">
 					{onCancel && (
 						<Button type="button" variant="ghost" size="sm" onClick={onCancel}>
-							Cancel
+							{t("common.cancel", "Cancel")}
 						</Button>
 					)}
 					<Button
@@ -286,7 +328,11 @@ export function DayRangePicker({
 							}
 						}}
 					>
-						{applyLabel}
+						{applyLabel === "Apply range"
+							? t("date.apply", "Apply range")
+							: applyLabel === "Compare"
+								? t("date.compare", "Compare")
+								: applyLabel}
 					</Button>
 				</div>
 			</div>
@@ -295,6 +341,7 @@ export function DayRangePicker({
 }
 
 export function DateRangePicker({ buildUrl, path }: DateRangePickerProps) {
+	const { t } = useLanguage();
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const [open, setOpen] = useState(false);
@@ -316,10 +363,12 @@ export function DateRangePicker({ buildUrl, path }: DateRangePickerProps) {
 		() =>
 			search.trim()
 				? presets.filter((p) =>
-						p.label.toLowerCase().includes(search.toLowerCase()),
+						localizedPresetLabel(p, t)
+							.toLowerCase()
+							.includes(search.toLowerCase()),
 					)
 				: presets,
-		[search, presets],
+		[search, presets, t],
 	);
 
 	const updateDateRange = (newFrom: Date, newTo: Date) => {
@@ -352,10 +401,10 @@ export function DateRangePicker({ buildUrl, path }: DateRangePickerProps) {
 	const triggerLabel = useMemo(() => {
 		const preset = presets.find((p) => p.value === activePreset);
 		if (preset && preset.value !== "custom") {
-			return preset.label;
+			return localizedPresetLabel(preset, t);
 		}
 		return `${format(from, "MMM d, yyyy")} – ${format(to, "MMM d, yyyy")}`;
-	}, [activePreset, from, to, presets]);
+	}, [activePreset, from, to, presets, t]);
 
 	return (
 		<Popover
@@ -407,7 +456,7 @@ export function DateRangePicker({ buildUrl, path }: DateRangePickerProps) {
 										activePreset === preset.value && "bg-accent/50",
 									)}
 								>
-									{preset.label}
+									{localizedPresetLabel(preset, t)}
 								</button>
 							))}
 						</div>
