@@ -10,7 +10,7 @@ export function TrustBarEnterprise() {
 		<section className="border-y border-border bg-muted/30 py-12">
 			<div className="container mx-auto px-4 sm:px-6 lg:px-8">
 				<h2 className="mb-8 text-center text-sm font-normal uppercase tracking-wider text-muted-foreground">
-					Tính năng trong bản xem trước
+					Năng lực của PShareHub AI Gateway
 				</h2>
 				<div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
 					{capabilities.map((capability) => (
