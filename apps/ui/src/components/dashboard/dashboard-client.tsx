@@ -78,7 +78,7 @@ import type {
 } from "@/components/dashboard/usage-comparison";
 import type { ActivitT } from "@/types/activity";
 
-interface DashboardClientProps {
+export interface DashboardClientProps {
 	initialActivityData?: ActivitT;
 	initialActivityRange?: { from: string; to: string };
 	/** Zone the server fetched `initialActivityData` in, so the client can tell

@@ -18,7 +18,7 @@ import { SystemBannerBar } from "@llmgateway/shared/system-banner";
 
 import type { AnnouncementEntry } from "@/components/dashboard/changelog-notifications";
 
-interface DashboardLayoutClientProps {
+export interface DashboardLayoutClientProps {
 	children: ReactNode;
 	initialOrganizationsData?: unknown;
 	initialProjectsData?: unknown;

@@ -115,6 +115,14 @@ export default async function RootLayout({
 	return (
 		<html lang="vi" className={geistMono.variable} suppressHydrationWarning>
 			<head>
+				<script
+					// next-themes' bootstrap references esbuild's optional name helper.
+					// It is only a function-name annotation, so a no-op keeps theme setup working.
+					// eslint-disable-next-line @eslint-react/dom/no-dangerously-set-innerhtml
+					dangerouslySetInnerHTML={{
+						__html: "globalThis.__name ??= (target) => target;",
+					}}
+				/>
 				<link
 					rel="service-desc"
 					type="application/vnd.oai.openapi+json"

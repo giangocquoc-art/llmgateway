@@ -17,6 +17,10 @@ export function LastUsedProjectTracker({
 	projectId,
 }: LastUsedProjectTrackerProps) {
 	useEffect(() => {
+		window.localStorage.setItem(
+			`llmgateway-last-used-project-${orgId}`,
+			projectId,
+		);
 		// Set the last used project when the component mounts
 		setLastUsedProjectAction(orgId, projectId).catch((error) => {
 			console.error("Failed to set last used project:", error);
