@@ -35,6 +35,7 @@ async function hideOptionalSharpLinks(directory) {
 		return;
 	}
 	for (const entry of entries) {
+		if (entry.name.endsWith(".psharehub-build-disabled")) continue;
 		const path = resolve(directory, entry.name);
 		if (entry.isSymbolicLink()) {
 			const isSharp =

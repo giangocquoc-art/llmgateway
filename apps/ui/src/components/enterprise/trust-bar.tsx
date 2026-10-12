@@ -2,7 +2,7 @@ const capabilities = [
 	"Anthropic Messages",
 	"OpenAI Chat Completions",
 	"Phản hồi theo luồng",
-	"Có thể cấu hình tuyến dự phòng",
+	"Quản lý API key Gateway",
 ];
 
 export function TrustBarEnterprise() {

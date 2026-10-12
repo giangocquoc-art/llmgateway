@@ -25,8 +25,8 @@ const capabilities = [
 	},
 	{
 		icon: Building2,
-		title: "Tuyến dự phòng",
-		description: "Chuyển sang tuyến khác khi tuyến chính gặp sự cố.",
+		title: "Quản lý API key",
+		description: "Quản lý khóa truy cập PShareHub Gateway trong bảng quản trị.",
 	},
 ];
 
@@ -50,8 +50,9 @@ export function EnterpriseCTA() {
 							kết nối mô hình AI
 						</h2>
 						<p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-							Kết nối tài khoản nhà cung cấp trong bảng quản trị để chuyển tiếp
-							yêu cầu qua một giao diện API thống nhất.
+							Gateway tương thích với Anthropic Messages và OpenAI Chat
+							Completions. Hiện chưa kết nối nhà cung cấp upstream nên yêu cầu
+							AI chưa được xử lý.
 						</p>
 					</AnimatedGroup>
 
@@ -115,7 +116,7 @@ export function EnterpriseCTA() {
 						<span>Mã nguồn mở (AGPLv3)</span>
 						<span className="h-3 w-px bg-border hidden sm:block" />
 						<span className="hidden sm:inline">
-							Cần kết nối nhà cung cấp AI
+							Nhà cung cấp chưa được kết nối
 						</span>
 					</AnimatedGroup>
 				</div>

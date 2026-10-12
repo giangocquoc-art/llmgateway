@@ -1,3 +1,4 @@
+import { CircleAlert } from "lucide-react";
 import Link from "next/link";
 
 import Footer from "@/components/landing/footer";
@@ -6,90 +7,62 @@ import { HeroRSC } from "@/components/landing/hero-rsc";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-	title: "Developer Resources",
+	title: "Tài liệu nhà phát triển | PShareHub AI Gateway",
 	description:
-		"LLM Gateway API documentation, authentication, OpenAPI specification, developer dashboard, and MCP server.",
+		"Trạng thái hiện tại của API PShareHub và liên kết tới tài liệu gateway.",
+	alternates: { canonical: "https://ai.psharehub.com/developers" },
+	openGraph: {
+		title: "Tài liệu nhà phát triển | PShareHub AI Gateway",
+		description:
+			"Trạng thái hiện tại của API PShareHub và liên kết tới tài liệu gateway.",
+		type: "website",
+		url: "https://ai.psharehub.com/developers",
+	},
 };
-
-const resources = [
-	{
-		title: "LLM Gateway API documentation",
-		href: "https://docs.llmgateway.io",
-		description:
-			"Reference, SDK examples, and a quick start for the OpenAI-compatible API.",
-	},
-	{
-		title: "LLM Gateway OpenAPI specification",
-		href: "/openapi.json",
-		description:
-			"Machine-readable request, response, and error schemas for API clients.",
-	},
-	{
-		title: "LLM Gateway authentication",
-		href: "https://docs.llmgateway.io/features/api-keys",
-		description:
-			"Create a project API key and send it in the Authorization: Bearer header.",
-	},
-	{
-		title: "LLM Gateway developer dashboard",
-		href: "/dashboard",
-		description:
-			"Manage projects, API keys, usage, and spending limits. Sign in to access your account.",
-	},
-	{
-		title: "LLM Gateway MCP server",
-		href: "/mcp",
-		description:
-			"Connect an assistant through Streamable HTTP to discover models, generate content, and inspect usage.",
-	},
-	{
-		title: "LLM Gateway API versioning policy",
-		href: "https://docs.llmgateway.io/resources/api-versioning",
-		description:
-			"Compatibility, deprecation notices, and retirement information.",
-	},
-] as const;
 
 export default function DevelopersPage() {
 	return (
 		<>
 			<HeroRSC />
-			<main className="container mx-auto max-w-4xl px-6 py-28">
-				<h1 className="text-4xl font-bold tracking-tight">
-					LLM Gateway Developer Resources
-				</h1>
-				<p className="mt-6 text-lg text-muted-foreground">
-					Build with one OpenAI-compatible API at{" "}
-					<code>https://api.llmgateway.io/v1</code>. Start with the
-					documentation, create an API key, or connect your assistant using MCP.
-				</p>
-				<ul className="mt-12 space-y-8">
-					{resources.map((resource) => (
-						<li key={resource.href}>
-							<h2 className="text-xl font-semibold">
-								<Link
-									href={resource.href}
-									className="underline underline-offset-4"
-								>
-									{resource.title}
-								</Link>
-							</h2>
-							<p className="mt-2 text-muted-foreground">
-								{resource.description}
-							</p>
-						</li>
-					))}
-				</ul>
-				<p className="mt-12">
-					Agents can start with the&nbsp;
-					<Link
-						href="/llms.txt"
-						className="whitespace-nowrap underline underline-offset-4"
-					>
-						LLM Gateway content index
-					</Link>
-					.
-				</p>
+			<main className="min-h-[60vh] bg-[#f6f4ee] px-6 py-32 text-[#101c3a]">
+				<section className="mx-auto max-w-3xl rounded-3xl border border-[#101c3a]/10 bg-white/80 p-8 shadow-sm sm:p-12">
+					<p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#6045e8]">
+						PShareHub AI Gateway
+					</p>
+					<h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+						Tài liệu nhà phát triển
+					</h1>
+					<div className="mt-6 flex gap-3 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-amber-950">
+						<CircleAlert
+							className="mt-0.5 size-5 shrink-0"
+							aria-hidden="true"
+						/>
+						<p className="leading-7">
+							API tại <code>ai.psharehub.com/v1</code> chưa được kích hoạt. Nhà
+							cung cấp upstream chưa kết nối, nên hiện chưa thể gửi yêu cầu
+							inference. Đừng dùng địa chỉ này cho ứng dụng đang chạy.
+						</p>
+					</div>
+					<p className="mt-6 leading-7 text-[#586580]">
+						Tài liệu kỹ thuật của gateway hiện có tại API hostname. Tài liệu này
+						mô tả các endpoint đã triển khai; trạng thái chưa kết nối upstream
+						vẫn áp dụng.
+					</p>
+					<div className="mt-8 flex flex-wrap gap-3">
+						<a
+							href="https://api.psharehub.com/docs/"
+							className="rounded-full bg-[#6045e8] px-6 py-3 font-semibold text-white transition hover:bg-[#5036d8]"
+						>
+							Mở tài liệu API
+						</a>
+						<Link
+							href="/"
+							className="rounded-full border border-[#101c3a]/20 px-6 py-3 font-semibold text-[#101c3a] transition hover:bg-[#101c3a]/5"
+						>
+							Về trang chủ
+						</Link>
+					</div>
+				</section>
 			</main>
 			<Footer />
 		</>

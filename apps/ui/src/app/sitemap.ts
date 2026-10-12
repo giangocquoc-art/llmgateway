@@ -1,5 +1,4 @@
 import { changelogPath, changelogTags } from "@/lib/changelog";
-import { enterpriseFeatures } from "@/lib/enterprise-features";
 import { features } from "@/lib/features";
 import { slugify } from "@/lib/slugify";
 
@@ -492,15 +491,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 		priority: 0.7,
 	}));
 
-	// Enterprise feature subpages
-	const enterpriseFeaturePages: MetadataRoute.Sitemap = enterpriseFeatures.map(
-		(feature) => ({
-			url: `${baseUrl}/enterprise/${feature.slug}`,
-			changeFrequency: "monthly" as const,
-			priority: 0.8,
-		}),
-	);
-
 	// Blog pages
 	const blogPages: MetadataRoute.Sitemap = allBlogs
 		.filter((blog) => !blog.draft)
@@ -617,7 +607,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 		...providerPages,
 		...providerCountryPages,
 		...featurePages,
-		...enterpriseFeaturePages,
 		...blogPages,
 		...blogCategoryPages,
 		...guidePages,

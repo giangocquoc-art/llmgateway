@@ -28,9 +28,9 @@ export default function CallToAction() {
 							Tương thích Anthropic và OpenAI
 						</h2>
 						<p className="text-lg text-muted-foreground max-w-xl mx-auto">
-							Cổng hỗ trợ Anthropic Messages và OpenAI Chat Completions với phản
-							hồi theo luồng. Bảng quản trị dành cho chủ dự án; kết nối nhà cung
-							cấp để bắt đầu xử lý yêu cầu.
+							Gateway tương thích với Anthropic Messages và OpenAI Chat
+							Completions. Bảng quản trị dành cho chủ dự án. Nhà cung cấp
+							upstream chưa được kết nối nên yêu cầu AI chưa được xử lý.
 						</p>
 					</AnimatedGroup>
 

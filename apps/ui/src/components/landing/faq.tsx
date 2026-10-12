@@ -12,22 +12,22 @@ const faqData = [
 	{
 		question: "PShareHub AI Gateway là gì?",
 		answer:
-			"PShareHub AI Gateway chuyển tiếp yêu cầu AI qua một giao diện API thống nhất. Bảng quản trị được bảo vệ bằng Cloudflare Access và dành riêng cho chủ dự án.",
+			"PShareHub AI Gateway cung cấp một giao diện API thống nhất để kết nối dịch vụ AI. Bảng quản trị được bảo vệ bằng Cloudflare Access và dành riêng cho chủ dự án. Nhà cung cấp upstream hiện chưa được kết nối nên yêu cầu AI chưa hoạt động.",
 	},
 	{
 		question: "Gateway hỗ trợ định dạng API nào?",
 		answer:
-			"Cổng hỗ trợ Anthropic Messages và OpenAI Chat Completions, bao gồm phản hồi theo luồng. Quản trị viên cần kết nối tài khoản nhà cung cấp trước khi gửi yêu cầu đến model.",
+			"Gateway tương thích với định dạng Anthropic Messages và OpenAI Chat Completions. Nhà cung cấp upstream chưa kết nối, vì vậy hiện chưa thể gửi yêu cầu tới model.",
 	},
 	{
 		question: "Làm thế nào để truy cập?",
 		answer:
-			"Bảng quản trị dành riêng cho chủ dự án và được bảo vệ bằng Cloudflare Access. API chưa mở đăng ký công khai; yêu cầu cần API key hợp lệ và tài khoản nhà cung cấp đã kết nối.",
+			"Bảng quản trị dành riêng cho chủ dự án và được bảo vệ bằng Cloudflare Access. API chưa mở đăng ký công khai. Yêu cầu AI chưa được xử lý cho đến khi kết nối nhà cung cấp upstream.",
 	},
 	{
 		question: "Chi phí sử dụng là bao nhiêu?",
 		answer:
-			"PShareHub chưa công bố giá sử dụng Gateway. Tài khoản nhà cung cấp được kết nối có thể tính phí theo biểu giá riêng của họ.",
+			"PShareHub chưa công bố giá sử dụng Gateway. Hiện chưa kết nối nhà cung cấp upstream và chưa xử lý yêu cầu AI.",
 	},
 ];
 

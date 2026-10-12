@@ -16,9 +16,22 @@
 		"NEXT_PUBLIC_PSHAREHUB_SINGLE_OWNER": "true",
 	},
 	"workers_dev": true,
-	"preview_urls": false,
+	"preview_urls": true,
 	"assets": {
 		"directory": ".open-next/assets",
 		"binding": "ASSETS",
+	},
+	"previews": {
+		"vars": {
+			"HOSTED": "true",
+			"CLIENT_IP_HEADER": "CF-Connecting-IP",
+			"APP_URL": "https://psharehub-brand-preview-psharehub-ai-dashboard.nook-pshare.workers.dev",
+			"GATEWAY_URL": "https://api-preview.disabled.invalid",
+			"DOCS_URL": "https://api-preview.disabled.invalid/docs/",
+			"GITHUB_URL": "https://github.com/giangocquoc-art/llmgateway",
+			"CHAT_SUPPORT_ENABLED": "false",
+			"ACCOUNT_AUTH_ENABLED": "false",
+			"NEXT_PUBLIC_PSHAREHUB_SINGLE_OWNER": "true",
+		},
 	},
 }

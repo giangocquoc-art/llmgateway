@@ -26,8 +26,8 @@ export default function Footer() {
 							PShareHub AI Gateway
 						</a>
 						<p className="mt-2 max-w-md text-sm text-muted-foreground">
-							Cổng API AI của PShareHub. Kết nối tài khoản nhà cung cấp để bắt
-							đầu chuyển tiếp yêu cầu.
+							Cổng API AI của PShareHub. Nhà cung cấp upstream chưa được kết
+							nối; yêu cầu AI hiện chưa được xử lý.
 						</p>
 					</div>
 					<nav aria-label="Liên kết cuối trang">

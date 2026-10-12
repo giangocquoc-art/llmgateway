@@ -1,4 +1,4 @@
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CircleAlert } from "lucide-react";
 import Image from "next/image";
 
 import { ShimmerButton } from "@/lib/components/shimmer-button";
@@ -60,9 +60,9 @@ export function LandingHero() {
 									</h1>
 									<p className="mx-auto mt-4 max-w-2xl text-balance text-base leading-8 text-[#586580] md:mt-6 md:text-lg lg:mx-0">
 										Cổng API AI của PShareHub, hỗ trợ Anthropic Messages và
-										OpenAI Chat Completions. Quản lý khóa truy cập và cấu hình
-										nhà cung cấp trong bảng quản trị. Kết nối nhà cung cấp được
-										cấp phép để bắt đầu xử lý yêu cầu.
+										OpenAI Chat Completions. Quản lý khóa truy cập gateway trong
+										bảng quản trị. Kết nối nhà cung cấp upstream hiện chưa được
+										bật nên yêu cầu AI chưa được xử lý.
 									</p>
 								</div>
 
@@ -91,49 +91,25 @@ export function LandingHero() {
 									{/* Trust indicators */}
 									<div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-[#586580] lg:justify-start">
 										<span className="flex items-center gap-1.5">
-											<svg
-												className="size-4 text-green-500"
-												fill="currentColor"
-												viewBox="0 0 20 20"
+											<span
+												className="size-2 rounded-full bg-[#8792a7]"
 												aria-hidden="true"
-											>
-												<path
-													fillRule="evenodd"
-													d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-													clipRule="evenodd"
-												/>
-											</svg>
-											Anthropic Messages API
+											/>
+											Định dạng Anthropic Messages
 										</span>
 										<span className="flex items-center gap-1.5">
-											<svg
-												className="size-4 text-green-500"
-												fill="currentColor"
-												viewBox="0 0 20 20"
+											<span
+												className="size-2 rounded-full bg-[#8792a7]"
 												aria-hidden="true"
-											>
-												<path
-													fillRule="evenodd"
-													d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-													clipRule="evenodd"
-												/>
-											</svg>
-											API tương thích OpenAI
+											/>
+											Định dạng OpenAI Chat Completions
 										</span>
 										<span className="flex items-center gap-1.5">
-											<svg
-												className="size-4 text-green-500"
-												fill="currentColor"
-												viewBox="0 0 20 20"
+											<CircleAlert
+												className="size-4 text-amber-600"
 												aria-hidden="true"
-											>
-												<path
-													fillRule="evenodd"
-													d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-													clipRule="evenodd"
-												/>
-											</svg>
-											Cần kết nối nhà cung cấp AI
+											/>
+											Upstream chưa kết nối
 										</span>
 									</div>
 								</div>
