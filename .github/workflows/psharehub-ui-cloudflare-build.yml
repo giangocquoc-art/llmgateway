@@ -29,6 +29,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Generate API schema and UI dependencies
+        run: pnpm build:core
+
       - name: Build and typecheck UI
         run: pnpm --filter ui build
 
