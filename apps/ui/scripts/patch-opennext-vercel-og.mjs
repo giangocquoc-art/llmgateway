@@ -20,22 +20,38 @@ export async function patchOpenNextVercelOg(packageRoot) {
 		);
 	}
 
-	const fallbackBlock = `const standaloneOgPath = path.join(buildOpts.appPath, ".next/standalone/apps/ui/node_modules/next/dist/compiled/@vercel/og");
-        const nextOgPath = path.join(buildOpts.appPath, "node_modules/next/dist/compiled/@vercel/og");
-        const standaloneEdgePath = path.join(standaloneOgPath, "index.edge.js");
-        const nextEdgePath = path.join(nextOgPath, "index.edge.js");
-        const sourceEdgePath = existsSync(standaloneEdgePath) ? standaloneEdgePath : existsSync(nextEdgePath) ? nextEdgePath : tracedEdgePath;
-        if (!existsSync(sourceEdgePath)) throw new Error("Missing Vercel OG edge bundle; checked " + standaloneEdgePath + ", " + nextEdgePath + ", " + tracedEdgePath);`;
+	const fallbackBlock = `const ogCandidates = [
+            path.join(buildOpts.appPath, ".next/standalone/apps/ui/node_modules/next/dist/compiled/@vercel/og"),
+            path.join(buildOpts.appPath, "node_modules/next/dist/compiled/@vercel/og"),
+            path.dirname(tracedEdgePath),
+        ];
+        let sourceOgPath;
+        let sourceEdgePath;
+        const ogCopyErrors = [];
+        for (const candidate of ogCandidates) {
+            const candidateEdgePath = path.join(candidate, "index.edge.js");
+            if (!existsSync(candidateEdgePath)) continue;
+            try {
+                copyFileSync(candidateEdgePath, outputEdgePath);
+                sourceOgPath = candidate;
+                sourceEdgePath = candidateEdgePath;
+                break;
+            } catch (error) {
+                if (error?.code !== "ENOENT") throw error;
+                ogCopyErrors.push(candidateEdgePath);
+            }
+        }
+        if (!sourceEdgePath) throw new Error("Could not copy Vercel OG edge bundle from: " + [...ogCandidates, ...ogCopyErrors].join(", "));`;
 	const patched = original
 		.replace(edgeTrace, `${edgeTrace}\n        ${fallbackBlock}`)
-		.replace(edgeCopy, "copyFileSync(sourceEdgePath, outputEdgePath);")
+		.replace(edgeCopy, "// The edge bundle was copied by the fallback block above.")
 		.replace(
 			wasmTrace,
-			'const tracedWasmPath = path.join(path.dirname(sourceEdgePath), "yoga.wasm");',
+			'const tracedWasmPath = path.join(sourceOgPath ?? path.dirname(tracedEdgePath), "yoga.wasm");',
 		)
 		.replace(
 			fontTrace,
-			"const tracedFontPath = path.join(path.dirname(sourceEdgePath), fontFileName);",
+			"const tracedFontPath = path.join(sourceOgPath ?? path.dirname(tracedEdgePath), fontFileName);",
 		);
 	await writeFile(patchPath, patched);
 	return () => writeFile(patchPath, original);
