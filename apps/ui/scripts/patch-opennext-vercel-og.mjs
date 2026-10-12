@@ -3,6 +3,16 @@ import { readFile, writeFile } from "node:fs/promises";
 export async function patchOpenNextVercelOg(packageRoot) {
 	const patchPath = `${packageRoot}/dist/cli/build/patches/ast/patch-vercel-og-library.js`;
 	const original = await readFile(patchPath, "utf8");
+	// A previous interrupted build can leave the dependency patch in place.
+	// Detect the complete patched shape so rerunning cf:build stays safe and
+	// does not fail looking for anchors that the patch already replaced.
+	if (
+		original.includes("const ogCandidates = [") &&
+		original.includes("The edge bundle was copied by the fallback block above.") &&
+		original.includes("const stagedFontPath = path.join(buildOpts.appPath")
+	) {
+		return async () => {};
+	}
 	const edgeTrace =
 		'const tracedEdgePath = path.join(path.dirname(traceInfoPath), tracedNodePath.replace("index.node.js", "index.edge.js"));';
 	const edgeCopy = "copyFileSync(tracedEdgePath, outputEdgePath);";
