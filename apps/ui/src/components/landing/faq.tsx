@@ -12,12 +12,12 @@ const faqData = [
 	{
 		question: "PShareHub AI Gateway là gì?",
 		answer:
-			"PShareHub AI Gateway là bản xem trước của cổng API, chuyển yêu cầu đến các upstream do người vận hành cấu hình.",
+			"PShareHub AI Gateway là cổng API AI thống nhất. Bảng quản trị được bảo vệ bằng Cloudflare Access và chỉ dành cho chủ dự án.",
 	},
 	{
 		question: "Gateway hỗ trợ định dạng API nào?",
 		answer:
-			"Bản xem trước cung cấp endpoint Anthropic Messages và adapter OpenAI Chat Completions, có hỗ trợ phản hồi streaming.",
+			"Cổng hỗ trợ endpoint Anthropic Messages và adapter OpenAI Chat Completions, bao gồm phản hồi streaming. Để gọi model, chủ dự án cần cấu hình nhà cung cấp upstream.",
 	},
 	{
 		question: "Làm thế nào để truy cập?",

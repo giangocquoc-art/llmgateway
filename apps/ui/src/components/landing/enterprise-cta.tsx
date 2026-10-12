@@ -47,11 +47,11 @@ export function EnterpriseCTA() {
 						<h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground">
 							Cổng API AI
 							<br />
-							đang trong giai đoạn xem trước
+							sẵn sàng cho cấu hình upstream
 						</h2>
 						<p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-							Bản xem trước hỗ trợ các định dạng API phổ biến và chuyển yêu cầu
-							tới upstream do người vận hành cấu hình.
+							Cổng hỗ trợ các định dạng API phổ biến và chuyển yêu cầu tới
+							upstream do chủ dự án cấu hình.
 						</p>
 					</AnimatedGroup>
 

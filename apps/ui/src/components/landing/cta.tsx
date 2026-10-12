@@ -23,14 +23,14 @@ export default function CallToAction() {
 				<div className="max-w-3xl mx-auto text-center">
 					<AnimatedGroup preset="blur-slide" className="space-y-6">
 						<h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground">
-							Bản xem trước PShareHub AI Gateway
+							PShareHub AI Gateway
 							<br />
 							Tương thích Anthropic và OpenAI
 						</h2>
 						<p className="text-lg text-muted-foreground max-w-xl mx-auto">
-							Bản xem trước hỗ trợ Anthropic Messages và OpenAI Chat Completions
-							có phản hồi dạng streaming. Thông tin truy cập công khai và giá
-							dịch vụ chưa được công bố.
+							Cổng hỗ trợ Anthropic Messages và OpenAI Chat Completions với phản
+							hồi streaming. Bảng quản trị dành riêng cho chủ dự án; API công
+							khai và giá dịch vụ chưa được mở.
 						</p>
 					</AnimatedGroup>
 
