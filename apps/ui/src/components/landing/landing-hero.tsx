@@ -52,14 +52,17 @@ export function LandingHero() {
 							{/* Centered hero content - optimized for conversion */}
 							<div className="mx-auto max-w-2xl text-center lg:mx-0 lg:text-left">
 								<div>
+									<p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#6045e8]">
+										Chia sẻ tri thức · Kiến tạo giá trị
+									</p>
 									<h1 className="text-balance text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground">
 										PShareHub AI Gateway
 									</h1>
 									<p className="mx-auto mt-4 max-w-2xl text-balance text-base leading-8 text-[#586580] md:mt-6 md:text-lg lg:mx-0">
-										Cổng API AI thống nhất của PShareHub, hỗ trợ Anthropic
-										Messages và OpenAI Chat Completions. Quản lý khóa truy cập
-										và cấu hình nhà cung cấp trong bảng quản trị. Kết nối nhà
-										cung cấp để bắt đầu xử lý yêu cầu.
+										Cổng API AI của PShareHub, hỗ trợ Anthropic Messages và
+										OpenAI Chat Completions. Quản lý khóa truy cập và cấu hình
+										nhà cung cấp trong bảng quản trị. Kết nối nhà cung cấp được
+										cấp phép để bắt đầu xử lý yêu cầu.
 									</p>
 								</div>
 
@@ -78,7 +81,7 @@ export function LandingHero() {
 												className="px-10 py-3 shadow-2xl shadow-[#6045e8]/25 md:px-12 md:py-4"
 											>
 												<span className="flex items-center gap-3 text-center text-xl leading-none font-bold tracking-tight whitespace-pre-wrap text-white md:text-2xl">
-													<span>Mở bảng quản trị</span>
+													<span>Vào bảng quản trị</span>
 													<ArrowRight className="size-6 md:size-7 transition-transform group-hover:translate-x-1" />
 												</span>
 											</ShimmerButton>
