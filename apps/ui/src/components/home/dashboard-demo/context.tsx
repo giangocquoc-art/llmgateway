@@ -29,4 +29,5 @@ export function useDemo(): DemoContextValue {
 	return value;
 }
 
-export const READ_ONLY_MESSAGE = "This demo is read-only, so nothing is saved.";
+export const READ_ONLY_MESSAGE =
+	"Đây là bản xem thử chỉ đọc; thay đổi sẽ không được lưu.";

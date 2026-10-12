@@ -29,6 +29,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/lib/components/popover";
+import { useLanguage } from "@/lib/language";
 import { USAGE_MODE_OPTIONS, type UsageMode } from "@/lib/usage-mode";
 import { cn } from "@/lib/utils";
 
@@ -42,6 +43,41 @@ interface DatePreset {
 
 function quarterLabel(date: Date): string {
 	return `Q${getQuarter(date)} ${format(date, "yyyy")}`;
+}
+
+function localizedPresetLabel(
+	preset: DatePreset,
+	t: (key: string, fallback?: string) => string,
+): string {
+	const simpleKeys: Record<string, [string, string]> = {
+		custom: ["date.custom", "Custom"],
+		today: ["date.today", "Today"],
+		this_week: ["date.thisWeek", "This week"],
+		this_month: ["date.thisMonth", "This month"],
+		this_year: ["date.thisYear", "This year"],
+		last_week: ["date.lastWeek", "Last week"],
+		last_month: ["date.lastMonth", "Last month"],
+		last_year: ["date.lastYear", "Last year"],
+		last_30_days: ["date.last30Days", "Last 30 days"],
+		last_90_days: ["date.last90Days", "Last 90 days"],
+		last_6_months: ["date.last6Months", "Last 6 months"],
+		all_time: ["date.allTime", "All time"],
+	};
+	const entry = simpleKeys[preset.value];
+	if (entry) {
+		return t(entry[0], entry[1]);
+	}
+	const quarterKeys: Record<string, [string, string]> = {
+		this_quarter: ["date.thisQuarter", "This quarter"],
+		last_quarter: ["date.lastQuarter", "Last quarter"],
+		"2_quarters_ago": ["date.twoQuartersAgo", "2 quarters ago"],
+		"3_quarters_ago": ["date.threeQuartersAgo", "3 quarters ago"],
+	};
+	const quarterEntry = quarterKeys[preset.value];
+	const quarter = preset.label.match(/\((Q\d+ \d{4})\)/)?.[1];
+	return quarterEntry
+		? `${t(quarterEntry[0], quarterEntry[1])}${quarter ? ` (${quarter})` : ""}`
+		: preset.label;
 }
 
 function buildPresets(anchorDay: string): DatePreset[] {
@@ -188,6 +224,7 @@ export function DateRangeControl({
 	range: UsageDateRange;
 	onChange: (range: UsageDateRange, label: string) => void;
 }) {
+	const { t } = useLanguage();
 	const [open, setOpen] = useState(false);
 	const [search, setSearch] = useState("");
 	const [showCalendar, setShowCalendar] = useState(false);
@@ -196,11 +233,13 @@ export function DateRangeControl({
 	const preset = presets.find((item) => item.value === activePreset);
 	const triggerLabel =
 		preset && preset.value !== "custom"
-			? preset.label
+			? localizedPresetLabel(preset, t)
 			: `${format(range.from, "MMM d, yyyy")} – ${format(range.to, "MMM d, yyyy")}`;
 	const filteredPresets = search.trim()
 		? presets.filter((item) =>
-				item.label.toLowerCase().includes(search.toLowerCase()),
+				localizedPresetLabel(item, t)
+					.toLowerCase()
+					.includes(search.toLowerCase()),
 			)
 		: presets;
 
@@ -238,6 +277,10 @@ export function DateRangeControl({
 						<div className="px-3 pb-2 pt-3">
 							<Input
 								autoFocus
+								placeholder={t(
+									"dashboard.searchDateRanges",
+									"Search date ranges...",
+								)}
 								value={search}
 								onChange={(e) => setSearch(e.target.value)}
 								className="h-8 rounded-none border-0 border-b-2 border-primary bg-transparent px-0 shadow-none focus-visible:ring-0"
@@ -261,7 +304,7 @@ export function DateRangeControl({
 										activePreset === item.value && "bg-accent/50",
 									)}
 								>
-									{item.label}
+									{localizedPresetLabel(item, t)}
 								</button>
 							))}
 						</div>
@@ -292,6 +335,12 @@ export function UsageModeControl({
 	onChange: (mode: UsageMode) => void;
 	className?: string;
 }) {
+	const { t } = useLanguage();
+	const labels: Record<UsageMode, string> = {
+		total: t("demo.allTraffic", "All"),
+		credits: t("demo.creditsMode", "Credits"),
+		"api-keys": t("demo.byokMode", "BYOK"),
+	};
 	return (
 		<div
 			className={cn(
@@ -306,10 +355,16 @@ export function UsageModeControl({
 					onClick={() => onChange(option.value)}
 					title={
 						option.value === "api-keys"
-							? "Usage served by your own provider keys (not billed to credits)"
+							? t(
+									"demo.byokDescription",
+									"Usage served by your own provider keys (not billed to credits)",
+								)
 							: option.value === "credits"
-								? "Usage billed against your credit balance"
-								: "All traffic"
+								? t(
+										"demo.creditsDescription",
+										"Usage billed against your credit balance",
+									)
+								: t("demo.allTrafficDescription", "All traffic")
 					}
 					className={cn(
 						"rounded-md px-3 py-1 text-xs font-medium transition-colors",
@@ -318,7 +373,7 @@ export function UsageModeControl({
 							: "text-muted-foreground hover:text-foreground",
 					)}
 				>
-					{option.label}
+					{labels[option.value]}
 				</button>
 			))}
 		</div>

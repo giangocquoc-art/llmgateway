@@ -38,6 +38,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/lib/components/card";
+import { useLanguage } from "@/lib/language";
 import { applyUsageModeToDaily, type UsageMode } from "@/lib/usage-mode";
 import { cn } from "@/lib/utils";
 
@@ -81,12 +82,15 @@ const QUICK_ACTIONS = [
 ] as const;
 
 function QuickActionsCard({ className }: { className?: string }) {
+	const { t } = useLanguage();
 	const { navigate } = useDemo();
 	return (
 		<Card className={className}>
 			<CardHeader>
-				<CardTitle>Quick Actions</CardTitle>
-				<CardDescription>Jump straight to common tasks</CardDescription>
+				<CardTitle>{t("demo.quickActions", "Quick Actions")}</CardTitle>
+				<CardDescription>
+					{t("demo.quickActionsDescription", "Jump straight to common tasks")}
+				</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<div className="grid grid-cols-2 gap-2">
@@ -101,7 +105,7 @@ function QuickActionsCard({ className }: { className?: string }) {
 								<action.icon className="h-4 w-4" />
 							</div>
 							<span className="text-sm font-medium leading-tight">
-								{action.label}
+								{t(`nav.${action.label}`, action.label)}
 							</span>
 						</button>
 					))}
@@ -147,6 +151,7 @@ function SegmentedToggle<T extends string>({
 	value: T;
 	onChange: (value: T) => void;
 }) {
+	const { t } = useLanguage();
 	return (
 		<div className="inline-flex items-center rounded-lg border border-border/60 bg-muted/40 p-0.5">
 			{options.map((option) => (
@@ -161,7 +166,7 @@ function SegmentedToggle<T extends string>({
 							: "text-muted-foreground hover:text-foreground",
 					)}
 				>
-					{option}
+					{t(`demo.option.${option}`, option)}
 				</button>
 			))}
 		</div>
@@ -179,6 +184,7 @@ function toKey(date: Date) {
 }
 
 export function OverviewView() {
+	const { t } = useLanguage();
 	const { anchorDay, history, project, notify, track } = useDemo();
 	const [pickedRange, setPickedRange] = useState<UsageDateRange | null>(null);
 	const [usageMode, setUsageMode] = useState<UsageMode>("total");
@@ -302,10 +308,14 @@ export function OverviewView() {
 			<div className="flex-1 space-y-4 p-4 pt-6 md:p-8">
 				<div className="flex flex-col items-center justify-between space-y-2 md:flex-row">
 					<div>
-						<h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+						<h2 className="text-3xl font-bold tracking-tight">
+							{t("dashboard.title", "Dashboard")}
+						</h2>
 						<p className="mt-1 text-sm text-muted-foreground">
-							Project: {project.name}
-							<span className="ml-2">• Organization: {DEMO_ORG.name}</span>
+							{t("dashboard.project", "Project")}: {project.name}
+							<span className="ml-2">
+								• {t("dashboard.organization", "Organization")}: {DEMO_ORG.name}
+							</span>
 						</p>
 					</div>
 					<div className="flex items-center space-x-2">
@@ -315,14 +325,14 @@ export function OverviewView() {
 							onClick={() => notify(READ_ONLY_MESSAGE)}
 						>
 							<Key className="mr-2 h-4 w-4" />
-							Create API Key
+							{t("dashboard.createApiKey", "Create API Key")}
 						</Button>
 						<Button
 							className="flex items-center"
 							onClick={() => notify(READ_ONLY_MESSAGE)}
 						>
 							<Plus className="mr-2 h-4 w-4" />
-							Top Up Credits
+							{t("demo.topUpCredits", "Top up credits")}
 						</Button>
 					</div>
 				</div>
@@ -345,8 +355,8 @@ export function OverviewView() {
 					/>
 					{rangeDays <= 366 && (
 						<p className="text-xs text-muted-foreground">
-							Trends compare to {format(prevFrom, "MMM d")} –{" "}
-							{format(prevTo, "MMM d")}
+							{t("dashboard.trendsCompare", "Trends compare to")}{" "}
+							{format(prevFrom, "MMM d")} – {format(prevTo, "MMM d")}
 						</p>
 					)}
 				</div>
@@ -354,18 +364,18 @@ export function OverviewView() {
 				<div className="space-y-4">
 					<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 @6xl/demo:grid-cols-4">
 						<MetricCard
-							label="Organization Credits"
+							label={t("dashboard.organizationCredits", "Organization Credits")}
 							value={`$${formatCredits(DEMO_ORG.credits)}`}
-							subtitle="Available balance"
+							subtitle={t("dashboard.availableBalance", "Available balance")}
 							icon={<CreditCard className="h-4 w-4" />}
 							accent="blue"
 						/>
 						<MetricCard
-							label="Total Requests"
+							label={t("dashboard.totalRequests", "Total Requests")}
 							value={formatNumber(totalRequests)}
 							subtitle={
 								totalRequests > 0
-									? `${cacheHitRate.toFixed(1)}% cache hit rate • ${formatNumber(totalErrors)} errors`
+									? `${cacheHitRate.toFixed(1)}% ${t("dashboard.cacheHitRateLabel", "cache hit rate")} • ${formatNumber(totalErrors)} ${t("dashboard.errorCount", "errors")}`
 									: rangeLabel
 							}
 							icon={<Zap className="h-4 w-4" />}
@@ -376,27 +386,30 @@ export function OverviewView() {
 						<MetricCard
 							label={
 								usageMode === "credits"
-									? "Credits Spend"
+									? t("dashboard.creditsSpend", "Credits Spend")
 									: usageMode === "api-keys"
-										? "BYOK Usage"
-										: "Total Spend"
+										? t("dashboard.byokUsage", "BYOK Usage")
+										: t("dashboard.totalSpend", "Total Spend")
 							}
 							value={`$${totalSpend.toFixed(2)}`}
 							subtitle={
 								usageMode === "total" &&
 								totalCreditsCost > 0 &&
 								totalApiKeysCost > 0
-									? `$${totalCreditsCost.toFixed(2)} credits • $${totalApiKeysCost.toFixed(2)} BYOK (not billed)`
+									? `$${totalCreditsCost.toFixed(2)} ${t("dashboard.credits", "credits")} • $${totalApiKeysCost.toFixed(2)} BYOK (${t("dashboard.notBilled", "not billed")})`
 									: usageMode === "api-keys" && totalCost > 0
-										? "Served by your provider keys — not billed to credits"
+										? t(
+												"dashboard.providerKeysUsage",
+												"Served by your provider keys — not billed to credits",
+											)
 										: totalRequests > 0
-											? `avg $${avgCostPerRequest.toFixed(4)} per request${
+											? `${t("dashboard.avgPerRequest", "avg")} $${avgCostPerRequest.toFixed(4)} ${t("dashboard.requestsLabel", "per request")}${
 													totalRequestCost > 0
-														? ` • $${totalRequestCost.toFixed(2)} requests`
+														? ` • $${totalRequestCost.toFixed(2)} ${t("dashboard.requestsLabel", "requests")}`
 														: ""
 												}${
 													totalDataStorageCost > 0
-														? ` • $${totalDataStorageCost.toFixed(4)} storage`
+														? ` • $${totalDataStorageCost.toFixed(4)} ${t("dashboard.storageLabel", "storage")}`
 														: ""
 												}`
 											: rangeLabel
@@ -407,9 +420,12 @@ export function OverviewView() {
 							trend={costTrend}
 						/>
 						<MetricCard
-							label="Total Savings"
+							label={t("dashboard.totalSavings", "Total Savings")}
 							value={`$${totalSavings.toFixed(4)}`}
-							subtitle="Discounts this period"
+							subtitle={t(
+								"dashboard.discountsThisPeriod",
+								"Discounts this period",
+							)}
 							icon={<TrendingDown className="h-4 w-4" />}
 							accent="green"
 							delta={pctChange(totalSavings, prevSavings)}
@@ -420,28 +436,30 @@ export function OverviewView() {
 						<CardContent className="grid grid-cols-2 gap-x-4 gap-y-5 @6xl/demo:grid-cols-4 @6xl/demo:gap-0 @6xl/demo:divide-x @6xl/demo:divide-border/60">
 							<StatCell
 								icon={ArrowDownToLine}
-								label="Input tokens"
+								label={t("dashboard.inputTokens", "Input tokens")}
 								value={formatTokens(totalInputTokens)}
-								sub={`$${totalInputCost.toFixed(2)} spend`}
+								sub={`$${totalInputCost.toFixed(2)} ${t("dashboard.spendLabel", "spend")}`}
 							/>
 							<StatCell
 								icon={ArrowUpFromLine}
-								label="Output tokens"
+								label={t("dashboard.outputTokens", "Output tokens")}
 								value={formatTokens(totalOutputTokens)}
-								sub={`$${totalOutputCost.toFixed(2)} spend`}
+								sub={`$${totalOutputCost.toFixed(2)} ${t("dashboard.spendLabel", "spend")}`}
 							/>
 							<StatCell
 								icon={Server}
-								label="Cached tokens"
+								label={t("dashboard.cachedTokens", "Cached tokens")}
 								value={formatTokens(totalCachedTokens)}
-								sub={`$${totalCachedInputCost.toFixed(2)} • included in input`}
+								sub={`$${totalCachedInputCost.toFixed(2)} • ${t("dashboard.includedInInput", "included in input")}`}
 							/>
 							<StatCell
 								icon={Crown}
-								label="Top model"
+								label={t("dashboard.topModel", "Top model")}
 								value={mostUsedModel || "—"}
 								sub={
-									mostUsedProvider ? `via ${mostUsedProvider}` : "No usage yet"
+									mostUsedProvider
+										? `${t("dashboard.via", "via")} ${mostUsedProvider}`
+										: t("dashboard.noUsageYet", "No usage yet")
 								}
 							/>
 						</CardContent>
@@ -452,13 +470,21 @@ export function OverviewView() {
 							<CardHeader>
 								<div className="flex flex-wrap items-start justify-between gap-3">
 									<div>
-										<CardTitle>Usage Overview</CardTitle>
+										<CardTitle>
+											{t("dashboard.usageOverview", "Usage Overview")}
+										</CardTitle>
 										<CardDescription>
 											{metric === "costs"
 												? costView === "total"
-													? "Daily total inference spend (provider list price)"
-													: "Daily inference spend by token type"
-												: "Daily request volume"}
+													? t(
+															"dashboard.dailyInferenceSpend",
+															"Daily total inference spend (provider list price)",
+														)
+													: t(
+															"dashboard.dailySpendByToken",
+															"Daily inference spend by token type",
+														)
+												: t("dashboard.requestsByDay", "Daily request volume")}
 										</CardDescription>
 									</div>
 									<div className="flex flex-wrap items-center justify-end gap-2">

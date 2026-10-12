@@ -40,6 +40,7 @@ import {
 	NavigationMenuTrigger,
 } from "@/lib/components/navigation-menu";
 import { useAppConfig } from "@/lib/config";
+import { useLanguage } from "@/lib/language";
 import { useSystemBanner } from "@/lib/system-banner-context";
 import { cn } from "@/lib/utils";
 
@@ -135,6 +136,7 @@ export const Navbar = ({
 	sticky?: boolean;
 }) => {
 	const config = useAppConfig();
+	const { t } = useLanguage();
 	const posthog = usePostHog();
 
 	const trackNav = (link: string) => {
@@ -410,7 +412,7 @@ export const Navbar = ({
 												onClick={() => trackNav("Models")}
 												className="text-muted-foreground hover:text-accent-foreground block duration-150 px-3 py-2 whitespace-nowrap"
 											>
-												Models
+												{t("siteNav.models", "Models")}
 											</Link>
 										</NavigationMenuLink>
 									</NavigationMenuItem>
@@ -418,7 +420,7 @@ export const Navbar = ({
 									{/* Products dropdown */}
 									<NavigationMenuItem>
 										<NavigationMenuTrigger className="text-muted-foreground hover:text-accent-foreground px-3 py-2 bg-transparent">
-											Products
+											{t("siteNav.products", "Products")}
 										</NavigationMenuTrigger>
 										<NavigationMenuContent className="md:left-1/2 md:-translate-x-1/2">
 											<ul className="grid grid-cols-2 gap-2 p-4 md:w-[520px] lg:w-[580px]">
@@ -440,7 +442,7 @@ export const Navbar = ({
 									{/* Resources dropdown */}
 									<NavigationMenuItem>
 										<NavigationMenuTrigger className="text-muted-foreground hover:text-accent-foreground px-3 py-2 bg-transparent">
-											Resources
+											{t("siteNav.resources", "Resources")}
 										</NavigationMenuTrigger>
 										<NavigationMenuContent className="md:left-1/2 md:-translate-x-1/2">
 											<ul className="grid grid-cols-2 gap-2 p-4 md:w-[680px] lg:w-[820px] lg:grid-cols-3">
@@ -462,7 +464,7 @@ export const Navbar = ({
 									{/* AI dropdown */}
 									<NavigationMenuItem>
 										<NavigationMenuTrigger className="text-muted-foreground hover:text-accent-foreground px-3 py-2 bg-transparent">
-											AI
+											{t("siteNav.ai", "AI")}
 										</NavigationMenuTrigger>
 										<NavigationMenuContent className="md:left-1/2 md:-translate-x-1/2">
 											<ul className="grid grid-cols-2 gap-2 p-4 md:w-[520px] lg:w-[580px]">
@@ -491,7 +493,7 @@ export const Navbar = ({
 												onClick={() => trackNav("Docs")}
 												className="text-muted-foreground hover:text-accent-foreground block duration-150 px-3 py-2"
 											>
-												Docs
+												{t("siteNav.docs", "Docs")}
 											</a>
 										</NavigationMenuLink>
 									</NavigationMenuItem>
@@ -505,7 +507,7 @@ export const Navbar = ({
 												onClick={() => trackNav("Pricing")}
 												className="text-muted-foreground hover:text-accent-foreground block duration-150 px-3 py-2"
 											>
-												Pricing
+												{t("siteNav.pricing", "Pricing")}
 											</Link>
 										</NavigationMenuLink>
 									</NavigationMenuItem>
@@ -527,7 +529,7 @@ export const Navbar = ({
 											onClick={() => trackNav("Gateway Console")}
 											className="text-muted-foreground hover:text-accent-foreground block py-2.5 duration-150"
 										>
-											Gateway
+											{t("siteNav.gateway", "Gateway")}
 										</a>
 									</li>
 									<li>
@@ -536,7 +538,7 @@ export const Navbar = ({
 											className="text-muted-foreground hover:text-accent-foreground block py-2.5 duration-150"
 											prefetch={true}
 										>
-											Pricing
+											{t("siteNav.pricing", "Pricing")}
 										</Link>
 									</li>
 									<li>
@@ -546,7 +548,7 @@ export const Navbar = ({
 											rel="noopener noreferrer"
 											className="text-muted-foreground hover:text-accent-foreground block py-2.5 duration-150"
 										>
-											Docs
+											{t("siteNav.docs", "Docs")}
 										</a>
 									</li>
 									<li>
@@ -555,7 +557,7 @@ export const Navbar = ({
 											className="text-muted-foreground hover:text-accent-foreground block py-2.5 duration-150"
 											prefetch={true}
 										>
-											Models
+											{t("siteNav.models", "Models")}
 										</Link>
 									</li>
 
@@ -574,7 +576,7 @@ export const Navbar = ({
 												aria-expanded={openMobileSection === section.label}
 											>
 												<span className="text-muted-foreground">
-													{section.label}
+													{t(`siteNav.section.${section.label}`, section.label)}
 												</span>
 												<ChevronDown
 													className={cn(

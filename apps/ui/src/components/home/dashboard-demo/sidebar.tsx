@@ -43,6 +43,7 @@ import {
 	TooltipTrigger,
 } from "@/lib/components/tooltip";
 import Logo, { LogoLockup } from "@/lib/icons/Logo";
+import { useLanguage } from "@/lib/language";
 
 import { READ_ONLY_MESSAGE, useDemo } from "./context";
 import {
@@ -108,8 +109,10 @@ function NavItem({
 	collapsed: boolean;
 	onSelect: (href: string) => void;
 }) {
+	const { t } = useLanguage();
 	const [isHovered, setIsHovered] = useState(false);
 	const Icon = item.icon;
+	const label = t(`nav.${item.label}`, item.label);
 
 	return (
 		<SidebarMenuItem
@@ -118,12 +121,12 @@ function NavItem({
 		>
 			<SidebarMenuButton
 				isActive={isActive}
-				tooltip={item.label}
+				tooltip={label}
 				collapsed={collapsed}
 				onClick={() => onSelect(item.href)}
 			>
 				{Icon && <Icon isHovered={isHovered} />}
-				<span>{item.label}</span>
+				<span>{label}</span>
 				{item.external && (
 					<ExternalLink className="ml-auto h-3 w-3 group-data-[collapsible=icon]:hidden" />
 				)}
@@ -148,7 +151,9 @@ function SettingsItem({
 	collapsed: boolean;
 	onSelect: (href: string) => void;
 }) {
+	const { t } = useLanguage();
 	const [isHovered, setIsHovered] = useState(false);
+	const settingsLabel = t("nav.Settings", "Settings");
 
 	return (
 		<SidebarMenuItem
@@ -157,12 +162,12 @@ function SettingsItem({
 		>
 			<SidebarMenuButton
 				isActive={parentActive}
-				tooltip="Settings"
+				tooltip={settingsLabel}
 				collapsed={collapsed}
 				onClick={() => onSelect(parentHref)}
 			>
 				<AnimatedSettings isHovered={isHovered} />
-				<span>Settings</span>
+				<span>{settingsLabel}</span>
 			</SidebarMenuButton>
 			<SidebarMenuSub className="ml-7">
 				{items.map((item) => (
@@ -171,7 +176,7 @@ function SettingsItem({
 							isActive={isActive(item.href)}
 							onClick={() => onSelect(item.href)}
 						>
-							<span>{item.label}</span>
+							<span>{t(`nav.${item.label}`, item.label)}</span>
 							{item.enterprise && <EnterpriseIndicator />}
 						</SidebarMenuSubButton>
 					</SidebarMenuSubItem>
@@ -190,8 +195,18 @@ function SearchResultItem({
 	collapsed: boolean;
 	onSelect: (href: string) => void;
 }) {
+	const { t } = useLanguage();
 	const [isHovered, setIsHovered] = useState(false);
 	const Icon = link.icon;
+	const label = t(`nav.${link.label}`, link.label);
+	const section =
+		{
+			Project: t("demo.section.project", "Project"),
+			"Project Settings": t("demo.section.projectSettings", "Project Settings"),
+			Organization: t("demo.section.organization", "Organization"),
+			"Org Settings": t("demo.section.orgSettings", "Org Settings"),
+			Tools: t("demo.section.tools", "Tools"),
+		}[link.section] ?? link.section;
 
 	return (
 		<SidebarMenuItem
@@ -199,14 +214,14 @@ function SearchResultItem({
 			onMouseLeave={() => setIsHovered(false)}
 		>
 			<SidebarMenuButton
-				tooltip={link.label}
+				tooltip={label}
 				collapsed={collapsed}
 				onClick={() => onSelect(link.href)}
 			>
 				{Icon && <Icon isHovered={isHovered} />}
-				<span className="truncate">{link.label}</span>
+				<span className="truncate">{label}</span>
 				<span className="ml-auto flex items-center gap-1 text-[0.65rem] text-muted-foreground">
-					{link.section}
+					{section}
 					{link.external && <ExternalLink className="h-3 w-3" />}
 					{link.enterprise && (
 						<Building2 className="h-3.5 w-3.5 text-blue-500/70 dark:text-blue-400/70" />
@@ -218,32 +233,33 @@ function SearchResultItem({
 }
 
 function ThemeSelect() {
+	const { t } = useLanguage();
 	const { theme, setTheme } = useTheme();
 
 	return (
 		<Select value={theme} onValueChange={setTheme}>
 			<SelectTrigger className="w-full">
-				<SelectValue placeholder="Select theme" />
+				<SelectValue placeholder={t("demo.selectTheme", "Select theme")} />
 			</SelectTrigger>
 			<SelectContent>
 				<SelectItem value="light">
 					<div className="flex items-center">
 						<SunIcon className="mr-2 h-4 w-4" />
-						Light
+						{t("demo.light", "Light")}
 					</div>
 				</SelectItem>
 				<SelectItem value="dark">
 					<div className="flex items-center">
 						<MoonIcon className="mr-2 h-4 w-4" />
-						Dark
+						{t("demo.dark", "Dark")}
 					</div>
 				</SelectItem>
 				<SelectItem value="system">
 					<div className="flex items-center">
 						<ComputerIcon className="mr-2 h-4 w-4" />
-						System
+						{t("demo.system", "System")}
 						<span className="ml-2 text-xs text-muted-foreground">
-							(Default)
+							({t("demo.default", "Default")})
 						</span>
 					</div>
 				</SelectItem>
@@ -259,12 +275,16 @@ export function ProductSwitcherMenu({
 	side: "bottom" | "right";
 	children: React.ReactElement;
 }) {
+	const { t } = useLanguage();
 	const { navigate, notify } = useDemo();
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger
 				asChild
-				aria-label="Switch product, current product PShareHub AI Gateway"
+				aria-label={t(
+					"demo.switchProduct",
+					"Switch product, current product PShareHub AI Gateway",
+				)}
 			>
 				{children}
 			</DropdownMenuTrigger>
@@ -320,6 +340,7 @@ export function DemoSidebarBody({
 	collapsed?: boolean;
 	onNavigate?: () => void;
 }) {
+	const { t } = useLanguage();
 	const { view, navigate, notify } = useDemo();
 	const [searchQuery, setSearchQuery] = useState("");
 	const searchInputRef = useRef<HTMLInputElement>(null);
@@ -341,11 +362,22 @@ export function DemoSidebarBody({
 
 	const normalizedQuery = searchQuery.trim().toLowerCase();
 	const matches = normalizedQuery
-		? SEARCHABLE_LINKS.filter(
-				(link) =>
-					link.label.toLowerCase().includes(normalizedQuery) ||
-					link.section.toLowerCase().includes(normalizedQuery),
-			)
+		? SEARCHABLE_LINKS.filter((link) => {
+				const label = t(`nav.${link.label}`, link.label).toLowerCase();
+				const sectionKey = {
+					Project: "demo.section.project",
+					"Project Settings": "demo.section.projectSettings",
+					Organization: "demo.section.organization",
+					"Org Settings": "demo.section.orgSettings",
+					Tools: "demo.section.tools",
+				}[link.section];
+				const section = sectionKey
+					? t(sectionKey, link.section).toLowerCase()
+					: link.section.toLowerCase();
+				return (
+					label.includes(normalizedQuery) || section.includes(normalizedQuery)
+				);
+			})
 		: [];
 
 	const selectSearchResult = (href: string) => {
@@ -362,7 +394,7 @@ export function DemoSidebarBody({
 						<ProductSwitcherMenu side={collapsed ? "right" : "bottom"}>
 							<SidebarMenuButton
 								size="lg"
-								tooltip="Switch product"
+								tooltip={t("demo.switchProductShort", "Switch product")}
 								collapsed={collapsed}
 								className="data-[state=open]:bg-sidebar-accent"
 							>
@@ -397,7 +429,7 @@ export function DemoSidebarBody({
 						</DropdownMenuTrigger>
 						<DropdownMenuContent className="w-60 border-border bg-background text-foreground shadow-xl">
 							<DropdownMenuLabel className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
-								Organizations
+								{t("demo.organizations", "Organizations")}
 							</DropdownMenuLabel>
 							<DropdownMenuSeparator className="bg-border" />
 							<DropdownMenuItem className="cursor-pointer gap-2 px-2 py-1.5 text-sm hover:bg-accent focus:bg-accent data-[highlighted]:bg-accent">
@@ -414,7 +446,7 @@ export function DemoSidebarBody({
 								className="cursor-pointer px-2 py-1.5 text-sm hover:bg-accent focus:bg-accent data-[highlighted]:bg-accent"
 							>
 								<PlusCircle className="mr-2 h-4 w-4" />
-								New Organization
+								{t("demo.newOrganization", "New Organization")}
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
@@ -423,7 +455,7 @@ export function DemoSidebarBody({
 					<Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-[calc(50%+2px)] text-muted-foreground" />
 					<SidebarInput
 						ref={searchInputRef}
-						placeholder="Search links..."
+						placeholder={t("nav.Search links...", "Search links...")}
 						value={searchQuery}
 						onChange={(e) => setSearchQuery(e.target.value)}
 						onKeyDown={(e) => {
@@ -438,7 +470,7 @@ export function DemoSidebarBody({
 							}
 						}}
 						className="pl-8 pr-8"
-						aria-label="Search sidebar links"
+						aria-label={t("nav.Search links...", "Search sidebar links")}
 					/>
 					{!searchQuery && (
 						<kbd className="pointer-events-none absolute right-4 top-1/2 -translate-y-[calc(50%+2px)] rounded border border-border bg-muted px-1.5 font-mono text-[0.65rem] text-muted-foreground">
@@ -451,12 +483,12 @@ export function DemoSidebarBody({
 				{normalizedQuery ? (
 					<SidebarGroup>
 						<SidebarGroupLabel className="px-2 text-xs font-medium text-muted-foreground">
-							Search results
+							{t("demo.searchResults", "Search results")}
 						</SidebarGroupLabel>
 						<SidebarGroupContent className="mt-2">
 							{matches.length === 0 ? (
 								<p className="px-2 py-1.5 text-sm text-muted-foreground">
-									No links match your search.
+									{t("demo.noSearchMatch", "No links match your search.")}
 								</p>
 							) : (
 								<SidebarMenu>
@@ -476,7 +508,7 @@ export function DemoSidebarBody({
 					<>
 						<SidebarGroup>
 							<SidebarGroupLabel className="px-2 text-xs font-medium text-muted-foreground">
-								Project
+								{t("nav.Project", "Project")}
 							</SidebarGroupLabel>
 							<SidebarGroupContent className="mt-2">
 								<SidebarMenu>
@@ -502,7 +534,7 @@ export function DemoSidebarBody({
 						</SidebarGroup>
 						<SidebarGroup>
 							<SidebarGroupLabel className="px-2 text-xs font-medium text-muted-foreground">
-								Organization
+								{t("nav.Organization", "Organization")}
 							</SidebarGroupLabel>
 							<SidebarGroupContent className="mt-2">
 								<SidebarMenu>
@@ -530,7 +562,7 @@ export function DemoSidebarBody({
 						</SidebarGroup>
 						<SidebarGroup>
 							<SidebarGroupLabel className="px-2 text-xs font-medium text-muted-foreground">
-								Tools & Resources
+								{t("nav.Tools & Resources", "Tools & Resources")}
 							</SidebarGroupLabel>
 							<SidebarGroupContent className="mt-2">
 								<SidebarMenu>
@@ -559,13 +591,17 @@ export function DemoSidebarBody({
 						<div className="flex items-center gap-2">
 							<CreditCard className="h-4 w-4 text-muted-foreground" />
 							<div className="flex flex-col">
-								<span className="text-sm font-medium">Credits</span>
+								<span className="text-sm font-medium">
+									{t("demo.credits", "Credits")}
+								</span>
 								<span className="text-xs text-muted-foreground">
 									${DEMO_ORG.credits.toFixed(2)}
 								</span>
 							</div>
 						</div>
-						<span className="text-xs text-muted-foreground">Add</span>
+						<span className="text-xs text-muted-foreground">
+							{t("demo.add", "Add")}
+						</span>
 					</button>
 				</div>
 				<SidebarMenu>
@@ -604,19 +640,19 @@ export function DemoSidebarBody({
 								<DropdownMenuSeparator />
 								<DropdownMenuItem onSelect={() => select("settings/account")}>
 									<UserIcon className="mr-2 h-4 w-4" />
-									Account
+									{t("nav.Account", "Account")}
 								</DropdownMenuItem>
 								<DropdownMenuItem onSelect={() => select("org/billing")}>
 									<CreditCard className="mr-2 h-4 w-4" />
-									Billing
+									{t("nav.Billing", "Billing")}
 								</DropdownMenuItem>
 								<DropdownMenuItem onSelect={() => select("settings/security")}>
 									<Shield className="mr-2 h-4 w-4" />
-									Security
+									{t("nav.Security", "Security")}
 								</DropdownMenuItem>
 								<DropdownMenuSeparator />
 								<DropdownMenuItem onSelect={() => notify(READ_ONLY_MESSAGE)}>
-									<span>Log out</span>
+									<span>{t("nav.Log out", "Log out")}</span>
 								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
