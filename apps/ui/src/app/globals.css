@@ -10,13 +10,13 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-	--brand-ink: #101c3a;
-	--brand-muted: #586580;
+	--brand-ink: #151c38;
+	--brand-muted: #5d6680;
 	--brand-purple: #6045e8;
 	--brand-orange: #ffad4e;
 	--brand-teal: #39c6ca;
-	--brand-paper: #f7f9ff;
-	--brand-line: #e5eafb;
+	--brand-paper: #f6f4ee;
+	--brand-line: #d9d8d1;
 	--font-manrope: "Manrope", Arial, sans-serif;
 	--font-be-vietnam: "Be Vietnam Pro", Arial, sans-serif;
 	--font-display: var(--font-manrope);

@@ -1,14 +1,13 @@
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 
-import { DashboardDemo } from "@/components/home/dashboard-demo";
 import { ShimmerButton } from "@/lib/components/shimmer-button";
 
 const STATS = [
 	{ value: "Anthropic", label: "API Messages" },
 	{ value: "OpenAI", label: "Tương thích Chat Completions" },
 	{ value: "Streaming", label: "Responses" },
-	{ value: "Fallback", label: "Tuyến upstream đã cấu hình" },
+	{ value: "Upstream", label: "Có thể cấu hình tuyến dự phòng" },
 ];
 
 export function LandingHero() {
@@ -159,7 +158,6 @@ export function LandingHero() {
 
 					<div className="animate-hero-enter hero-enter-delay-3">
 						<div className="mx-auto mt-8 max-w-7xl px-4 pb-16 sm:mt-12 sm:px-6 md:mt-20 md:pb-24">
-							<DashboardDemo />
 							<dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border bg-border sm:grid-cols-4">
 								{STATS.map((stat) => (
 									<div

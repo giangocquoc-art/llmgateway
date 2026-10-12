@@ -50,11 +50,15 @@ export function TopBar({
 				/>
 			)}
 			<div className="ml-auto flex items-center gap-2">
-				<div className="w-[160px] sm:w-[200px]">
-					<ModelSearch />
-				</div>
+				{process.env.NEXT_PUBLIC_PSHAREHUB_SINGLE_OWNER !== "true" && (
+					<div className="w-[160px] sm:w-[200px]">
+						<ModelSearch />
+					</div>
+				)}
 				<ChangelogNotifications entries={announcementEntries} />
-				<UsageNotifications />
+				{process.env.NEXT_PUBLIC_PSHAREHUB_SINGLE_OWNER !== "true" && (
+					<UsageNotifications />
+				)}
 				<ThemeToggle size="compact" className="hidden md:inline-flex" />
 			</div>
 		</header>

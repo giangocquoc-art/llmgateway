@@ -1,6 +1,7 @@
 "use client";
 
 import { CostBreakdownChart } from "@/components/usage/cost-breakdown-chart";
+import { useLanguage } from "@/lib/language";
 import {
 	Card,
 	CardContent,
@@ -18,12 +19,18 @@ interface CostBreakdownCardProps {
 export function CostBreakdownCard({
 	initialActivityData,
 }: CostBreakdownCardProps) {
+	const { t } = useLanguage();
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>Cost Breakdown</CardTitle>
+				<CardTitle>
+					{t("dashboard.costBreakdown", "Chi phí theo nhà cung cấp")}
+				</CardTitle>
 				<CardDescription>
-					Estimated costs by provider and storage for this project
+					{t(
+						"dashboard.costBreakdownDescription",
+						"Chi phí ước tính theo nhà cung cấp và lưu trữ của dự án",
+					)}
 				</CardDescription>
 			</CardHeader>
 			<CardContent>

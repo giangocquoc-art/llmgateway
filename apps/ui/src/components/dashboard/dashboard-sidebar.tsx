@@ -104,6 +104,9 @@ import { OrganizationSwitcher } from "./organization-switcher";
 
 import type { AnimatedIconProps } from "@/components/dashboard/animated-nav-icons";
 import type { Organization, User } from "@/lib/types";
+
+const PSHAREHUB_SINGLE_OWNER =
+	process.env.NEXT_PUBLIC_PSHAREHUB_SINGLE_OWNER === "true";
 import type { Route } from "next";
 
 type AnimatedIconComponent = React.ComponentType<AnimatedIconProps>;
@@ -368,21 +371,36 @@ function DashboardSidebarHeader({
 	searchInputRef: React.RefObject<HTMLInputElement | null>;
 }) {
 	const { t } = useLanguage();
+	const psharehubSingleOwner = PSHAREHUB_SINGLE_OWNER;
+	const { appUrl } = useAppConfig();
 	return (
 		<SidebarHeader>
 			<SidebarMenu>
 				<SidebarMenuItem>
-					<ProductSwitcher />
+					{psharehubSingleOwner ? (
+						<Link href={appUrl} className="flex items-center gap-2 px-2 py-1.5">
+							<img
+								src="/favicon/chui-brand-mark.svg"
+								alt=""
+								className="size-8 rounded-full"
+							/>
+							<span className="text-sm font-semibold">PShareHub Gateway</span>
+						</Link>
+					) : (
+						<ProductSwitcher />
+					)}
 				</SidebarMenuItem>
 			</SidebarMenu>
-			<div className="group-data-[collapsible=icon]:hidden">
-				<OrganizationSwitcher
-					organizations={organizations}
-					selectedOrganization={selectedOrganization}
-					onSelectOrganization={onSelectOrganization}
-					onOrganizationCreated={onOrganizationCreated}
-				/>
-			</div>
+			{!psharehubSingleOwner && (
+				<div className="group-data-[collapsible=icon]:hidden">
+					<OrganizationSwitcher
+						organizations={organizations}
+						selectedOrganization={selectedOrganization}
+						onSelectOrganization={onSelectOrganization}
+						onOrganizationCreated={onOrganizationCreated}
+					/>
+				</div>
+			)}
 			<div className="relative px-2 pb-1 group-data-[collapsible=icon]:hidden">
 				<Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-[calc(50%+2px)] text-muted-foreground" />
 				<SidebarInput
@@ -479,7 +497,7 @@ function SearchResultItem({
 					<Link
 						href={link.href as Route}
 						onClick={() => onNavigate(link)}
-						prefetch={true}
+						prefetch={!PSHAREHUB_SINGLE_OWNER}
 					>
 						{content}
 					</Link>
@@ -538,8 +556,10 @@ function NavigationItem({
 	onClick: () => void;
 }) {
 	const { t } = useLanguage();
-	const { buildUrl } = useDashboardNavigation();
-	const href = buildUrl(item.href);
+	const { buildUrl, buildOrgUrl } = useDashboardNavigation();
+	const href = item.href.startsWith("org/")
+		? buildOrgUrl(item.href)
+		: buildUrl(item.href);
 	const [isHovered, setIsHovered] = useState(false);
 	const label = t(`nav.${item.label}`, item.label);
 
@@ -549,7 +569,7 @@ function NavigationItem({
 			onMouseLeave={() => setIsHovered(false)}
 		>
 			<SidebarMenuButton asChild isActive={isActive(item.href)} tooltip={label}>
-				<Link href={href} onClick={onClick} prefetch={true}>
+				<Link href={href} onClick={onClick} prefetch={!PSHAREHUB_SINGLE_OWNER}>
 					<item.icon isHovered={isHovered} />
 					<span>{label}</span>
 				</Link>
@@ -590,7 +610,7 @@ function ProjectSettingsSection({
 							toggleSidebar();
 						}
 					}}
-					prefetch={true}
+					prefetch={!PSHAREHUB_SINGLE_OWNER}
 				>
 					<AnimatedSettings isHovered={isHovered} />
 					<span>{t("nav.Settings", "Settings")}</span>
@@ -607,7 +627,7 @@ function ProjectSettingsSection({
 										toggleSidebar();
 									}
 								}}
-								prefetch={true}
+								prefetch={!PSHAREHUB_SINGLE_OWNER}
 							>
 								<span>{t(`nav.${item.label}`, item.label)}</span>
 								{"enterpriseOnly" in item &&
@@ -672,7 +692,7 @@ function OrgNavItem({
 							toggleSidebar();
 						}
 					}}
-					prefetch={true}
+					prefetch={!PSHAREHUB_SINGLE_OWNER}
 				>
 					<Icon isHovered={isHovered} />
 					<span>{translatedLabel}</span>
@@ -753,7 +773,7 @@ function OrganizationSection({
 										toggleSidebar();
 									}
 								}}
-								prefetch={true}
+								prefetch={!PSHAREHUB_SINGLE_OWNER}
 							>
 								<AnimatedSettings isHovered={settingsHovered} />
 								<span>{t("nav.Settings", "Settings")}</span>
@@ -786,7 +806,7 @@ function OrganizationSection({
 													toggleSidebar();
 												}
 											}}
-											prefetch={true}
+											prefetch={!PSHAREHUB_SINGLE_OWNER}
 										>
 											<span>{t(`nav.${item.label}`, item.label)}</span>
 											{"enterpriseOnly" in item &&
@@ -888,7 +908,7 @@ function ToolsResourceItem({
 								toggleSidebar();
 							}
 						}}
-						prefetch={true}
+						prefetch={!PSHAREHUB_SINGLE_OWNER}
 					>
 						<item.icon isHovered={isHovered} />
 						<span>{translatedLabel}</span>
@@ -1099,7 +1119,7 @@ function UserDropdownMenu({
 										toggleSidebar();
 									}
 								}}
-								prefetch={true}
+								prefetch={!PSHAREHUB_SINGLE_OWNER}
 							>
 								<item.icon className="mr-2 h-4 w-4" />
 								{t(`nav.${item.label}`, item.label)}
@@ -1218,7 +1238,9 @@ export function DashboardSidebar({
 	const queryClient = useQueryClient();
 	const { signOut } = useAuth();
 	const { buildUrl, buildOrgUrl } = useDashboardNavigation();
-	const billingEnabled = selectedOrganization?.billingEnabled !== false;
+	const psharehubSingleOwner = PSHAREHUB_SINGLE_OWNER;
+	const billingEnabled =
+		!psharehubSingleOwner && selectedOrganization?.billingEnabled !== false;
 	const [showUpgradeCTA, setShowUpgradeCTA] = useState(true);
 	const [ctaLoaded, setCTALoaded] = useState(false);
 	const [searchQuery, setSearchQuery] = useState("");
@@ -1273,36 +1295,24 @@ export function DashboardSidebar({
 		return pathname.endsWith(`/${path}`);
 	};
 
-	const { devpassUrl, playgroundUrl, docsUrl } = useAppConfig();
+	const { docsUrl } = useAppConfig();
 
 	const toolsResources = useMemo(
 		() => [
 			{
-				href: `${devpassUrl}/dashboard`,
-				label: "DevPass",
-				icon: AnimatedTerminal,
-				internal: false,
-			},
-			{
 				href: "/models",
-				label: "Supported Models",
+				label: "M\u00f4 h\u00ecnh h\u1ed7 tr\u1ee3",
 				icon: AnimatedMessageSquare,
 				internal: true,
 			},
 			{
-				href: playgroundUrl,
-				label: "Lounge",
-				icon: AnimatedBotMessageSquare,
-				internal: false,
-			},
-			{
 				href: docsUrl,
-				label: "Documentation",
+				label: "T\u00e0i li\u1ec7u API",
 				icon: AnimatedExternalLink,
 				internal: false,
 			},
 		],
-		[devpassUrl, playgroundUrl, docsUrl],
+		[docsUrl],
 	);
 
 	const isDeveloper = selectedOrganization?.role === "developer";
@@ -1311,6 +1321,44 @@ export function DashboardSidebar({
 	// Flat index of every link the sidebar can show for the current role, used
 	// by the search box to filter across all sections at once.
 	const searchableLinks = useMemo<SearchableLink[]>(() => {
+		if (psharehubSingleOwner) {
+			return [
+				...PROJECT_NAVIGATION.filter((item) =>
+					["", "activity", "analytics", "usage"].includes(item.href),
+				).map((item) => ({
+					href: buildUrl(item.href),
+					label: item.label,
+					section: "Gateway",
+					icon: item.icon,
+				})),
+				{
+					href: buildUrl("api-keys"),
+					label: "Khóa API",
+					section: "Gateway",
+					icon: AnimatedKey,
+				},
+				{
+					href: buildOrgUrl("org/provider-keys"),
+					label: "Khóa nhà cung cấp",
+					section: "Gateway",
+					icon: AnimatedKeyRound,
+				},
+				{
+					href: buildUrl("settings/routing"),
+					label: "Định tuyến",
+					section: "Gateway",
+					icon: AnimatedRadioTower,
+				},
+				...toolsResources.map((item) => ({
+					href: item.href,
+					label: item.label,
+					section: "Gateway",
+					icon: item.icon,
+					external: !item.internal,
+				})),
+			];
+		}
+
 		if (isDeveloper) {
 			return [
 				...USER_NAVIGATION.map((item) => ({
@@ -1391,6 +1439,7 @@ export function DashboardSidebar({
 	}, [
 		isDeveloper,
 		isOrgAdmin,
+		psharehubSingleOwner,
 		selectedOrganization?.enterpriseAccess,
 		buildUrl,
 		buildOrgUrl,
@@ -1534,7 +1583,51 @@ export function DashboardSidebar({
 				searchInputRef={searchInputRef}
 			/>
 			<SidebarContent>
-				{searchQuery.trim() ? (
+				{psharehubSingleOwner ? (
+					<>
+						<SidebarGroup>
+							<SidebarGroupLabel className="text-muted-foreground px-2 text-xs font-medium">
+								{"PShareHub Gateway"}
+							</SidebarGroupLabel>
+							<SidebarGroupContent className="mt-2">
+								<SidebarMenu>
+									{[
+										...PROJECT_NAVIGATION.filter((item) =>
+											["", "activity", "analytics", "usage"].includes(
+												item.href,
+											),
+										),
+										{ href: "api-keys", label: "Khóa API", icon: AnimatedKey },
+										{
+											href: "org/provider-keys",
+											label: "Khóa nhà cung cấp",
+											icon: AnimatedKeyRound,
+										},
+										{
+											href: "settings/routing",
+											label: "Định tuyến",
+											icon: AnimatedRadioTower,
+										},
+									].map((item) => (
+										<NavigationItem
+											key={item.href}
+											item={item}
+											isActive={isActive}
+											onClick={handleNavClick}
+										/>
+									))}
+								</SidebarMenu>
+							</SidebarGroupContent>
+						</SidebarGroup>
+						{searchQuery.trim() ? (
+							<SidebarSearchResults
+								matches={searchMatches}
+								onNavigate={handleSearchNavigate}
+								showEnterpriseBadge={false}
+							/>
+						) : null}
+					</>
+				) : searchQuery.trim() ? (
 					<SidebarSearchResults
 						matches={searchMatches}
 						onNavigate={handleSearchNavigate}

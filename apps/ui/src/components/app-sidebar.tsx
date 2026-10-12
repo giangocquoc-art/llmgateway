@@ -27,18 +27,9 @@ import {
 	SidebarMenuItem,
 } from "@/lib/components/sidebar";
 
-// Menu items.
 const items = [
-	{
-		title: "Users",
-		url: "/dashboard",
-		icon: User2,
-	},
-	{
-		title: "Settings",
-		url: "#",
-		icon: Settings,
-	},
+	{ title: "Tổng quan", url: "/dashboard", icon: User2 },
+	{ title: "Cài đặt", url: "#", icon: Settings },
 ];
 
 export function AppSidebar() {
@@ -76,8 +67,14 @@ export function AppSidebar() {
 		<Sidebar variant="floating" collapsible="icon">
 			<SidebarContent>
 				<SidebarGroup>
-					<SidebarGroupLabel>
-						Social Worker Media <Badge className="ml-2">Admin</Badge>
+					<SidebarGroupLabel className="flex items-center gap-2">
+						<img
+							src="/favicon/chui-brand-mark.svg"
+							alt=""
+							className="size-6 rounded-full"
+						/>
+						<span className="truncate">PShareHub AI</span>
+						<Badge className="ml-auto">Gateway</Badge>
 					</SidebarGroupLabel>
 					<SidebarGroupContent>
 						<SidebarMenu>

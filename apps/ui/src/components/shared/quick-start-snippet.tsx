@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Button } from "@/lib/components/button";
 import { Card, CardContent } from "@/lib/components/card";
 import { toast } from "@/lib/components/use-toast";
+import { useAppConfig } from "@/lib/config";
 
 export function QuickStartSection({
 	apiKey,
@@ -14,66 +15,54 @@ export function QuickStartSection({
 	apiKey?: string;
 	onCopy?: () => void;
 }) {
-	const [activeTab, setActiveTab] = useState<
-		"curl" | "typescript" | "python" | "ai-sdk"
-	>("curl");
+	const [activeTab, setActiveTab] = useState<"curl" | "typescript" | "python">(
+		"curl",
+	);
+	const { gatewayUrl } = useAppConfig();
 
 	const keyPlaceholder = apiKey ?? "YOUR_API_KEY";
 
-	const curlExample = `curl -X POST https://api.llmgateway.io/v1/chat/completions \\
-  -H "Content-Type: application/json" \\
-  -H "Authorization: Bearer ${keyPlaceholder}" \\
-  -d '{
-  "model": "auto",
-  "messages": [
-    {"role": "user", "content": "Hello!"}
-  ]
-}'`;
+	const curlExample = `curl ${gatewayUrl}/v1/messages \\
+  -H "x-api-key: ${keyPlaceholder}" \\
+  -H "anthropic-version: 2023-06-01" \\
+  -H "content-type: application/json" \\
+  -d '{"model":"claude-sonnet-4-5","max_tokens":256,"messages":[{"role":"user","content":"Xin ch\u00e0o"}]}'`;
 
-	const tsExample = `import OpenAI from "openai";
-
-const client = new OpenAI({
-  apiKey: "${keyPlaceholder}",
-  baseURL: "https://api.llmgateway.io/v1/"
+	const tsExample = `const response = await fetch("${gatewayUrl}/v1/messages", {
+  method: "POST",
+  headers: {
+    "x-api-key": "${keyPlaceholder}",
+    "anthropic-version": "2023-06-01",
+    "content-type": "application/json",
+  },
+  body: JSON.stringify({
+    model: "claude-sonnet-4-5",
+    max_tokens: 256,
+    messages: [{ role: "user", content: "Xin ch\u00e0o" }],
+  }),
 });
 
-const response = await client.chat.completions.create({
-  model: "auto",
-  messages: [{ role: "user", content: "Hello!" }],
-});`;
+const data = await response.json();`;
 
-	const pythonExample = `from openai import OpenAI
+	const pythonExample = `import anthropic
 
-client = OpenAI(
+client = anthropic.Anthropic(
     api_key="${keyPlaceholder}",
-    base_url="https://api.llmgateway.io/v1/",
+    base_url="${gatewayUrl}",
 )
 
-response = client.chat.completions.create(
-    model="auto",
-    messages=[{"role": "user", "content": "Hello!"}],
+message = client.messages.create(
+    model="claude-sonnet-4-5",
+    max_tokens=256,
+    messages=[{"role": "user", "content": "Xin ch\u00e0o"}],
 )`;
-
-	const aiSdkExample = `import { createLLMGateway } from "@llmgateway/ai-sdk-provider";
-import { generateText } from "ai";
-
-const llmgateway = createLLMGateway({
-  apiKey: "${keyPlaceholder}",
-});
-
-const { text } = await generateText({
-  model: llmgateway("auto"),
-  prompt: "Hello!",
-});`;
 
 	const code =
 		activeTab === "curl"
 			? curlExample
 			: activeTab === "typescript"
 				? tsExample
-				: activeTab === "python"
-					? pythonExample
-					: aiSdkExample;
+				: pythonExample;
 
 	function copyCode() {
 		void navigator.clipboard.writeText(code);
@@ -90,12 +79,14 @@ const { text } = await generateText({
 				<div className="flex flex-col gap-3">
 					<div className="flex items-center gap-2">
 						<Code className="h-5 w-5 text-muted-foreground" />
-						<span className="font-medium">Quick Start</span>
+						<span className="font-medium">
+							{"K\u1ebft n\u1ed1i v\u1edbi PShareHub AI Gateway"}
+						</span>
 					</div>
 					<p className="text-sm text-muted-foreground">
-						Use your API key to make requests. LLM Gateway is compatible with
-						the OpenAI SDK — just change the base URL — or use our dedicated AI
-						SDK provider.
+						{
+							"G\u1eedi y\u00eau c\u1ea7u theo giao th\u1ee9c Anthropic Messages \u0111\u1ebfn API PShareHub b\u1eb1ng key c\u1ee7a b\u1ea1n."
+						}
 					</p>
 					<div className="flex gap-2">
 						<Button
@@ -121,14 +112,6 @@ const { text } = await generateText({
 							type="button"
 						>
 							Python
-						</Button>
-						<Button
-							variant={activeTab === "ai-sdk" ? "default" : "outline"}
-							size="sm"
-							onClick={() => setActiveTab("ai-sdk")}
-							type="button"
-						>
-							AI SDK
 						</Button>
 					</div>
 					<div className="relative rounded-md border bg-muted/50">

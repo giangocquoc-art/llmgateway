@@ -35,6 +35,8 @@ export function DashboardLayoutClient({
 	selectedProjectId,
 	announcementEntries = [],
 }: DashboardLayoutClientProps) {
+	const psharehubSingleOwner =
+		process.env.NEXT_PUBLIC_PSHAREHUB_SINGLE_OWNER === "true";
 	const posthog = usePostHog();
 	const systemBanner = useSystemBanner();
 
@@ -90,9 +92,9 @@ export function DashboardLayoutClient({
 							announcementEntries={announcementEntries}
 						/>
 						<SystemBannerBar banner={systemBanner} />
-						<EmailVerificationBanner />
-						<EnterpriseLicenseBanner />
-						<PlanExpiryBanner />
+						{!psharehubSingleOwner && <EmailVerificationBanner />}
+						{!psharehubSingleOwner && <EnterpriseLicenseBanner />}
+						{!psharehubSingleOwner && <PlanExpiryBanner />}
 						<main className="bg-background relative w-full flex-1 overflow-y-auto overflow-x-hidden pt-10 pb-4 px-4 md:p-6 lg:p-8">
 							<OrganizationRouteGuard>{children}</OrganizationRouteGuard>
 						</main>

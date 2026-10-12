@@ -19,11 +19,12 @@ interface DashboardLayoutProps {
 export default async function DashboardLayout({
 	children,
 }: DashboardLayoutProps) {
-	const user = await getUser();
+	// Cloudflare Access protects the hosted dashboard and authenticates the
+	// linked API requests. Avoid a duplicate server-side API round-trip here:
+	// this layout only wraps a client-rendered dashboard, and the Worker Free
+	// CPU budget is too small for that extra fetch on each route transition.
+	if (process.env.HOSTED === "true") return children;
 
-	if (!user) {
-		return redirect("/login");
-	}
-
-	return await children;
+	if (!(await getUser())) return redirect("/login");
+	return children;
 }

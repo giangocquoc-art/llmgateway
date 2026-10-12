@@ -9,6 +9,14 @@ export async function getAnnouncementEntries(): Promise<AnnouncementEntry[]> {
 	if (cached) {
 		return cached;
 	}
+	// The dashboard shell is client-rendered on Workers. Importing the complete
+	// content-collections bundle here parses hundreds of blog/changelog entries
+	// on every cold isolate and can exceed the Free CPU budget before the page
+	// is sent. Keep the full announcement feed in local/server deployments.
+	if (process.env.HOSTED === "true") {
+		cached = [];
+		return cached;
+	}
 	try {
 		const { allChangelogs, allBlogs } = await import("content-collections");
 

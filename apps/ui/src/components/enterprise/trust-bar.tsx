@@ -2,7 +2,7 @@ const capabilities = [
 	"Anthropic Messages",
 	"OpenAI Chat Completions",
 	"Phản hồi streaming",
-	"Dự phòng upstream đã cấu hình",
+	"Có thể cấu hình tuyến dự phòng",
 ];
 
 export function TrustBarEnterprise() {

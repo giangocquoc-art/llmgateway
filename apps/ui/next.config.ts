@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
 	env: {
 		ACCOUNT_AUTH_ENABLED: "false",
 		CHAT_SUPPORT_ENABLED: "false",
+		NEXT_PUBLIC_PSHAREHUB_SINGLE_OWNER: "true",
 	},
 	outputFileTracingRoot: join(__dirname, "../../"),
 	distDir: process.env.NODE_ENV === "development" ? ".next-dev" : ".next",

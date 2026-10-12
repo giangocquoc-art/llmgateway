@@ -8,17 +8,14 @@ import {
 	Key,
 	KeyRound,
 	Activity,
-	CircleDollarSign,
 	BarChart3,
 	ChartColumnBig,
-	TrendingDown,
 	ArrowDownToLine,
 	ArrowUpFromLine,
 	Server,
 	Crown,
 	ExternalLink,
 	BookOpen,
-	FlaskConical,
 	MessageSquare,
 	Settings,
 	Wallet,
@@ -229,6 +226,8 @@ export function DashboardClient({
 	initialActivityTimeZone,
 }: DashboardClientProps) {
 	const { language, t } = useLanguage();
+	const psharehubSingleOwner =
+		process.env.NEXT_PUBLIC_PSHAREHUB_SINGLE_OWNER === "true";
 	const dateLocale = language === "vi" ? vi : undefined;
 	const shortDatePattern = language === "vi" ? "d MMM" : "MMM d";
 	const router = useRouter();
@@ -585,7 +584,7 @@ export function DashboardClient({
 						<h1 className="text-3xl font-bold tracking-tight">
 							{t("dashboard.title", "Dashboard")}
 						</h1>
-						{selectedProject && (
+						{selectedProject && !psharehubSingleOwner && (
 							<p className="text-sm text-muted-foreground mt-1">
 								{t("dashboard.project", "Project")}: {selectedProject.name}
 								{selectedOrganization && (
@@ -636,11 +635,13 @@ export function DashboardClient({
 					</div>
 				</div>
 
-				<ReferralBanner />
+				{!psharehubSingleOwner && <ReferralBanner />}
 
 				<div className="flex flex-wrap items-center gap-x-3 gap-y-2">
 					<DateRangePicker buildUrl={buildUrl} />
-					<UsageModeSelector creditsEnabled={billingEnabled} />
+					{!psharehubSingleOwner && (
+						<UsageModeSelector creditsEnabled={billingEnabled} />
+					)}
 					{rangeDays <= 366 && (
 						<p className="text-xs text-muted-foreground">
 							{t("dashboard.trendsCompare", "Trends compare to")}{" "}
@@ -654,12 +655,14 @@ export function DashboardClient({
 					<div
 						className={cn(
 							"grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4",
-							isOrgAdmin && billingEnabled
-								? "lg:grid-cols-4"
-								: "lg:grid-cols-3",
+							psharehubSingleOwner
+								? "lg:grid-cols-2"
+								: isOrgAdmin && billingEnabled
+									? "lg:grid-cols-4"
+									: "lg:grid-cols-3",
 						)}
 					>
-						{isOrgAdmin && billingEnabled && (
+						{!psharehubSingleOwner && isOrgAdmin && billingEnabled && (
 							<MetricCard
 								label={t(
 									"dashboard.organizationCredits",
@@ -676,66 +679,17 @@ export function DashboardClient({
 							/>
 						)}
 						<MetricCard
-							label={t("dashboard.totalRequests", "Total Requests")}
+							label="Số yêu cầu"
 							value={formatNumber(totalRequests)}
 							subtitle={
 								totalRequests > 0
-									? `${cacheHitRate.toFixed(1)}% ${t("dashboard.cacheHitRateLabel", "cache hit rate")} • ${formatNumber(totalErrors)} ${t("dashboard.errorCount", "errors")}`
+									? `${formatNumber(totalErrors)} lỗi trong kỳ`
 									: `${format(from, shortDatePattern, { locale: dateLocale })} – ${format(to, shortDatePattern, { locale: dateLocale })}`
 							}
 							icon={<Zap className="h-4 w-4" />}
 							accent="purple"
 							delta={pctChange(totalRequests, prevRequests)}
 							trend={requestsTrend}
-							isLoading={isLoading}
-						/>
-						<MetricCard
-							label={
-								usageMode === "credits"
-									? t("dashboard.creditsSpend", "Credits Spend")
-									: usageMode === "api-keys"
-										? t("dashboard.byokUsage", "BYOK Usage")
-										: t("dashboard.totalSpend", "Total Spend")
-							}
-							value={`$${totalSpend.toFixed(2)}`}
-							subtitle={
-								usageMode === "total" &&
-								totalCreditsCost > 0 &&
-								totalApiKeysCost > 0
-									? `$${totalCreditsCost.toFixed(2)} ${t("dashboard.credits", "credits")} • $${totalApiKeysCost.toFixed(2)} BYOK (${t("dashboard.notBilled", "not billed")})`
-									: usageMode === "api-keys" && totalCost > 0
-										? t(
-												"dashboard.providerKeysUsage",
-												"Served by your provider keys — not billed to credits",
-											)
-										: totalRequests > 0
-											? `${t("dashboard.avgPerRequest", "avg")} $${avgCostPerRequest.toFixed(4)} ${t("dashboard.requestsLabel", "per request")}${
-													totalRequestCost > 0
-														? ` • $${totalRequestCost.toFixed(2)} ${t("dashboard.requestsLabel", "requests")}`
-														: ""
-												}${
-													totalDataStorageCost > 0
-														? ` • $${totalDataStorageCost.toFixed(4)} ${t("dashboard.storageLabel", "storage")}`
-														: ""
-												}`
-											: `${format(from, shortDatePattern, { locale: dateLocale })} – ${format(to, shortDatePattern, { locale: dateLocale })}`
-							}
-							icon={<CircleDollarSign className="h-4 w-4" />}
-							accent="blue"
-							delta={pctChange(totalSpend, prevCost)}
-							trend={costTrend}
-							isLoading={isLoading}
-						/>
-						<MetricCard
-							label={t("dashboard.totalSavings", "Total Savings")}
-							value={`$${totalSavings.toFixed(4)}`}
-							subtitle={t(
-								"dashboard.discountsThisPeriod",
-								"Discounts this period",
-							)}
-							icon={<TrendingDown className="h-4 w-4" />}
-							accent="green"
-							delta={pctChange(totalSavings, prevSavings)}
 							isLoading={isLoading}
 						/>
 					</div>
@@ -746,31 +700,31 @@ export function DashboardClient({
 								icon={ArrowDownToLine}
 								label={t("dashboard.inputTokens", "Input tokens")}
 								value={formatTokens(totalInputTokens)}
-								sub={`$${totalInputCost.toFixed(2)} ${t("dashboard.spendLabel", "spend")}`}
+								sub="Token đã xử lý"
 								isLoading={isLoading}
 							/>
 							<StatCell
 								icon={ArrowUpFromLine}
 								label={t("dashboard.outputTokens", "Output tokens")}
 								value={formatTokens(totalOutputTokens)}
-								sub={`$${totalOutputCost.toFixed(2)} ${t("dashboard.spendLabel", "spend")}`}
+								sub="Token đã xử lý"
 								isLoading={isLoading}
 							/>
 							<StatCell
 								icon={Server}
 								label={t("dashboard.cachedTokens", "Cached tokens")}
 								value={formatTokens(totalCachedTokens)}
-								sub={`$${totalCachedInputCost.toFixed(2)} • ${t("dashboard.includedInInput", "included in input")}`}
+								sub="Đang theo dõi"
 								isLoading={isLoading}
 							/>
 							<StatCell
 								icon={Crown}
-								label={t("dashboard.topModel", "Top model")}
+								label="Mô hình sử dụng nhiều nhất"
 								value={mostUsedModel || "—"}
 								sub={
 									mostUsedProvider
 										? `${t("dashboard.via", "via")} ${mostUsedProvider}`
-										: t("dashboard.noUsageYet", "No usage yet")
+										: "Chưa có dữ liệu sử dụng"
 								}
 								isLoading={isLoading}
 							/>
@@ -796,6 +750,7 @@ export function DashboardClient({
 									createdAtMs !== null &&
 									Date.now() - createdAtMs < 7 * 24 * 60 * 60 * 1000;
 								const needsTopUp =
+									!psharehubSingleOwner &&
 									billingEnabled &&
 									isOrgAdmin &&
 									!Number.isNaN(credits) &&
@@ -819,58 +774,32 @@ export function DashboardClient({
 															)}
 														</CardTitle>
 														<CardDescription className="mt-1">
-															{t(
-																"dashboard.topUpDescription",
-																"Add credits to your organization to unlock all paid models. Free models are always available via the Lounge.",
-															)}
+															Cấu hình thông tin nhà cung cấp để bật xử lý yêu
+															cầu qua gateway.
 														</CardDescription>
 													</div>
 												</div>
 											</CardHeader>
 											<CardContent className="space-y-4">
-												<div className="grid gap-3 sm:grid-cols-3">
+												<div className="grid gap-3 sm:grid-cols-2">
 													<div className="rounded-lg border border-border bg-background/60 p-3">
 														<div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
 															<Zap className="h-3.5 w-3.5" />
-															{t("dashboard.payAsYouGo", "Pay as you go")}
+															Cấu hình gateway
 														</div>
 														<p className="mt-1 text-sm">
-															{t(
-																"dashboard.creditsNeverExpire",
-																"Credits never expire. Only pay for what you use.",
-															)}
+															Quản lý khóa nhà cung cấp và tuyến xử lý trong
+															bảng điều khiển.
 														</p>
 													</div>
 													<div className="rounded-lg border border-border bg-background/60 p-3">
 														<div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
 															<Gift className="h-3.5 w-3.5" />
-															{t("dashboard.freeModels", "Free models")}
+															Anthropic Messages
 														</div>
 														<p className="mt-1 text-sm">
-															Try{" "}
-															<Link
-																href="/models"
-																className="underline hover:text-foreground"
-																prefetch={true}
-															>
-																{t("dashboard.models", "free models")}
-															</Link>{" "}
-															{t(
-																"dashboard.tryFreeModels",
-																"without topping up.",
-															)}
-														</p>
-													</div>
-													<div className="rounded-lg border border-border bg-background/60 p-3">
-														<div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-															<CreditCard className="h-3.5 w-3.5" />
-															{t("dashboard.secureCheckout", "Secure checkout")}
-														</div>
-														<p className="mt-1 text-sm">
-															{t(
-																"dashboard.stripeCheckout",
-																"Powered by Stripe. Cancel or refund anytime.",
-															)}
+															Tương thích endpoint <code>/v1/messages</code> khi
+															đã cấu hình upstream.
 														</p>
 													</div>
 												</div>
@@ -883,27 +812,23 @@ export function DashboardClient({
 															href={
 																process.env.NODE_ENV === "development"
 																	? "http://localhost:3003"
-																	: "https://lounge.llmgateway.io"
+																	: "https://api.psharehub.com/admin/studio/"
 															}
 															target="_blank"
 															rel="noopener noreferrer"
 														>
-															<FlaskConical className="mr-2 h-4 w-4" />
-															{t(
-																"dashboard.tryModelsLounge",
-																"Try models in the Lounge",
-															)}
+															Mở trang quản trị gateway
 															<ExternalLink className="ml-1.5 h-3 w-3" />
 														</a>
 													</Button>
 													<Button asChild variant="outline" size="sm">
 														<a
-															href="https://docs.llmgateway.io"
+															href="https://api.psharehub.com/docs"
 															target="_blank"
 															rel="noopener noreferrer"
 														>
 															<BookOpen className="mr-2 h-4 w-4" />
-															{t("dashboard.docs", "Docs")}
+															Tài liệu API
 															<ExternalLink className="ml-1.5 h-3 w-3" />
 														</a>
 													</Button>
@@ -916,23 +841,21 @@ export function DashboardClient({
 								return (
 									<Card className="min-w-0 lg:col-span-4">
 										<CardHeader>
-											<CardTitle>
-												{t("dashboard.getStarted", "Get Started")}
-											</CardTitle>
+											<CardTitle>Kết nối ứng dụng</CardTitle>
 											<CardDescription>
 												{totalRequests > 0
 													? totalRequests === 1
 														? t(
 																"dashboard.setupFirstCall",
-																"You made your first call during setup! Now integrate LLM Gateway in your own code.",
+																"Bạn đã gửi yêu cầu đầu tiên. Hãy kết nối ứng dụng của bạn với PShareHub AI Gateway.",
 															)
 														: t(
 																"dashboard.setupCalls",
-																"You made {count} calls during setup! Now integrate LLM Gateway in your own code.",
+																"Bạn đã gửi {count} yêu cầu. Tiếp tục tích hợp PShareHub AI Gateway vào ứng dụng của bạn.",
 															).replace("{count}", String(totalRequests))
 													: t(
 															"dashboard.integrateInOneLine",
-															"Integrate LLM Gateway in 1 line — just change your base URL.",
+															"Kết nối ứng dụng với PShareHub AI Gateway qua API tương thích Anthropic Messages.",
 														)}
 											</CardDescription>
 										</CardHeader>
@@ -941,127 +864,135 @@ export function DashboardClient({
 											<div className="flex flex-wrap gap-2">
 												<Button asChild variant="outline" size="sm">
 													<a
-														href="https://docs.llmgateway.io"
+														href="https://api.psharehub.com/docs"
 														target="_blank"
 														rel="noopener noreferrer"
 													>
 														<BookOpen className="mr-2 h-4 w-4" />
-														{t("dashboard.docs", "Docs")}
+														Tài liệu API
 														<ExternalLink className="ml-1.5 h-3 w-3" />
 													</a>
 												</Button>
 												<Button asChild variant="outline" size="sm">
 													<a
-														href={
-															process.env.NODE_ENV === "development"
-																? "http://localhost:3003"
-																: "https://lounge.llmgateway.io"
-														}
+														href="https://api.psharehub.com/admin/studio/"
 														target="_blank"
 														rel="noopener noreferrer"
+														className="inline-flex items-center justify-center rounded-md border border-input bg-background px-3 py-2 text-sm font-medium hover:bg-accent"
 													>
-														<FlaskConical className="mr-2 h-4 w-4" />
-														{t("dashboard.lounge", "Lounge")}
-														<ExternalLink className="ml-1.5 h-3 w-3" />
-													</a>
-												</Button>
-												<Button asChild variant="outline" size="sm">
-													<Link href="/models" prefetch={true}>
 														<MessageSquare className="mr-2 h-4 w-4" />
-														{t("dashboard.models", "Models")}
-													</Link>
+														Mở trang quản trị gateway
+													</a>
 												</Button>
 											</div>
 										</CardContent>
 									</Card>
 								);
 							})()}
-							<QuickActionsCard
-								buildUrl={buildUrl}
-								buildOrgUrl={buildOrgUrl}
-								className="min-w-0 lg:col-span-3"
-							/>
+							{!psharehubSingleOwner && (
+								<QuickActionsCard
+									buildUrl={buildUrl}
+									buildOrgUrl={buildOrgUrl}
+									className="min-w-0 lg:col-span-3"
+								/>
+							)}
 						</div>
 					) : (
 						<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-							<Card className="min-w-0 lg:col-span-4">
+							<Card
+								className={
+									psharehubSingleOwner
+										? "min-w-0 lg:col-span-7"
+										: "min-w-0 lg:col-span-4"
+								}
+							>
 								<CardHeader>
 									<div className="flex flex-wrap items-start justify-between gap-3">
 										<div>
 											<CardTitle>
-												{t("dashboard.usageOverview", "Usage Overview")}
+												{psharehubSingleOwner
+													? "Số yêu cầu theo thời gian"
+													: t("dashboard.usageOverview", "Usage Overview")}
 											</CardTitle>
 											<CardDescription>
-												{metric === "costs"
-													? costView === "total"
-														? t(
-																"dashboard.dailyInferenceSpend",
-																"Daily total inference spend (provider list price)",
-															)
+												{psharehubSingleOwner
+													? "Số lượng yêu cầu được gateway xử lý trong khoảng thời gian đã chọn."
+													: metric === "costs"
+														? costView === "total"
+															? t(
+																	"dashboard.dailyInferenceSpend",
+																	"Daily total inference spend (provider list price)",
+																)
+															: t(
+																	"dashboard.dailySpendByToken",
+																	"Daily inference spend by token type",
+																)
 														: t(
-																"dashboard.dailySpendByToken",
-																"Daily inference spend by token type",
-															)
-													: t(
-															"dashboard.requestsByDay",
-															"Daily request volume",
-														)}
+																"dashboard.requestsByDay",
+																"Daily request volume",
+															)}
 											</CardDescription>
 										</div>
 										<div className="flex flex-wrap items-center justify-end gap-2">
-											<div className="inline-flex items-center rounded-lg border border-border/60 bg-muted/40 p-0.5">
-												{(["costs", "requests"] as const).map((option) => (
-													<button
-														key={option}
-														type="button"
-														onClick={() => updateMetricInUrl(option)}
-														className={cn(
-															"rounded-md px-3 py-1 text-xs font-medium capitalize transition-colors",
-															metric === option
-																? "bg-background text-foreground shadow-sm"
-																: "text-muted-foreground hover:text-foreground",
-														)}
-													>
-														{t(
-															option === "costs"
-																? "dashboard.costs"
-																: "dashboard.requestsTab",
-															option,
-														)}
-													</button>
-												))}
-											</div>
-											{metric === "costs" && (
-												<div className="inline-flex items-center rounded-lg border border-border/60 bg-muted/40 p-0.5">
-													{(["total", "breakdown"] as const).map((option) => (
-														<button
-															key={option}
-															type="button"
-															onClick={() => updateCostViewInUrl(option)}
-															className={cn(
-																"rounded-md px-3 py-1 text-xs font-medium capitalize transition-colors",
-																costView === option
-																	? "bg-background text-foreground shadow-sm"
-																	: "text-muted-foreground hover:text-foreground",
+											{!psharehubSingleOwner && (
+												<>
+													<div className="inline-flex items-center rounded-lg border border-border/60 bg-muted/40 p-0.5">
+														{(["costs", "requests"] as const).map((option) => (
+															<button
+																key={option}
+																type="button"
+																onClick={() => updateMetricInUrl(option)}
+																className={cn(
+																	"rounded-md px-3 py-1 text-xs font-medium capitalize transition-colors",
+																	metric === option
+																		? "bg-background text-foreground shadow-sm"
+																		: "text-muted-foreground hover:text-foreground",
+																)}
+															>
+																{t(
+																	option === "costs"
+																		? "dashboard.costs"
+																		: "dashboard.requestsTab",
+																	option,
+																)}
+															</button>
+														))}
+													</div>
+													{metric === "costs" && (
+														<div className="inline-flex items-center rounded-lg border border-border/60 bg-muted/40 p-0.5">
+															{(["total", "breakdown"] as const).map(
+																(option) => (
+																	<button
+																		key={option}
+																		type="button"
+																		onClick={() => updateCostViewInUrl(option)}
+																		className={cn(
+																			"rounded-md px-3 py-1 text-xs font-medium capitalize transition-colors",
+																			costView === option
+																				? "bg-background text-foreground shadow-sm"
+																				: "text-muted-foreground hover:text-foreground",
+																		)}
+																	>
+																		{t(
+																			option === "total"
+																				? "dashboard.total"
+																				: "dashboard.breakdown",
+																			option,
+																		)}
+																	</button>
+																),
 															)}
-														>
-															{t(
-																option === "total"
-																	? "dashboard.total"
-																	: "dashboard.breakdown",
-																option,
-															)}
-														</button>
-													))}
-												</div>
+														</div>
+													)}
+													<UsageComparisonPicker
+														mode={comparisonMode}
+														currentRange={{ from, to }}
+														comparisonRange={comparisonRange}
+														disabled={rangeDays > 366}
+														onChange={updateComparisonInUrl}
+													/>
+												</>
 											)}
-											<UsageComparisonPicker
-												mode={comparisonMode}
-												currentRange={{ from, to }}
-												comparisonRange={comparisonRange}
-												disabled={rangeDays > 366}
-												onChange={updateComparisonInUrl}
-											/>
 										</div>
 									</div>
 								</CardHeader>
@@ -1070,37 +1001,51 @@ export function DashboardClient({
 										data={activityData}
 										comparisonData={comparisonActivityData}
 										comparisonRange={comparisonRange}
-										comparisonMode={comparisonMode}
+										comparisonMode={
+											psharehubSingleOwner ? "off" : comparisonMode
+										}
 										isLoading={isLoading}
 										isComparisonLoading={isComparisonLoading}
 										isComparisonError={isComparisonError}
-										metric={metric}
+										metric={psharehubSingleOwner ? "requests" : metric}
 										costView={costView}
 									/>
 								</CardContent>
 							</Card>
-							<QuickActionsCard
-								buildUrl={buildUrl}
-								buildOrgUrl={buildOrgUrl}
-								className="min-w-0 lg:col-span-3"
-							/>
+							{!psharehubSingleOwner && (
+								<QuickActionsCard
+									buildUrl={buildUrl}
+									buildOrgUrl={buildOrgUrl}
+									className="min-w-0 lg:col-span-3"
+								/>
+							)}
 						</div>
 					)}
 
 					<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-						<div className="min-w-0 lg:col-span-4 space-y-4">
-							<CostBreakdownCard initialActivityData={initialActivityData} />
+						<div
+							className={
+								psharehubSingleOwner
+									? "min-w-0 space-y-4"
+									: "min-w-0 lg:col-span-4 space-y-4"
+							}
+						>
+							{!psharehubSingleOwner && (
+								<CostBreakdownCard initialActivityData={initialActivityData} />
+							)}
 							<RecentActivityCard
 								activityData={activityData}
 								isLoading={isLoading}
 							/>
 						</div>
-						<div className="min-w-0 lg:col-span-3">
-							<ErrorsReliabilityCard
-								activityData={activityData}
-								isLoading={isLoading}
-							/>
-						</div>
+						{!psharehubSingleOwner && (
+							<div className="min-w-0 lg:col-span-3">
+								<ErrorsReliabilityCard
+									activityData={activityData}
+									isLoading={isLoading}
+								/>
+							</div>
+						)}
 					</div>
 				</div>
 			</div>
