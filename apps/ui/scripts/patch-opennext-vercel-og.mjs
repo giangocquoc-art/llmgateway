@@ -15,7 +15,7 @@ export async function patchOpenNextVercelOg(packageRoot) {
 	const fontTrace =
 		"const tracedFontPath = path.join(path.dirname(tracedEdgePath), fontFileName);";
 	if (
-		[edgeTrace, edgeCopy, wasmTrace, fontTrace].some(
+		[edgeTrace, edgeCopy, wasmTrace].some(
 			(anchor) => !original.includes(anchor),
 		)
 	) {
