@@ -21,7 +21,8 @@ export async function patchOpenNextVercelOg(packageRoot) {
 	}
 
 	const fallbackBlock = `const nextOgPath = path.join(buildOpts.appPath, "node_modules/next/dist/compiled/@vercel/og");
-        const standalonePackagePath = getPackagePath(buildOpts).replace(/[/\\]\.next$/, "");`r`n        const standaloneOgPath = path.join(buildOpts.appPath, ".next/standalone", standalonePackagePath, "node_modules/next/dist/compiled/@vercel/og");
+        const standalonePackagePath = getPackagePath(buildOpts).replace(/[/\\]\.next$/, "");
+        const standaloneOgPath = path.join(buildOpts.appPath, ".next/standalone", standalonePackagePath, "node_modules/next/dist/compiled/@vercel/og");
         const sourceOgPath = existsSync(path.join(nextOgPath, "index.edge.js")) ? nextOgPath : standaloneOgPath;
         const sourceEdgePath = existsSync(tracedEdgePath) ? tracedEdgePath : path.join(sourceOgPath, "index.edge.js");
         if (!existsSync(sourceEdgePath)) throw new Error("Missing Vercel OG edge bundle at " + sourceEdgePath);`;
