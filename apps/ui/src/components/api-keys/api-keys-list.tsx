@@ -99,12 +99,13 @@ function ManagedPlaygroundTableRow({
 	apiKey: ApiKey;
 	statisticsUrl: Route;
 }) {
+	const { t } = useLanguage();
 	return (
 		<TableRow className="hover:bg-muted/30 transition-colors">
 			<TableCell>
 				<div className="flex items-center gap-2">
 					<span className="font-medium">Playground</span>
-					<Badge variant="outline">Managed</Badge>
+					<Badge variant="outline">{t("apikeys.managed", "Managed")}</Badge>
 				</div>
 			</TableCell>
 			<TableCell className="min-w-40 max-w-40">
@@ -117,19 +118,27 @@ function ManagedPlaygroundTableRow({
 				<Time date={apiKey.createdAt} format="monthDayYear" />
 			</TableCell>
 			<TableCell className="text-muted-foreground">
-				{apiKey.creator?.name ?? apiKey.creator?.email ?? "Unknown"}
+				{apiKey.creator?.name ??
+					apiKey.creator?.email ??
+					t("apikeys.unknown", "Unknown")}
 			</TableCell>
 			<TableCell>{formatCurrencyAmount(apiKey.usage)}</TableCell>
 			<TableCell className="text-muted-foreground">
 				{formatCurrentPeriodUsageSummary(apiKey).summary}
 			</TableCell>
-			<TableCell className="text-muted-foreground">Not applicable</TableCell>
-			<TableCell className="text-muted-foreground">Not applicable</TableCell>
+			<TableCell className="text-muted-foreground">
+				{t("apikeys.notApplicable", "Not applicable")}
+			</TableCell>
+			<TableCell className="text-muted-foreground">
+				{t("apikeys.notApplicable", "Not applicable")}
+			</TableCell>
 			<TableCell className="sticky right-0 bg-card text-center">
 				<Button variant="ghost" size="icon" className="h-8 w-8" asChild>
 					<Link href={statisticsUrl} prefetch={true}>
 						<BarChart3Icon className="h-4 w-4" />
-						<span className="sr-only">View Statistics</span>
+						<span className="sr-only">
+							{t("apikeys.statistics", "View Statistics")}
+						</span>
 					</Link>
 				</Button>
 			</TableCell>
@@ -144,39 +153,48 @@ function ManagedPlaygroundCard({
 	apiKey: ApiKey;
 	statisticsUrl: Route;
 }) {
+	const { t } = useLanguage();
 	return (
 		<div className="border rounded-lg p-3 space-y-3">
 			<div className="flex items-start justify-between gap-3">
 				<div className="flex items-center gap-2">
 					<h3 className="font-medium text-sm">Playground</h3>
-					<Badge variant="outline">Managed</Badge>
+					<Badge variant="outline">{t("apikeys.managed", "Managed")}</Badge>
 					<StatusBadge status={apiKey.status} />
 				</div>
 				<Button variant="ghost" size="sm" asChild>
 					<Link href={statisticsUrl} prefetch={true}>
 						<BarChart3Icon className="mr-2 h-4 w-4" />
-						Statistics
+						{t("apikeys.statistics", "Statistics")}
 					</Link>
 				</Button>
 			</div>
 			<div className="pt-2 border-t grid grid-cols-2 gap-3">
 				<div>
-					<div className="text-xs text-muted-foreground mb-1">API Key</div>
+					<div className="text-xs text-muted-foreground mb-1">
+						{t("apikeys.keyColumn", "API Key")}
+					</div>
 					<div className="font-mono text-xs break-all">
 						{apiKey.maskedToken}
 					</div>
 				</div>
 				<div>
-					<div className="text-xs text-muted-foreground mb-1">Usage</div>
+					<div className="text-xs text-muted-foreground mb-1">
+						{t("apikeys.usageColumn", "Usage")}
+					</div>
 					<div className="font-mono text-xs">
 						{formatCurrencyAmount(apiKey.usage)}
 					</div>
 				</div>
 			</div>
 			<div className="pt-2 border-t">
-				<div className="text-xs text-muted-foreground mb-1">Created By</div>
+				<div className="text-xs text-muted-foreground mb-1">
+					{t("apikeys.createdBy", "Created By")}
+				</div>
 				<div className="text-sm">
-					{apiKey.creator?.name ?? apiKey.creator?.email ?? "Unknown"}
+					{apiKey.creator?.name ??
+						apiKey.creator?.email ??
+						t("apikeys.unknown", "Unknown")}
 				</div>
 			</div>
 		</div>
@@ -399,7 +417,9 @@ export function ApiKeysList({
 
 					void queryClient.invalidateQueries({ queryKey });
 
-					toast({ title: "API key deleted successfully." });
+					toast({
+						title: t("apikeys.deleted", "API key deleted successfully."),
+					});
 				},
 			},
 		);
@@ -475,8 +495,11 @@ export function ApiKeysList({
 			});
 		} catch (error) {
 			toast({
-				title: "Failed to reactivate API key.",
-				description: getApiErrorMessage(error, "Please try again."),
+				title: t("apikeys.reactivateFailed", "Failed to reactivate API key."),
+				description: getApiErrorMessage(
+					error,
+					t("apiKey.tryAgain", "Please try again."),
+				),
 				variant: "destructive",
 			});
 		}
@@ -504,8 +527,11 @@ export function ApiKeysList({
 			return data.apiKey.token;
 		} catch (error) {
 			toast({
-				title: "Failed to roll API key.",
-				description: getApiErrorMessage(error, "Please try again."),
+				title: t("apikeys.rollFailed", "Failed to roll API key."),
+				description: getApiErrorMessage(
+					error,
+					t("apiKey.tryAgain", "Please try again."),
+				),
 				variant: "destructive",
 			});
 			return undefined;
@@ -536,8 +562,11 @@ export function ApiKeysList({
 			});
 		} catch (error) {
 			toast({
-				title: "Failed to rename API key.",
-				description: getApiErrorMessage(error, "Please try again."),
+				title: t("apikeys.renameFailed", "Failed to rename API key."),
+				description: getApiErrorMessage(
+					error,
+					t("apiKey.tryAgain", "Please try again."),
+				),
 				variant: "destructive",
 			});
 		}
@@ -574,8 +603,14 @@ export function ApiKeysList({
 			);
 		} catch (error) {
 			toast({
-				title: "Failed to update API key limits.",
-				description: getApiErrorMessage(error, "Please try again."),
+				title: t(
+					"apikeys.limitUpdateFailed",
+					"Failed to update API key limits.",
+				),
+				description: getApiErrorMessage(
+					error,
+					t("apiKey.tryAgain", "Please try again."),
+				),
 				variant: "destructive",
 			});
 			throw error;
@@ -730,8 +765,12 @@ export function ApiKeysList({
 						onValueChange={(value) => setCreatorFilter(value as CreatorFilter)}
 					>
 						<TabsList className="flex space-x-2 w-full md:w-fit">
-							<TabsTrigger value="all">All Keys</TabsTrigger>
-							<TabsTrigger value="mine">My Keys</TabsTrigger>
+							<TabsTrigger value="all">
+								{t("apikeys.allKeys", "All Keys")}
+							</TabsTrigger>
+							<TabsTrigger value="mine">
+								{t("apikeys.myKeys", "My Keys")}
+							</TabsTrigger>
 						</TabsList>
 					</Tabs>
 				)}
@@ -786,10 +825,12 @@ export function ApiKeysList({
 							onValueChange={(value) => setLimitFilter(value as LimitFilter)}
 						>
 							<TabsList className="flex space-x-2 w-full md:w-fit">
-								<TabsTrigger value="all">Any usage</TabsTrigger>
+								<TabsTrigger value="all">
+									{t("apikeys.anyUsage", "Any usage")}
+								</TabsTrigger>
 								{approachingKeys.length > 0 && (
 									<TabsTrigger value="approaching">
-										Near limit{" "}
+										{t("apikeys.nearLimit", "Near limit")}{" "}
 										<Badge
 											variant={
 												limitFilter === "approaching" ? "default" : "outline"
@@ -802,7 +843,7 @@ export function ApiKeysList({
 								)}
 								{reachedKeys.length > 0 && (
 									<TabsTrigger value="reached">
-										Limit reached{" "}
+										{t("apikeys.limitReached", "Limit reached")}{" "}
 										<Badge
 											variant={
 												limitFilter === "reached" ? "default" : "outline"
@@ -825,14 +866,19 @@ export function ApiKeysList({
 					<div className="flex items-center justify-between">
 						<div className="flex items-center gap-4">
 							<div className="text-sm text-muted-foreground">
-								<span className="font-medium">API Keys:</span>{" "}
-								{planLimits.currentCount} of {planLimits.maxKeys} used
+								<span className="font-medium">
+									{t("apikeys.title", "API Keys")}:
+								</span>{" "}
+								{planLimits.currentCount} / {planLimits.maxKeys}{" "}
+								{t("apikeys.countUsed", "used")}
 							</div>
 						</div>
 						{planLimits.currentCount >= planLimits.maxKeys && (
 							<div className="text-xs text-amber-600 font-medium">
-								Limit reached — contact us at contact@llmgateway.io to unlock
-								more
+								{t(
+									"apikeys.limitContact",
+									"Limit reached — contact contact@llmgateway.io to unlock more",
+								)}
 							</div>
 						)}
 					</div>
@@ -841,7 +887,7 @@ export function ApiKeysList({
 
 			{filteredKeys.length === 0 && (
 				<div className="text-muted-foreground py-10 text-center text-sm">
-					No API keys match the selected filters.
+					{t("apikeys.filtersEmpty", "No API keys match the selected filters.")}
 				</div>
 			)}
 
@@ -850,15 +896,19 @@ export function ApiKeysList({
 				<Table>
 					<TableHeader>
 						<TableRow>
-							<TableHead>Name</TableHead>
-							<TableHead className="w-40">API Key</TableHead>
-							<TableHead>Status</TableHead>
-							<TableHead>Created</TableHead>
-							<TableHead>Created By</TableHead>
-							<TableHead>Usage</TableHead>
-							<TableHead>Current Period</TableHead>
-							<TableHead>Limits</TableHead>
-							<TableHead>IAM Rules</TableHead>
+							<TableHead>{t("apikeys.nameColumn", "Name")}</TableHead>
+							<TableHead className="w-40">
+								{t("apikeys.keyColumn", "API Key")}
+							</TableHead>
+							<TableHead>{t("apikeys.statusColumn", "Status")}</TableHead>
+							<TableHead>{t("apikeys.createdColumn", "Created")}</TableHead>
+							<TableHead>{t("apikeys.createdBy", "Created By")}</TableHead>
+							<TableHead>{t("apikeys.usageColumn", "Usage")}</TableHead>
+							<TableHead>
+								{t("apikeys.currentPeriod", "Current Period")}
+							</TableHead>
+							<TableHead>{t("apikeys.limits", "Limits")}</TableHead>
+							<TableHead>{t("apikeys.iamRules", "IAM Rules")}</TableHead>
 							<TableHead className="sticky right-0 bg-card w-12" />
 						</TableRow>
 					</TableHeader>
@@ -989,38 +1039,42 @@ export function ApiKeysList({
 											<DropdownMenuTrigger asChild>
 												<Button variant="ghost" size="icon" className="h-8 w-8">
 													<MoreHorizontal className="h-4 w-4" />
-													<span className="sr-only">Open menu</span>
+													<span className="sr-only">
+														{t("apikeys.openMenu", "Open menu")}
+													</span>
 												</Button>
 											</DropdownMenuTrigger>
 											<DropdownMenuContent align="end">
-												<DropdownMenuLabel>Actions</DropdownMenuLabel>
+												<DropdownMenuLabel>
+													{t("apikeys.actions", "Actions")}
+												</DropdownMenuLabel>
 												<DropdownMenuItem asChild>
 													<Link href={getStatisticsUrl(key.id)} prefetch={true}>
 														<BarChart3Icon className="mr-2 h-4 w-4" />
-														View Statistics
+														{t("apikeys.viewStatistics", "View Statistics")}
 													</Link>
 												</DropdownMenuItem>
 												<DropdownMenuItem asChild>
 													<Link href={getIamRulesUrl(key.id)}>
 														<Shield className="mr-2 h-4 w-4" />
-														Manage IAM Rules
+														{t("apikeys.manageIam", "Manage IAM Rules")}
 													</Link>
 												</DropdownMenuItem>
 												<DropdownMenuSeparator />
 												<DropdownMenuItem onClick={() => setRenameKey(key)}>
 													<PencilIcon className="mr-2 h-4 w-4" />
-													Rename Key
+													{t("apikeys.rename", "Rename Key")}
 												</DropdownMenuItem>
 												<DropdownMenuItem onClick={() => toggleStatus(key)}>
 													<PowerIcon className="mr-2 h-4 w-4" />
 													{key.status === "active"
-														? "Deactivate"
-														: "Activate"}{" "}
-													Key
+														? t("apikeys.deactivate", "Deactivate")
+														: t("apikeys.activate", "Activate")}{" "}
+													{t("apikeys.keyColumn", "Key")}
 												</DropdownMenuItem>
 												<DropdownMenuItem onClick={() => setRollKey(key)}>
 													<RefreshCwIcon className="mr-2 h-4 w-4" />
-													Roll Key
+													{t("apikeys.roll", "Roll Key")}
 												</DropdownMenuItem>
 												<DropdownMenuSeparator />
 												<AlertDialog>
@@ -1029,26 +1083,32 @@ export function ApiKeysList({
 															onSelect={(e) => e.preventDefault()}
 															className="text-destructive focus:text-destructive"
 														>
-															Delete
+															{t("apikeys.delete", "Delete")}
 														</DropdownMenuItem>
 													</AlertDialogTrigger>
 													<AlertDialogContent>
 														<AlertDialogHeader>
 															<AlertDialogTitle>
-																Are you absolutely sure?
+																{t(
+																	"apikeys.confirmDelete",
+																	"Are you absolutely sure?",
+																)}
 															</AlertDialogTitle>
 															<AlertDialogDescription>
-																This action cannot be undone. This will
-																permanently delete the API key and it will no
-																longer be able to access your account.
+																{t(
+																	"apikeys.deleteWarning",
+																	"This action cannot be undone. This will permanently delete the API key and it will no longer be able to access your account.",
+																)}
 															</AlertDialogDescription>
 														</AlertDialogHeader>
 														<AlertDialogFooter>
-															<AlertDialogCancel>Cancel</AlertDialogCancel>
+															<AlertDialogCancel>
+																{t("apikeys.cancel", "Cancel")}
+															</AlertDialogCancel>
 															<AlertDialogAction
 																onClick={() => deleteKey(key.id)}
 															>
-																Delete
+																{t("apikeys.delete", "Delete")}
 															</AlertDialogAction>
 														</AlertDialogFooter>
 													</AlertDialogContent>
@@ -1102,31 +1162,38 @@ export function ApiKeysList({
 									<DropdownMenuTrigger asChild>
 										<Button variant="ghost" size="sm" className="h-8 w-8 p-0">
 											<MoreHorizontal className="h-4 w-4" />
-											<span className="sr-only">Open menu</span>
+											<span className="sr-only">
+												{t("apikeys.openMenu", "Open menu")}
+											</span>
 										</Button>
 									</DropdownMenuTrigger>
 									<DropdownMenuContent align="end">
-										<DropdownMenuLabel>Actions</DropdownMenuLabel>
+										<DropdownMenuLabel>
+											{t("apikeys.actions", "Actions")}
+										</DropdownMenuLabel>
 										<DropdownMenuItem asChild>
 											<Link href={getStatisticsUrl(key.id)} prefetch={true}>
 												<BarChart3Icon className="mr-2 h-4 w-4" />
-												View Statistics
+												{t("apikeys.viewStatistics", "View Statistics")}
 											</Link>
 										</DropdownMenuItem>
 										<DropdownMenuItem asChild>
 											<Link href={getIamRulesUrl(key.id)}>
 												<Shield className="mr-2 h-4 w-4" />
-												Manage IAM Rules
+												{t("apikeys.manageIam", "Manage IAM Rules")}
 											</Link>
 										</DropdownMenuItem>
 										<DropdownMenuSeparator />
 										<DropdownMenuItem onClick={() => toggleStatus(key)}>
 											<PowerIcon className="mr-2 h-4 w-4" />
-											{key.status === "active" ? "Deactivate" : "Activate"} Key
+											{key.status === "active"
+												? t("apikeys.deactivate", "Deactivate")
+												: t("apikeys.activate", "Activate")}{" "}
+											{t("apikeys.keyColumn", "Key")}
 										</DropdownMenuItem>
 										<DropdownMenuItem onClick={() => setRollKey(key)}>
 											<RefreshCwIcon className="mr-2 h-4 w-4" />
-											Roll Key
+											{t("apikeys.roll", "Roll Key")}
 										</DropdownMenuItem>
 										<DropdownMenuSeparator />
 										<AlertDialog>
@@ -1135,24 +1202,30 @@ export function ApiKeysList({
 													onSelect={(e) => e.preventDefault()}
 													className="text-destructive focus:text-destructive"
 												>
-													Delete
+													{t("apikeys.delete", "Delete")}
 												</DropdownMenuItem>
 											</AlertDialogTrigger>
 											<AlertDialogContent>
 												<AlertDialogHeader>
 													<AlertDialogTitle>
-														Are you absolutely sure?
+														{t(
+															"apikeys.confirmDelete",
+															"Are you absolutely sure?",
+														)}
 													</AlertDialogTitle>
 													<AlertDialogDescription>
-														This action cannot be undone. This will permanently
-														delete the API key and it will no longer be able to
-														access your account.
+														{t(
+															"apikeys.deleteWarning",
+															"This action cannot be undone. This will permanently delete the API key and it will no longer be able to access your account.",
+														)}
 													</AlertDialogDescription>
 												</AlertDialogHeader>
 												<AlertDialogFooter>
-													<AlertDialogCancel>Cancel</AlertDialogCancel>
+													<AlertDialogCancel>
+														{t("apikeys.cancel", "Cancel")}
+													</AlertDialogCancel>
 													<AlertDialogAction onClick={() => deleteKey(key.id)}>
-														Delete
+														{t("apikeys.delete", "Delete")}
 													</AlertDialogAction>
 												</AlertDialogFooter>
 											</AlertDialogContent>
@@ -1162,7 +1235,7 @@ export function ApiKeysList({
 							</div>
 							<div className="pt-2 border-t">
 								<div className="text-xs text-muted-foreground mb-1">
-									API Key
+									{t("apikeys.keyColumn", "API Key")}
 								</div>
 								<div className="font-mono text-xs break-all">
 									{key.maskedToken}
@@ -1171,13 +1244,13 @@ export function ApiKeysList({
 							<div className="pt-2 border-t grid gap-3 md:grid-cols-3">
 								<div className="py-1">
 									<div className="text-xs text-muted-foreground mb-1">
-										Usage
+										{t("apikeys.usageColumn", "Usage")}
 									</div>
 									{renderUsage(key)}
 								</div>
 								<div className="py-1">
 									<div className="text-xs text-muted-foreground mb-1">
-										Current Period
+										{t("apikeys.currentPeriod", "Current Period")}
 									</div>
 									{renderCurrentPeriodUsage(key)}
 								</div>
@@ -1193,7 +1266,7 @@ export function ApiKeysList({
 										>
 											<div className="text-left">
 												<div className="text-xs text-muted-foreground mb-1">
-													Limits
+													{t("apikeys.limits", "Limits")}
 												</div>
 												{renderLimitSummary(key)}
 											</div>
@@ -1204,7 +1277,7 @@ export function ApiKeysList({
 							</div>
 							<div className="pt-2 border-t">
 								<div className="text-xs text-muted-foreground mb-1">
-									IAM Rules
+									{t("apikeys.iamRules", "IAM Rules")}
 								</div>
 								<div className="flex items-center">
 									{key.iamRules && key.iamRules.length > 0 ? (
@@ -1220,7 +1293,7 @@ export function ApiKeysList({
 														(rule) => rule.status === "active",
 													).length
 												}{" "}
-												active rule
+												{t("apikeys.activeRules", "active rule")}
 												{key.iamRules.filter((rule) => rule.status === "active")
 													.length !== 1
 													? "s"
@@ -1235,7 +1308,7 @@ export function ApiKeysList({
 											asChild
 										>
 											<Link href={getIamRulesUrl(key.id)}>
-												No rules configured
+												{t("apikeys.noRulesConfigured", "No rules configured")}
 											</Link>
 										</Button>
 									)}
@@ -1243,10 +1316,12 @@ export function ApiKeysList({
 							</div>
 							<div className="pt-2 border-t">
 								<div className="text-xs text-muted-foreground mb-1">
-									Created By
+									{t("apikeys.createdBy", "Created By")}
 								</div>
 								<div className="text-sm">
-									{key.creator?.name ?? key.creator?.email ?? "Unknown"}
+									{key.creator?.name ??
+										key.creator?.email ??
+										t("apikeys.unknown", "Unknown")}
 								</div>
 							</div>
 						</div>

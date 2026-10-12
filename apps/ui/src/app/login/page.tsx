@@ -116,7 +116,9 @@ export default function Login() {
 					return;
 				}
 				toast({
-					title: res.error.message ?? "Failed to sign in with passkey",
+					title:
+						res.error.message ??
+						t("login.failedPasskey", "Failed to sign in with passkey"),
 					variant: "destructive",
 				});
 			}
@@ -145,7 +147,7 @@ export default function Login() {
 						method: "email",
 						email: values.email,
 					});
-					toast({ title: "Login successful" });
+					toast({ title: t("login.success", "Login successful") });
 					router.push(redirectTarget as Route);
 				},
 				onError: (ctx) => {
@@ -176,18 +178,22 @@ export default function Login() {
 			const res = await signIn.passkey();
 			if (res?.error) {
 				toast({
-					title: res.error.message ?? "Failed to sign in with passkey",
+					title:
+						res.error.message ??
+						t("login.failedPasskey", "Failed to sign in with passkey"),
 					variant: "destructive",
 				});
 				return;
 			}
 			queryClient.clear();
 			posthog.capture("user_logged_in", { method: "passkey" });
-			toast({ title: "Login successful" });
+			toast({ title: t("login.success", "Login successful") });
 			router.push(redirectTarget as Route);
 		} catch (error: unknown) {
 			toast({
-				title: (error as Error)?.message || "Failed to sign in with passkey",
+				title:
+					(error as Error)?.message ||
+					t("login.failedPasskey", "Failed to sign in with passkey"),
 				variant: "destructive",
 			});
 		} finally {
@@ -243,7 +249,9 @@ export default function Login() {
 			}
 		} catch (error: unknown) {
 			toast({
-				title: (error as Error)?.message || "Failed to sign in with SSO",
+				title:
+					(error as Error)?.message ||
+					t("login.failedSso", "Failed to sign in with SSO"),
 				variant: "destructive",
 			});
 		} finally {

@@ -1,0 +1,42 @@
+name: PShareHub UI Cloudflare build
+
+on:
+  push:
+    branches:
+      - psharehub/cf-ui-release
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.13.0
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Cloudflare Worker
+        run: pnpm --filter ui cf:build
+
+      - name: Upload Cloudflare bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: psharehub-ui-cloudflare-bundle
+          path: apps/ui/.open-next/
+          include-hidden-files: true
+          compression-level: 0
+          retention-days: 1

@@ -34,6 +34,7 @@ import {
 	TooltipTrigger,
 } from "@/lib/components/tooltip";
 import { useApi } from "@/lib/fetch-client";
+import { useLanguage } from "@/lib/language";
 import { cn } from "@/lib/utils";
 
 import {
@@ -138,10 +139,11 @@ function Section({
 	children: React.ReactNode;
 	className?: string;
 }) {
+	const { t } = useLanguage();
 	return (
 		<div className={cn("space-y-3", className)}>
 			<h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-				{title}
+				{t(`activityDetail.${title}`, title)}
 			</h3>
 			{children}
 		</div>
@@ -159,9 +161,12 @@ function Field({
 	mono?: boolean;
 	muted?: boolean;
 }) {
+	const { t } = useLanguage();
 	return (
 		<div className="flex items-baseline justify-between gap-4 py-1.5 border-b border-border/50 last:border-0">
-			<span className="text-sm text-muted-foreground shrink-0">{label}</span>
+			<span className="text-sm text-muted-foreground shrink-0">
+				{t(`activityDetail.${label}`, label)}
+			</span>
 			<span
 				className={cn(
 					"text-sm text-right break-all",
@@ -176,21 +181,22 @@ function Field({
 }
 
 function StatusIndicator({ log }: { log: Partial<Log> }) {
+	const { t } = useLanguage();
 	let StatusIcon = CheckCircle2;
 	let color = "text-emerald-500";
 	let bgColor = "bg-emerald-500/10";
-	let label = "Completed";
+	let label = t("activityDetail.Completed", "Completed");
 
 	if (log.hasError || log.unifiedFinishReason === "error") {
 		StatusIcon = AlertCircle;
 		color = "text-red-500";
 		bgColor = "bg-red-500/10";
-		label = "Error";
+		label = t("activityDetail.Error", "Error");
 	} else if (log.unifiedFinishReason === "content_filter") {
 		StatusIcon = TriangleAlert;
 		color = "text-amber-500";
 		bgColor = "bg-amber-500/10";
-		label = "Content Filter";
+		label = t("activityDetail.Content Filter", "Content Filter");
 	} else if (
 		log.unifiedFinishReason !== "completed" &&
 		log.unifiedFinishReason !== "tool_calls"
@@ -198,7 +204,7 @@ function StatusIndicator({ log }: { log: Partial<Log> }) {
 		StatusIcon = AlertCircle;
 		color = "text-yellow-500";
 		bgColor = "bg-yellow-500/10";
-		label = log.unifiedFinishReason ?? "Unknown";
+		label = log.unifiedFinishReason ?? t("activityDetail.Unknown", "Unknown");
 	} else if (log.unifiedFinishReason === "tool_calls") {
 		label = "Tool Calls";
 	}
@@ -441,6 +447,7 @@ export function LogDetailClient({
 	projectId,
 	logId,
 }: LogDetailClientProps) {
+	const { t } = useLanguage();
 	const { timeZone: displayTimeZone } = useDisplayTimeZone();
 	const api = useApi();
 
@@ -458,11 +465,13 @@ export function LogDetailClient({
 	if (!data?.log) {
 		return (
 			<div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-				<p className="text-muted-foreground">Log not found</p>
+				<p className="text-muted-foreground">
+					{t("activityDetail.notFound", "Log not found")}
+				</p>
 				<Button asChild variant="outline" size="sm">
 					<Link href={`/dashboard/${orgId}/${projectId}/activity`}>
 						<ArrowLeft className="mr-2 h-4 w-4" />
-						Back to Activity
+						{t("activityDetail.backToActivity", "Back to Activity")}
 					</Link>
 				</Button>
 			</div>
@@ -511,7 +520,7 @@ export function LogDetailClient({
 					<Button asChild variant="ghost" size="sm" className="-ml-2">
 						<Link href={`/dashboard/${orgId}/${projectId}/activity`}>
 							<ArrowLeft className="mr-2 h-4 w-4" />
-							Activity Logs
+							{t("activityDetail.activityLogs", "Activity Logs")}
 						</Link>
 					</Button>
 
@@ -526,7 +535,7 @@ export function LogDetailClient({
 									<div className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 bg-amber-500/10">
 										<RefreshCw className="h-4 w-4 text-amber-600" />
 										<span className="text-sm font-medium text-amber-600">
-											Retried
+											{t("activityDetail.Retried", "Retried")}
 										</span>
 									</div>
 								)}
@@ -551,7 +560,9 @@ export function LogDetailClient({
 					<div className="rounded-lg border bg-card p-3">
 						<div className="flex items-center gap-2 text-muted-foreground mb-1">
 							<Clock className="h-3.5 w-3.5" />
-							<span className="text-xs">Duration</span>
+							<span className="text-xs">
+								{t("activityDetail.Duration", "Duration")}
+							</span>
 						</div>
 						<p className="text-lg font-semibold tabular-nums">
 							{formatDuration(log.duration ?? 0)}
@@ -560,7 +571,9 @@ export function LogDetailClient({
 					<div className="rounded-lg border bg-card p-3">
 						<div className="flex items-center gap-2 text-muted-foreground mb-1">
 							<Zap className="h-3.5 w-3.5" />
-							<span className="text-xs">Tokens</span>
+							<span className="text-xs">
+								{t("activityDetail.Tokens", "Tokens")}
+							</span>
 						</div>
 						<p className="text-lg font-semibold tabular-nums">
 							{formatNumber(Number(log.totalTokens ?? 0))}
@@ -569,7 +582,9 @@ export function LogDetailClient({
 					<div className="rounded-lg border bg-card p-3">
 						<div className="flex items-center gap-2 text-muted-foreground mb-1">
 							<AudioWaveform className="h-3.5 w-3.5" />
-							<span className="text-xs">Throughput</span>
+							<span className="text-xs">
+								{t("activityDetail.Throughput", "Throughput")}
+							</span>
 						</div>
 						<p className="text-lg font-semibold tabular-nums">
 							{throughput ? `${throughput} t/s` : "-"}
@@ -593,7 +608,9 @@ export function LogDetailClient({
 									<div>
 										<div className="flex items-center gap-2 text-muted-foreground mb-1">
 											<Coins className="h-3.5 w-3.5" />
-											<span className="text-xs">Inference Cost</span>
+											<span className="text-xs">
+												{t("activityDetail.Inference Cost", "Inference Cost")}
+											</span>
 											<Info className="h-3 w-3 text-muted-foreground/40" />
 										</div>
 										<p className="text-lg font-semibold tabular-nums text-muted-foreground">
@@ -603,7 +620,7 @@ export function LogDetailClient({
 								</TooltipTrigger>
 								<TooltipContent>
 									<p>
-										Provider cost
+										{t("activityDetail.Provider cost", "Provider cost")}
 										{log.usedMode === "api-keys" &&
 											" — not deducted from your balance"}
 									</p>
@@ -614,14 +631,16 @@ export function LogDetailClient({
 					<div className="rounded-lg border bg-card p-3">
 						<div className="flex items-center gap-2 text-muted-foreground mb-1">
 							<Package className="h-3.5 w-3.5" />
-							<span className="text-xs">Cache</span>
+							<span className="text-xs">
+								{t("activityDetail.Cache", "Cache")}
+							</span>
 						</div>
 						<p className="text-lg font-semibold tabular-nums">
 							{log.cached
-								? "Full"
+								? t("activityDetail.Full", "Full")
 								: log.cachedTokens && Number(log.cachedTokens) > 0
-									? "Partial"
-									: "None"}
+									? t("activityDetail.Partial", "Partial")
+									: t("activityDetail.None", "None")}
 						</p>
 					</div>
 				</div>

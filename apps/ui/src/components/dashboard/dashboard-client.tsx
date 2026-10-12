@@ -1,6 +1,7 @@
 "use client";
 
 import { addDays, differenceInCalendarDays, format, subDays } from "date-fns";
+import { vi } from "date-fns/locale";
 import {
 	CreditCard,
 	Zap,
@@ -141,12 +142,18 @@ function QuickActionsCard({
 	buildOrgUrl: (path?: string) => string;
 	className?: string;
 }) {
+	const { t } = useLanguage();
 	const { selectedOrganization } = useDashboardNavigation();
 	return (
 		<Card className={className}>
 			<CardHeader>
-				<CardTitle>Quick Actions</CardTitle>
-				<CardDescription>Jump straight to common tasks</CardDescription>
+				<CardTitle>{t("dashboard.quickActions", "Quick Actions")}</CardTitle>
+				<CardDescription>
+					{t(
+						"dashboard.quickActionsDescription",
+						"Jump straight to common tasks",
+					)}
+				</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<div className="grid grid-cols-2 gap-2">
@@ -171,7 +178,7 @@ function QuickActionsCard({
 									<action.icon className="h-4 w-4" />
 								</div>
 								<span className="text-sm font-medium leading-tight">
-									{action.label}
+									{t(`nav.${action.label}`, action.label)}
 								</span>
 							</Link>
 						))}
@@ -221,7 +228,9 @@ export function DashboardClient({
 	initialActivityRange,
 	initialActivityTimeZone,
 }: DashboardClientProps) {
-	const { t } = useLanguage();
+	const { language, t } = useLanguage();
+	const dateLocale = language === "vi" ? vi : undefined;
+	const shortDatePattern = language === "vi" ? "d MMM" : "MMM d";
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const { buildUrl, buildOrgUrl } = useDashboardNavigation();
@@ -632,7 +641,8 @@ export function DashboardClient({
 					{rangeDays <= 366 && (
 						<p className="text-xs text-muted-foreground">
 							{t("dashboard.trendsCompare", "Trends compare to")}{" "}
-							{format(prevFrom, "MMM d")} – {format(prevTo, "MMM d")}
+							{format(prevFrom, shortDatePattern, { locale: dateLocale })} –{" "}
+							{format(prevTo, shortDatePattern, { locale: dateLocale })}
 						</p>
 					)}
 				</div>
@@ -666,7 +676,7 @@ export function DashboardClient({
 							subtitle={
 								totalRequests > 0
 									? `${cacheHitRate.toFixed(1)}% ${t("dashboard.cacheHitRateLabel", "cache hit rate")} • ${formatNumber(totalErrors)} ${t("dashboard.errorCount", "errors")}`
-									: `${format(from, "MMM d")} – ${format(to, "MMM d")}`
+									: `${format(from, shortDatePattern, { locale: dateLocale })} – ${format(to, shortDatePattern, { locale: dateLocale })}`
 							}
 							icon={<Zap className="h-4 w-4" />}
 							accent="purple"
@@ -703,7 +713,7 @@ export function DashboardClient({
 														? ` • $${totalDataStorageCost.toFixed(4)} ${t("dashboard.storageLabel", "storage")}`
 														: ""
 												}`
-											: `${format(from, "MMM d")} – ${format(to, "MMM d")}`
+											: `${format(from, shortDatePattern, { locale: dateLocale })} – ${format(to, shortDatePattern, { locale: dateLocale })}`
 							}
 							icon={<CircleDollarSign className="h-4 w-4" />}
 							accent="blue"

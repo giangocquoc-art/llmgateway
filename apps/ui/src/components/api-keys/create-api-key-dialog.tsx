@@ -129,8 +129,11 @@ export function CreateApiKeyDialog({
 			setStep("created");
 		} catch (error) {
 			toast({
-				title: "Failed to create API key.",
-				description: getApiErrorMessage(error, "Please try again."),
+				title: t("apiKey.createFailed", "Failed to create API key."),
+				description: getApiErrorMessage(
+					error,
+					t("apiKey.tryAgain", "Please try again."),
+				),
 				variant: "destructive",
 			});
 		}

@@ -50,6 +50,7 @@ import {
 } from "@/lib/components/select";
 import { useDashboardState } from "@/lib/dashboard-state";
 import { useApi } from "@/lib/fetch-client";
+import { useLanguage } from "@/lib/language";
 import { cn } from "@/lib/utils";
 
 import { LOG_ERROR_TYPE_LABELS, LOG_ERROR_TYPES } from "@llmgateway/shared";
@@ -129,6 +130,7 @@ function setCookie(name: string, value: string, days = 365) {
 }
 
 function FirstLogTopUpPrompt() {
+	const { t } = useLanguage();
 	const { selectedOrganization } = useDashboardState();
 	const [dismissed, setDismissed] = useState(true);
 
@@ -147,7 +149,7 @@ function FirstLogTopUpPrompt() {
 		<div className="mt-4 relative overflow-hidden rounded-lg border border-primary/20 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 p-4">
 			<button
 				type="button"
-				aria-label="Dismiss top-up prompt"
+				aria-label={t("activity.dismissTopUp", "Dismiss top-up prompt")}
 				onClick={() => {
 					setDismissed(true);
 					setCookie(TOPUP_PROMPT_DISMISSED_KEY, "true");
@@ -161,16 +163,20 @@ function FirstLogTopUpPrompt() {
 					<Sparkles className="h-4 w-4 text-primary" />
 				</div>
 				<div className="flex-1">
-					<p className="text-sm font-semibold">Your first API call worked!</p>
+					<p className="text-sm font-semibold">
+						{t("activity.firstCallWorked", "Your first API call worked!")}
+					</p>
 					<p className="mt-1 text-sm text-muted-foreground">
-						Top up credits to unlock paid models with higher quality, faster
-						speeds, and larger context windows.
+						{t(
+							"activity.firstCallDescription",
+							"Top up credits to unlock paid models with higher quality, faster speeds, and larger context windows.",
+						)}
 					</p>
 					<div className="mt-3">
 						<TopUpCreditsDialog>
 							<Button size="sm">
 								<Sparkles className="mr-2 h-3.5 w-3.5" />
-								Top Up Credits
+								{t("activity.topUpCredits", "Top Up Credits")}
 							</Button>
 						</TopUpCreditsDialog>
 					</div>
@@ -187,6 +193,7 @@ export function RecentLogs({
 	projectId,
 	orgId,
 }: RecentLogsProps) {
+	const { t } = useLanguage();
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const [modelPickerOpen, setModelPickerOpen] = useState(false);
@@ -527,7 +534,12 @@ export function RecentLogs({
 	if (!projectId) {
 		return (
 			<div className="py-8 text-center text-muted-foreground">
-				<p>Please select a project to view recent logs.</p>
+				<p>
+					{t(
+						"activity.selectProject",
+						"Please select a project to view recent logs.",
+					)}
+				</p>
 			</div>
 		);
 	}
@@ -542,13 +554,15 @@ export function RecentLogs({
 					<div className="mb-3 flex flex-wrap items-center justify-between gap-2">
 						<div className="flex items-center gap-2">
 							<SlidersHorizontal className="h-4 w-4 text-muted-foreground" />
-							<span className="text-sm font-medium">Filters</span>
+							<span className="text-sm font-medium">
+								{t("activity.filters", "Filters")}
+							</span>
 							{activeFilterCount > 0 && (
 								<Badge
 									variant="secondary"
 									className="h-5 rounded-full px-2 text-xs font-normal"
 								>
-									{activeFilterCount} active
+									{activeFilterCount} {t("activity.activeFilters", "active")}
 								</Badge>
 							)}
 						</div>
@@ -562,7 +576,7 @@ export function RecentLogs({
 									className="h-8 gap-1.5 text-muted-foreground"
 								>
 									<X className="h-3.5 w-3.5" />
-									Reset
+									{t("activity.reset", "Reset")}
 								</Button>
 							)}
 							<Button
@@ -576,7 +590,9 @@ export function RecentLogs({
 								<RefreshCw
 									className={cn("h-3.5 w-3.5", isRefetching && "animate-spin")}
 								/>
-								{isRefetching ? "Refreshing..." : "Refresh"}
+								{isRefetching
+									? t("activity.refreshing", "Refreshing...")
+									: t("activity.refresh", "Refresh")}
 							</Button>
 						</div>
 					</div>
@@ -593,10 +609,17 @@ export function RecentLogs({
 							value={provider ?? "all"}
 						>
 							<SelectTrigger className="w-full">
-								<SelectValue placeholder="Filter by provider" />
+								<SelectValue
+									placeholder={t(
+										"activity.filterProvider",
+										"Filter by provider",
+									)}
+								/>
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value="all">All providers</SelectItem>
+								<SelectItem value="all">
+									{t("activity.allProviders", "All providers")}
+								</SelectItem>
 								{providerOptions.map((option) => (
 									<SelectItem key={option.id} value={option.id}>
 										{option.label}
@@ -617,7 +640,9 @@ export function RecentLogs({
 									)}
 								>
 									<span className="truncate">
-										{selectedModelOption?.label ?? model ?? "All models"}
+										{selectedModelOption?.label ??
+											model ??
+											t("activity.allModels", "All models")}
 									</span>
 									<ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
 								</Button>
@@ -625,12 +650,14 @@ export function RecentLogs({
 							<PopoverContent className="w-[320px] p-0" align="start">
 								<Command shouldFilter={false}>
 									<CommandInput
-										placeholder="Search models..."
+										placeholder={t("activity.searchModels", "Search models...")}
 										value={modelSearch}
 										onValueChange={setModelSearch}
 									/>
 									<CommandList>
-										<CommandEmpty>No models found.</CommandEmpty>
+										<CommandEmpty>
+											{t("activity.noModels", "No models found.")}
+										</CommandEmpty>
 										<CommandItem
 											value="all"
 											onSelect={() => {
@@ -645,7 +672,7 @@ export function RecentLogs({
 													!model ? "opacity-100" : "opacity-0",
 												)}
 											/>
-											All models
+											{t("activity.allModels", "All models")}
 										</CommandItem>
 										{filteredModelOptions.map((option) => (
 											<CommandItem
@@ -683,10 +710,14 @@ export function RecentLogs({
 							value={apiKeyId ?? "all"}
 						>
 							<SelectTrigger className="w-full">
-								<SelectValue placeholder="Filter by API key" />
+								<SelectValue
+									placeholder={t("activity.filterApiKey", "Filter by API key")}
+								/>
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value="all">All API keys</SelectItem>
+								<SelectItem value="all">
+									{t("activity.allApiKeys", "All API keys")}
+								</SelectItem>
 								{apiKeyOptions.map((option) => (
 									<SelectItem key={option.id} value={option.id}>
 										{option.label}
@@ -700,11 +731,17 @@ export function RecentLogs({
 							value={usedMode ?? "all"}
 						>
 							<SelectTrigger className="w-full">
-								<SelectValue placeholder="Filter by billing" />
+								<SelectValue
+									placeholder={t("activity.filterBilling", "Filter by billing")}
+								/>
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value="all">All billing</SelectItem>
-								<SelectItem value="credits">Credits</SelectItem>
+								<SelectItem value="all">
+									{t("activity.allBilling", "All billing")}
+								</SelectItem>
+								<SelectItem value="credits">
+									{t("dashboard.credits", "Credits")}
+								</SelectItem>
 								<SelectItem value="api-keys">BYOK</SelectItem>
 							</SelectContent>
 						</Select>
@@ -714,7 +751,9 @@ export function RecentLogs({
 							value={errorType ?? "all"}
 						>
 							<SelectTrigger className="w-full">
-								<SelectValue placeholder="Filter by error" />
+								<SelectValue
+									placeholder={t("activity.filterError", "Filter by error")}
+								/>
 							</SelectTrigger>
 							<SelectContent>
 								{LOG_ERROR_TYPES.map((value) => (
@@ -733,10 +772,17 @@ export function RecentLogs({
 							value={unifiedFinishReason ?? "all"}
 						>
 							<SelectTrigger className="w-full">
-								<SelectValue placeholder="Filter by unified reason" />
+								<SelectValue
+									placeholder={t(
+										"activity.filterReason",
+										"Filter by unified reason",
+									)}
+								/>
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value="all">All unified reasons</SelectItem>
+								<SelectItem value="all">
+									{t("activity.allReasons", "All unified reasons")}
+								</SelectItem>
 								{Object.entries(UnifiedFinishReason).map(([key, value]) => (
 									<SelectItem key={value} value={value}>
 										{key
@@ -751,7 +797,7 @@ export function RecentLogs({
 						<div className="relative">
 							<Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
 							<Input
-								placeholder="Header key (e.g. uid)"
+								placeholder={t("activity.headerKey", "Header key (e.g. uid)")}
 								value={customHeaderKey}
 								onChange={(e) => {
 									isFilteringRef.current = true;
@@ -768,7 +814,10 @@ export function RecentLogs({
 						<div className="relative">
 							<Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
 							<Input
-								placeholder="Header value (e.g. 12345)"
+								placeholder={t(
+									"activity.headerValue",
+									"Header value (e.g. 12345)",
+								)}
 								value={customHeaderValue}
 								onChange={(e) => {
 									isFilteringRef.current = true;
@@ -785,7 +834,7 @@ export function RecentLogs({
 						<div className="relative">
 							<Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
 							<Input
-								placeholder="Session ID"
+								placeholder={t("activity.sessionId", "Session ID")}
 								value={sessionId}
 								onChange={(e) => {
 									isFilteringRef.current = true;
@@ -803,9 +852,9 @@ export function RecentLogs({
 			</div>
 
 			{isLoading ? (
-				<div>Loading...</div>
+				<div>{t("dashboard.loading", "Loading...")}</div>
 			) : error ? (
-				<div>Error loading logs</div>
+				<div>{t("activity.loadError", "Error loading logs")}</div>
 			) : (
 				<div className="space-y-4 @container">
 					{allLogs.map((log, index) => (
