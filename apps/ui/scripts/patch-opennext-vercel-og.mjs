@@ -1,11 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
-import { resolve } from "node:path";
 
 export async function patchOpenNextVercelOg(packageRoot) {
-	const patchPath = resolve(
-		packageRoot,
-		"dist/cli/build/patches/ast/patch-vercel-og-library.js",
-	);
+	const patchPath = `${packageRoot}/dist/cli/build/patches/ast/patch-vercel-og-library.js`;
 	const original = await readFile(patchPath, "utf8");
 	const edgeTrace =
 		'const tracedEdgePath = path.join(path.dirname(traceInfoPath), tracedNodePath.replace("index.node.js", "index.edge.js"));';
@@ -27,7 +23,7 @@ export async function patchOpenNextVercelOg(packageRoot) {
 	const patched = original
 		.replace(
 			edgeTrace,
-			`${edgeTrace}\n        const sourceEdgePath = existsSync(tracedEdgePath) ? tracedEdgePath : path.join(buildOpts.appPath, "node_modules/next/dist/compiled/@vercel/og/index.edge.js");`,
+			`${edgeTrace}\n        const sourceEdgePath = existsSync(tracedEdgePath) ? tracedEdgePath : path.join(dirname(getPackagePath(buildOpts)), "next/dist/compiled/@vercel/og/index.edge.js");\n        if (!existsSync(sourceEdgePath)) throw new Error("Missing Vercel OG edge bundle at " + sourceEdgePath);`,
 		)
 		.replace(edgeCopy, "copyFileSync(sourceEdgePath, outputEdgePath);")
 		.replace(
