@@ -26,6 +26,7 @@ export async function patchOpenNextVercelOg(packageRoot) {
             path.join(buildOpts.appPath, "node_modules/next/dist/compiled/@vercel/og"),
             path.dirname(tracedEdgePath),
         ];
+        mkdirSync(path.dirname(outputEdgePath), { recursive: true });
         let sourceOgPath;
         let sourceEdgePath;
         const ogCopyErrors = [];
