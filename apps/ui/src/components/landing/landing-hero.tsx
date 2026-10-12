@@ -136,24 +136,24 @@ export function LandingHero() {
 									</div>
 								</div>
 							</div>
-							<div className="relative mx-auto flex w-full max-w-[540px] items-center justify-center lg:mx-0 lg:min-h-[500px]">
-								<div
-									aria-hidden="true"
-									className="absolute size-[min(80vw,440px)] rounded-full bg-[#e9e2ff]"
-								/>
-								<div
-									aria-hidden="true"
-									className="absolute right-[8%] top-[14%] size-20 rotate-12 rounded-3xl border border-white/80 bg-white/75 shadow-lg shadow-[#101c3a]/5"
-								/>
-								<Image
-									src="/favicon/chui-web-v21.webp"
-									alt="Chúi, linh vật PShareHub"
-									width={900}
-									height={900}
-									priority
-									className="relative z-10 h-auto w-[min(88vw,480px)] object-contain drop-shadow-[0_24px_28px_rgba(16,28,58,0.12)]"
-								/>
-							</div>
+						</div>
+						<div className="relative mx-auto flex w-full max-w-[540px] items-center justify-center lg:mx-0 lg:min-h-[500px]">
+							<div
+								aria-hidden="true"
+								className="absolute size-[min(80vw,440px)] rounded-full bg-[#e9e2ff]"
+							/>
+							<div
+								aria-hidden="true"
+								className="absolute right-[8%] top-[14%] size-20 rotate-12 rounded-3xl border border-white/80 bg-white/75 shadow-lg shadow-[#101c3a]/5"
+							/>
+							<Image
+								src="/favicon/chui-web-v21.webp"
+								alt="Chúi, linh vật PShareHub"
+								width={900}
+								height={900}
+								priority
+								className="relative z-10 h-auto w-[min(88vw,480px)] object-contain drop-shadow-[0_24px_28px_rgba(16,28,58,0.12)]"
+							/>
 						</div>
 					</div>
 
