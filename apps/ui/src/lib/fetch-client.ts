@@ -12,7 +12,7 @@ export function useFetchClient() {
 
 	return useMemo(() => {
 		return createFetchClient<paths>({
-			baseUrl: config.apiUrl,
+			baseUrl: `${config.apiUrl}/admin/compat`,
 			credentials: "include",
 		});
 	}, [config.apiUrl]);

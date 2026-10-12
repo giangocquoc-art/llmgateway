@@ -54,10 +54,7 @@ export function proxy(request: NextRequest) {
 		process.env.ACCOUNT_AUTH_ENABLED === "false" &&
 		accountAuthPages.includes(pathname)
 	) {
-		return NextResponse.redirect(
-			"https://api.psharehub.com/admin/studio/",
-			302,
-		);
+		return NextResponse.redirect(new URL("/dashboard", request.url), 302);
 	}
 
 	// Better Auth appends `?error=<code>` (and sometimes `?error_description=`)

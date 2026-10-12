@@ -7,7 +7,7 @@ afterEach(() => vi.unstubAllEnvs());
 
 describe("preview account auth routing", () => {
 	test.each(["/login", "/signup", "/forgot-password", "/reset-password"])(
-		"sends %s to the Access-protected gateway console when account auth is disabled",
+		"routes %s into the Access-protected LLMGateway dashboard when account auth is disabled",
 		(pathname) => {
 			vi.stubEnv("ACCOUNT_AUTH_ENABLED", "false");
 			const response = proxy(
@@ -15,7 +15,7 @@ describe("preview account auth routing", () => {
 			);
 			expect(response.status).toBe(302);
 			expect(response.headers.get("location")).toBe(
-				"https://api.psharehub.com/admin/studio/",
+				"https://ai.psharehub.com/dashboard",
 			);
 		},
 	);

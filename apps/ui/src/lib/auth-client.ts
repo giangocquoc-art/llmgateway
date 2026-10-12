@@ -12,7 +12,7 @@ export function useAuthClient() {
 
 	return useMemo(() => {
 		return createAuthClient({
-			baseURL: config.apiUrl + "/auth",
+			baseURL: config.apiUrl + "/admin/compat/auth",
 			plugins: [passkeyClient(), ssoClient(), deviceAuthorizationClient()],
 		});
 	}, [config.apiUrl]);
@@ -26,7 +26,11 @@ export function useAuth() {
 		() => ({
 			signIn: authClient.signIn,
 			signUp: authClient.signUp,
-			signOut: authClient.signOut,
+			signOut: async (..._args: Parameters<typeof authClient.signOut>) => {
+				window.location.assign(
+					`https://api.psharehub.com/cdn-cgi/access/logout?returnTo=${encodeURIComponent("https://ai.psharehub.com/")}`,
+				);
+			},
 			useSession: authClient.useSession,
 			getSession: authClient.getSession,
 			sendVerificationEmail: authClient.sendVerificationEmail,

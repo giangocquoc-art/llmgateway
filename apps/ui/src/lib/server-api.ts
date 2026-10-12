@@ -13,6 +13,7 @@ import type { Organization, Project, User } from "./types";
 export async function createServerApiClient() {
 	const config = getConfig();
 	const cookieStore = await cookies();
+	const requestHeaders = await headers();
 
 	const key = "better-auth.session_token";
 	// Get session cookie for authentication
@@ -20,13 +21,16 @@ export async function createServerApiClient() {
 	const secureSessionCookie = cookieStore.get(`__Secure-${key}`);
 
 	return createFetchClient<paths>({
-		baseUrl: config.apiBackendUrl,
+		baseUrl: `${config.apiBackendUrl}/admin/compat`,
 		credentials: "include",
 		headers: {
 			// Forward the visitor's address so the API's per-IP limits bucket
 			// them individually rather than lumping every visitor of a
 			// server-rendered page behind this server's own address.
-			...forwardedIpHeaders(await headers()),
+			...forwardedIpHeaders(requestHeaders),
+			...(requestHeaders.get("cf-access-jwt-assertion")
+				? { "Cf-Access-Token": requestHeaders.get("cf-access-jwt-assertion")! }
+				: {}),
 			Cookie: secureSessionCookie
 				? `__Secure-${key}=${secureSessionCookie.value}`
 				: sessionCookie
