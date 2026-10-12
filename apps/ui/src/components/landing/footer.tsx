@@ -1,73 +1,45 @@
-import Link from "next/link";
-
-const footerLinks = [
-	{ href: "https://psharehub.com/", label: "Trang chủ PShareHub" },
-	{
-		href: "https://api.psharehub.com/admin/studio/",
-		label: "Bảng điều khiển API",
-	},
-	{
-		href: "https://github.com/giangocquoc-art/llmgateway/tree/cf-ui-release",
-		label: "Mã nguồn",
-	},
-];
+﻿const ZALO_URL = "https://zalo.me/0583799593";
+const SOURCE_URL =
+	"https://github.com/giangocquoc-art/llmgateway/tree/psharehub/cf-ui-release";
 
 export default function Footer() {
 	return (
-		<footer className="relative bg-background py-10">
-			<div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+		<footer className="relative bg-white py-10">
+			<div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#d9d8d1] to-transparent" />
 			<div className="container mx-auto flex flex-col gap-8 px-4">
 				<div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-center">
 					<div>
 						<a
 							href="https://psharehub.com/"
-							className="font-display text-lg font-bold text-foreground hover:text-primary"
+							className="font-display text-lg font-bold text-[#151c38] hover:text-[#6045e8]"
 						>
-							PShareHub AI Gateway
+							PShareHub
 						</a>
-						<p className="mt-2 max-w-md text-sm text-muted-foreground">
-							Cổng API AI của PShareHub. Nhà cung cấp upstream chưa được kết
-							nối; yêu cầu AI hiện chưa được xử lý.
+						<p className="mt-2 max-w-md text-sm text-[#5d6680]">
+							Hỗ trợ Codex CLI và Claude CLI.
 						</p>
 					</div>
-					<nav aria-label="Liên kết cuối trang">
-						<ul className="flex flex-wrap gap-x-6 gap-y-3 text-sm text-muted-foreground">
-							{footerLinks.map((link) => (
-								<li key={link.href}>
-									{link.href.startsWith("http") ? (
-										<a
-											href={link.href}
-											target="_blank"
-											rel="noreferrer"
-											className="underline-offset-4 hover:text-foreground hover:underline"
-										>
-											{link.label}
-										</a>
-									) : (
-										<Link
-											href={link.href}
-											className="underline-offset-4 hover:text-foreground hover:underline"
-										>
-											{link.label}
-										</Link>
-									)}
-								</li>
-							))}
-						</ul>
-					</nav>
+					<a
+						href={ZALO_URL}
+						target="_blank"
+						rel="noopener noreferrer"
+						className="text-sm font-medium text-[#6045e8] hover:underline"
+					>
+						Liên hệ Zalo · 0583 799 593
+					</a>
 				</div>
-				<div className="flex flex-col items-center justify-between gap-2 border-t border-border/50 pt-6 text-center text-sm text-muted-foreground sm:flex-row sm:text-left">
+				<div className="flex flex-col items-center justify-between gap-2 border-t border-[#d9d8d1]/70 pt-6 text-center text-xs text-[#5d6680] sm:flex-row sm:text-left">
 					<p>
-						&copy; {new Date().getFullYear()} PShareHub AI Gateway. Giao diện
-						dựa trên LLM Gateway, giấy phép AGPLv3.
+						© {new Date().getFullYear()} PShareHub. Giao diện sử dụng LLM
+						Gateway theo giấy phép AGPLv3.
 					</p>
 					<a
-						href="https://www.gnu.org/licenses/agpl-3.0.html"
+						href={SOURCE_URL}
 						target="_blank"
-						rel="noreferrer"
-						className="underline-offset-4 hover:text-foreground hover:underline"
+						rel="noopener noreferrer"
+						className="underline underline-offset-4 hover:text-[#6045e8]"
 					>
-						Thông tin giấy phép
+						Mã nguồn & thông tin giấy phép
 					</a>
 				</div>
 			</div>

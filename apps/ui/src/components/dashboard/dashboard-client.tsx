@@ -16,7 +16,6 @@ import {
 	Crown,
 	ExternalLink,
 	BookOpen,
-	MessageSquare,
 	Settings,
 	Wallet,
 	Gift,
@@ -443,23 +442,23 @@ export function DashboardClient({
 		}
 	}, [totalRequests]);
 	const totalCost = activityData.reduce((sum, day) => sum + day.cost, 0) ?? 0;
-	const totalCreditsCost = rawActivityData.reduce(
+	const _totalCreditsCost = rawActivityData.reduce(
 		(sum, day) => sum + day.creditsCost,
 		0,
 	);
-	const totalApiKeysCost = rawActivityData.reduce(
+	const _totalApiKeysCost = rawActivityData.reduce(
 		(sum, day) => sum + day.apiKeysCost,
 		0,
 	);
-	const totalInputCost =
+	const _totalInputCost =
 		activityData.reduce((sum, day) => sum + day.inputCost, 0) ?? 0;
-	const totalOutputCost =
+	const _totalOutputCost =
 		activityData.reduce((sum, day) => sum + day.outputCost, 0) ?? 0;
 	const totalDataStorageCost =
 		activityData.reduce((sum, day) => sum + day.dataStorageCost, 0) ?? 0;
-	const totalRequestCost =
+	const _totalRequestCost =
 		activityData.reduce((sum, day) => sum + day.requestCost, 0) ?? 0;
-	const totalSavings =
+	const _totalSavings =
 		activityData.reduce((sum, day) => sum + day.discountSavings, 0) ?? 0;
 	const totalInputTokens =
 		activityData.reduce((sum, day) => sum + day.inputTokens, 0) ?? 0;
@@ -467,7 +466,7 @@ export function DashboardClient({
 		activityData.reduce((sum, day) => sum + day.outputTokens, 0) ?? 0;
 	const totalCachedTokens =
 		activityData.reduce((sum, day) => sum + day.cachedTokens, 0) ?? 0;
-	const totalCachedInputCost =
+	const _totalCachedInputCost =
 		activityData.reduce((sum, day) => sum + day.cachedInputCost, 0) ?? 0;
 	const totalErrors =
 		activityData.reduce((sum, day) => sum + day.errorCount, 0) ?? 0;
@@ -478,24 +477,24 @@ export function DashboardClient({
 		(sum, day) => sum + day.requestCount,
 		0,
 	);
-	const prevCost = prevActivityData.reduce(
+	const _prevCost = prevActivityData.reduce(
 		(sum, day) => sum + day.cost + day.dataStorageCost,
 		0,
 	);
-	const prevSavings = prevActivityData.reduce(
+	const _prevSavings = prevActivityData.reduce(
 		(sum, day) => sum + day.discountSavings,
 		0,
 	);
 
-	const cacheHitRate =
+	const _cacheHitRate =
 		totalRequests > 0 ? (totalCached / totalRequests) * 100 : 0;
 	// Data retention storage is billed on top of inference costs, so the
 	// headline spend includes it.
 	const totalSpend = totalCost + totalDataStorageCost;
-	const avgCostPerRequest = totalRequests > 0 ? totalSpend / totalRequests : 0;
+	const _avgCostPerRequest = totalRequests > 0 ? totalSpend / totalRequests : 0;
 
 	// Day-by-day series for the KPI sparklines, with missing days filled as 0.
-	const { requestsTrend, costTrend } = (() => {
+	const { requestsTrend, costTrend: _costTrend } = (() => {
 		if (rangeDays > 400) {
 			const sorted = [...activityData].sort((a, b) =>
 				a.date < b.date ? -1 : 1,
@@ -597,37 +596,54 @@ export function DashboardClient({
 						)}
 					</div>
 					<div className="flex items-center space-x-2">
-						{selectedOrganization && selectedProject && (
-							<>
-								<CreateApiKeyDialog
-									selectedProject={selectedProject}
-									disabled={
-										planLimits
-											? planLimits.currentCount >= planLimits.maxKeys
-											: false
-									}
-									disabledMessage={
-										planLimits
-											? `${planLimits.plan === "enterprise" ? "Enterprise" : planLimits.plan === "pro" ? "Pro" : "Free"} plan allows maximum ${planLimits.maxKeys} API keys per organization`
-											: undefined
-									}
-								>
-									<Button
-										variant="outline"
+						{selectedOrganization &&
+							selectedProject &&
+							!psharehubSingleOwner && (
+								<>
+									<CreateApiKeyDialog
+										selectedProject={selectedProject}
 										disabled={
-											!selectedProject ||
-											(planLimits
+											planLimits
 												? planLimits.currentCount >= planLimits.maxKeys
-												: false)
+												: false
 										}
-										className="flex items-center"
+										disabledMessage={
+											planLimits
+												? `${planLimits.plan === "enterprise" ? "Enterprise" : planLimits.plan === "pro" ? "Pro" : "Free"} plan allows maximum ${planLimits.maxKeys} API keys per organization`
+												: undefined
+										}
 									>
-										<Key className="mr-2 h-4 w-4" />
-										{t("dashboard.createApiKey", "Create API Key")}
-									</Button>
-								</CreateApiKeyDialog>
-								{isOrgAdmin && billingEnabled && <TopUpCreditsButton />}
-							</>
+										<Button
+											variant="outline"
+											disabled={
+												!selectedProject ||
+												(planLimits
+													? planLimits.currentCount >= planLimits.maxKeys
+													: false)
+											}
+											className="flex items-center"
+										>
+											<Key className="mr-2 h-4 w-4" />
+											{t("dashboard.createApiKey", "Create API Key")}
+										</Button>
+									</CreateApiKeyDialog>
+									{isOrgAdmin && billingEnabled && <TopUpCreditsButton />}
+								</>
+							)}
+						{psharehubSingleOwner && (
+							<Button
+								asChild
+								className="bg-[#6045e8] text-white hover:bg-[#5036d7]"
+							>
+								<a
+									href="https://vietapi.tech/dashboard.html"
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									Kiểm tra token
+									<ExternalLink className="ml-2 h-4 w-4" aria-hidden="true" />
+								</a>
+							</Button>
 						)}
 						{isOrgAdmin && billingEnabled && !selectedProject && (
 							<TopUpCreditsButton />
@@ -841,50 +857,14 @@ export function DashboardClient({
 								return (
 									<Card className="min-w-0 lg:col-span-4">
 										<CardHeader>
-											<CardTitle>Kết nối ứng dụng</CardTitle>
+											<CardTitle>Hạn mức VietAPI</CardTitle>
 											<CardDescription>
-												{totalRequests > 0
-													? totalRequests === 1
-														? t(
-																"dashboard.setupFirstCall",
-																"Bạn đã gửi yêu cầu đầu tiên. Hãy kết nối ứng dụng của bạn với PShareHub AI Gateway.",
-															)
-														: t(
-																"dashboard.setupCalls",
-																"Bạn đã gửi {count} yêu cầu. Tiếp tục tích hợp PShareHub AI Gateway vào ứng dụng của bạn.",
-															).replace("{count}", String(totalRequests))
-													: t(
-															"dashboard.integrateInOneLine",
-															"Kết nối ứng dụng với PShareHub AI Gateway qua API tương thích Anthropic Messages.",
-														)}
+												Kiểm tra token/ngày còn lại trong dashboard VietAPI.
+												PShareHub chưa tự động đọc số liệu quota.
 											</CardDescription>
 										</CardHeader>
 										<CardContent className="space-y-4">
 											<QuickStartSection />
-											<div className="flex flex-wrap gap-2">
-												<Button asChild variant="outline" size="sm">
-													<a
-														href="https://api.psharehub.com/docs"
-														target="_blank"
-														rel="noopener noreferrer"
-													>
-														<BookOpen className="mr-2 h-4 w-4" />
-														Tài liệu API
-														<ExternalLink className="ml-1.5 h-3 w-3" />
-													</a>
-												</Button>
-												<Button asChild variant="outline" size="sm">
-													<a
-														href="https://api.psharehub.com/admin/studio/"
-														target="_blank"
-														rel="noopener noreferrer"
-														className="inline-flex items-center justify-center rounded-md border border-input bg-background px-3 py-2 text-sm font-medium hover:bg-accent"
-													>
-														<MessageSquare className="mr-2 h-4 w-4" />
-														Mở trang quản trị gateway
-													</a>
-												</Button>
-											</div>
 										</CardContent>
 									</Card>
 								);

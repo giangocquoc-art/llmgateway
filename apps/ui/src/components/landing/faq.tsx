@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import { PlusIcon } from "lucide-react";
 
@@ -10,47 +10,28 @@ import {
 
 const faqData = [
 	{
-		question: "PShareHub AI Gateway là gì?",
+		question: "PShareHub hỗ trợ những công cụ CLI nào?",
 		answer:
-			"PShareHub AI Gateway cung cấp một giao diện API thống nhất để kết nối dịch vụ AI. Bảng quản trị được bảo vệ bằng Cloudflare Access và dành riêng cho chủ dự án. Nhà cung cấp upstream hiện chưa được kết nối nên yêu cầu AI chưa hoạt động.",
+			"PShareHub hỗ trợ Codex CLI và Claude CLI. Liên hệ qua Zalo để được tư vấn theo nhu cầu sử dụng.",
 	},
 	{
-		question: "Gateway hỗ trợ định dạng API nào?",
+		question: "Tôi cần tư vấn cài đặt thì liên hệ ở đâu?",
 		answer:
-			"Gateway tương thích với định dạng Anthropic Messages và OpenAI Chat Completions. Nhà cung cấp upstream chưa kết nối, vì vậy hiện chưa thể gửi yêu cầu tới model.",
-	},
-	{
-		question: "Làm thế nào để truy cập?",
-		answer:
-			"Bảng quản trị dành riêng cho chủ dự án và được bảo vệ bằng Cloudflare Access. API chưa mở đăng ký công khai. Yêu cầu AI chưa được xử lý cho đến khi kết nối nhà cung cấp upstream.",
-	},
-	{
-		question: "Chi phí sử dụng là bao nhiêu?",
-		answer:
-			"PShareHub chưa công bố giá sử dụng Gateway. Hiện chưa kết nối nhà cung cấp upstream và chưa xử lý yêu cầu AI.",
+			"Nhắn Zalo PShareHub theo số 0583 799 593. Tụi mình sẽ trao đổi và hướng dẫn bạn bắt đầu.",
 	},
 ];
 
 export function Faq() {
 	return (
-		<section className="py-24 md:py-32">
+		<section className="py-20 md:py-24">
 			<div className="container mx-auto px-4">
-				<div className="grid gap-12 lg:grid-cols-5">
+				<div className="grid gap-10 lg:grid-cols-5">
 					<div className="lg:col-span-2 lg:sticky lg:top-24 lg:self-start">
-						<h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground">
+						<h2 className="font-display text-3xl font-bold tracking-tight text-[#151c38] md:text-4xl">
 							Câu hỏi thường gặp
 						</h2>
-						<p className="mt-4 text-muted-foreground">
-							Thông tin về định dạng API, cách truy cập và chi phí sử dụng.
-						</p>
-						<p className="mt-6 text-sm text-muted-foreground">
-							Chưa tìm thấy câu trả lời?{" "}
-							<a
-								href="https://psharehub.com/"
-								className="text-foreground underline underline-offset-4"
-							>
-								Truy cập PShareHub
-							</a>
+						<p className="mt-4 text-[#5d6680]">
+							Thông tin về công cụ CLI được PShareHub hỗ trợ.
 						</p>
 					</div>
 					<div className="lg:col-span-3">
@@ -59,10 +40,10 @@ export function Faq() {
 								<AccordionItem
 									key={item.question}
 									value={`item-${index + 1}`}
-									className="py-5 border-border/50"
+									className="border-border/50 py-5"
 								>
 									<AccordionPrimitive.Header className="flex">
-										<AccordionPrimitive.Trigger className="focus-visible:border-ring focus-visible:ring-ring/50 flex flex-1 items-center justify-between gap-4 rounded-md py-2 text-left font-display text-lg md:text-xl font-medium leading-7 transition-all outline-none focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 [&>svg>path:last-child]:origin-center [&>svg>path:last-child]:transition-all [&>svg>path:last-child]:duration-200 [&[data-state=open]>svg]:rotate-180 [&[data-state=open]>svg>path:last-child]:rotate-90 [&[data-state=open]>svg>path:last-child]:opacity-0 text-foreground">
+										<AccordionPrimitive.Trigger className="flex flex-1 items-center justify-between gap-4 rounded-md py-2 text-left font-display text-lg font-medium leading-7 text-[#151c38] outline-none transition-all focus-visible:ring-[3px] focus-visible:ring-ring/50 md:text-xl">
 											{item.question}
 											<PlusIcon
 												size={18}
@@ -70,8 +51,8 @@ export function Faq() {
 											/>
 										</AccordionPrimitive.Trigger>
 									</AccordionPrimitive.Header>
-									<AccordionContent className="overflow-hidden transition-all data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up text-base text-muted-foreground leading-relaxed pb-2">
-										<div className="border-l-2 border-foreground/10 pl-4">
+									<AccordionContent className="overflow-hidden pb-2 text-base leading-relaxed text-[#5d6680]">
+										<div className="border-l-2 border-[#6045e8]/20 pl-4">
 											{item.answer}
 										</div>
 									</AccordionContent>

@@ -1,28 +1,9 @@
-const capabilities = [
-	"Anthropic Messages",
-	"OpenAI Chat Completions",
-	"Phản hồi theo luồng",
-	"Quản lý API key Gateway",
-];
-
-export function TrustBarEnterprise() {
+﻿export function TrustBarEnterprise() {
 	return (
-		<section className="border-y border-border bg-muted/30 py-12">
-			<div className="container mx-auto px-4 sm:px-6 lg:px-8">
-				<h2 className="mb-8 text-center text-sm font-normal uppercase tracking-wider text-muted-foreground">
-					Năng lực của PShareHub AI Gateway
-				</h2>
-				<div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
-					{capabilities.map((capability) => (
-						<div
-							key={capability}
-							className="rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground"
-						>
-							{capability}
-						</div>
-					))}
-				</div>
-			</div>
+		<section className="border-y border-[#e8e2ff] bg-[#f7f5ff] py-7">
+			<p className="text-center text-sm font-medium text-[#6045e8]">
+				Hỗ trợ cài đặt và kết nối Codex CLI · Claude CLI
+			</p>
 		</section>
 	);
 }

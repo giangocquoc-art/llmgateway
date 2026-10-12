@@ -1596,17 +1596,6 @@ export function DashboardSidebar({
 												item.href,
 											),
 										),
-										{ href: "api-keys", label: "Khóa API", icon: AnimatedKey },
-										{
-											href: "org/provider-keys",
-							label: "Nhà cung cấp AI",
-											icon: AnimatedKeyRound,
-										},
-										{
-											href: "settings/routing",
-											label: "Định tuyến",
-											icon: AnimatedRadioTower,
-										},
 									].map((item) => (
 										<NavigationItem
 											key={item.href}
@@ -1615,6 +1604,25 @@ export function DashboardSidebar({
 											onClick={handleNavClick}
 										/>
 									))}
+									<SidebarMenuItem>
+										<SidebarMenuButton
+											asChild
+											tooltip="Kiểm tra hạn mức VietAPI"
+										>
+											<a
+												href="https://vietapi.tech/dashboard.html"
+												target="_blank"
+												rel="noopener noreferrer"
+											>
+												<AnimatedKeyRound isHovered={false} />
+												<span>Hạn mức VietAPI</span>
+												<ExternalLink
+													className="ml-auto size-3.5"
+													aria-hidden="true"
+												/>
+											</a>
+										</SidebarMenuButton>
+									</SidebarMenuItem>
 								</SidebarMenu>
 							</SidebarGroupContent>
 						</SidebarGroup>

@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 		template: "%s | PShareHub AI Gateway",
 	},
 	description:
-		"Cổng API AI PShareHub hỗ trợ Anthropic Messages và OpenAI Chat Completions. Quản lý khóa truy cập và cấu hình nhà cung cấp trong bảng quản trị.",
+		"PShareHub hỗ trợ Codex CLI và Claude CLI. Liên hệ qua Zalo để được tư vấn.",
 	authors: [{ name: "PShareHub AI Gateway" }],
 	creator: "PShareHub AI Gateway",
 	publisher: "PShareHub AI Gateway",
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
 	openGraph: {
 		title: "PShareHub AI Gateway",
 		description:
-			"Cổng API AI PShareHub hỗ trợ Anthropic Messages và OpenAI Chat Completions. Quản lý khóa truy cập và cấu hình nhà cung cấp trong bảng quản trị.",
+			"PShareHub hỗ trợ Codex CLI và Claude CLI. Liên hệ qua Zalo để được tư vấn.",
 		type: "website",
 		url: "https://ai.psharehub.com",
 		siteName: "PShareHub AI Gateway",
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
 		card: "summary_large_image",
 		title: "PShareHub AI Gateway",
 		description:
-			"Cổng API AI PShareHub hỗ trợ Anthropic Messages và OpenAI Chat Completions. Quản lý khóa truy cập và cấu hình nhà cung cấp trong bảng quản trị.",
+			"PShareHub hỗ trợ Codex CLI và Claude CLI. Liên hệ qua Zalo để được tư vấn.",
 		creator: "@psharehub",
 	},
 	robots: {
@@ -91,14 +91,6 @@ const websiteSchema = {
 	name: "PShareHub AI Gateway",
 	alternateName: ["PShareHub AI Gateway", "ai.psharehub.com"],
 	url: "https://ai.psharehub.com",
-	potentialAction: {
-		"@type": "SearchAction",
-		target: {
-			"@type": "EntryPoint",
-			urlTemplate: "https://ai.psharehub.com/models?q={search_term_string}",
-		},
-		"query-input": "required name=search_term_string",
-	},
 };
 
 export default async function RootLayout({

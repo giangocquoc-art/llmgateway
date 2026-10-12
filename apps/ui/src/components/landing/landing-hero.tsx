@@ -1,128 +1,85 @@
-import { ArrowRight, CircleAlert } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 
 import { ShimmerButton } from "@/lib/components/shimmer-button";
 
-const STATS = [
-	{ value: "Anthropic", label: "Anthropic Messages" },
-	{ value: "OpenAI", label: "Tương thích Chat Completions" },
-	{ value: "Liên tục", label: "Phản hồi theo luồng" },
-	{ value: "Gateway", label: "Một địa chỉ API" },
-];
+const ZALO_URL = "https://zalo.me/0583799593";
 
 export function LandingHero() {
 	return (
 		<div className="overflow-hidden">
-			<div
-				aria-hidden
-				className="z-2 absolute inset-0 pointer-events-none isolate opacity-50 contain-strict hidden lg:block"
-			>
-				<div className="w-140 h-320 -translate-y-[350px] absolute left-0 top-0 -rotate-45 rounded-full bg-[radial-gradient(68.54%_68.72%_at_55.02%_31.46%,hsla(0,0%,85%,.08)_0,hsla(0,0%,55%,.02)_50%,hsla(0,0%,45%,0)_80%)]" />
-				<div className="h-320 absolute left-0 top-0 w-56 -rotate-45 rounded-full bg-[radial-gradient(50%_50%_at_50%_50%,hsla(0,0%,85%,.06)_0,hsla(0,0%,45%,.02)_80%,transparent_100%)] [translate:5%_-50%]" />
-				<div className="h-320 -translate-y-[350px] absolute left-0 top-0 w-56 -rotate-45 bg-[radial-gradient(50%_50%_at_50%_50%,hsla(0,0%,85%,.04)_0,hsla(0,0%,45%,.02)_80%,transparent_100%)]" />
-			</div>
-			<section className="bg-[#f6f4ee] text-[#101c3a]">
-				{/* pt-36 (not pt-24) on mobile clears the Runware promo banner
-						    stacked above the fixed navbar; revert when the promo ends. */}
+			<section className="bg-white text-[#101c3a]">
 				<div className="relative pt-36">
 					<div
 						aria-hidden
-						className="absolute inset-0 -z-10 size-full bg-[#f6f4ee]"
+						className="absolute inset-0 -z-10 size-full bg-white"
 					/>
 					<div className="mx-auto grid max-w-7xl items-center gap-8 px-6 pb-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12 lg:pb-14">
 						<div className="relative z-10">
-							{/* Announcement badge - centered */}
 							<div className="mb-8 flex justify-center lg:mb-10 lg:justify-start">
-								<div className="animate-hero-enter">
-									<div className="flex items-center gap-2 rounded-full border border-border/80 bg-background/75 px-4 py-2 shadow-sm shadow-[#101c3a]/5">
-										<Image
-											src="/favicon/chui-brand-mark.svg"
-											alt=""
-											aria-hidden="true"
-											width={22}
-											height={22}
-										/>
-										<span className="text-sm font-medium text-foreground">
-											PShareHub AI Gateway
-										</span>
-									</div>
+								<div className="animate-hero-enter flex items-center gap-2 rounded-full border border-border/80 bg-background/75 px-4 py-2 shadow-sm shadow-[#101c3a]/5">
+									<Image
+										src="/favicon/chui-brand-mark.svg"
+										alt=""
+										aria-hidden
+										width={22}
+										height={22}
+									/>
+									<span className="text-sm font-medium text-foreground">
+										PShareHub · AI CLI
+									</span>
 								</div>
 							</div>
 
-							{/* Centered hero content - optimized for conversion */}
 							<div className="mx-auto max-w-2xl text-center lg:mx-0 lg:text-left">
-								<div>
-									<p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#6045e8]">
-										Chia sẻ tri thức · Kiến tạo giá trị
-									</p>
-									<h1 className="text-balance text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground">
-										PShareHub AI Gateway
-									</h1>
-									<p className="mx-auto mt-4 max-w-2xl text-balance text-base leading-8 text-[#586580] md:mt-6 md:text-lg lg:mx-0">
-										Cổng API AI của PShareHub, hỗ trợ Anthropic Messages và
-										OpenAI Chat Completions. Quản lý khóa truy cập gateway trong
-										bảng quản trị. Kết nối nhà cung cấp upstream hiện chưa được
-										bật nên yêu cầu AI chưa được xử lý.
-									</p>
-								</div>
-
-								{/* Primary CTA - Maximum prominence */}
-								<div className="animate-hero-enter hero-enter-delay-1 mt-8 flex flex-col items-center gap-6 md:mt-10 lg:items-start">
-									{/* Primary CTA - ShimmerButton with glow */}
-									<div className="relative">
-										{/* Outer glow ring */}
-										<div className="absolute -inset-3 animate-pulse rounded-full bg-[#ffad4e]/30 blur-xl" />
-										<a
-											href="https://api.psharehub.com/admin/studio/"
-											className="group relative"
+								<p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#6045e8]">
+									Chia sẻ tri thức · Kiến tạo giá trị
+								</p>
+								<h1 className="text-balance font-display text-4xl font-bold tracking-tight text-[#101c3a] md:text-5xl lg:text-6xl">
+									Codex CLI & Claude CLI, sẵn sàng đồng hành.
+								</h1>
+								<p className="mx-auto mt-4 max-w-2xl text-balance text-base leading-8 text-[#586580] md:mt-6 md:text-lg lg:mx-0">
+									PShareHub hỗ trợ Codex CLI và Claude CLI. Liên hệ để được tư
+									vấn và hướng dẫn phù hợp với nhu cầu của bạn.
+								</p>
+								<div className="mt-8 flex flex-col items-center gap-5 md:mt-10 lg:items-start">
+									<a
+										href={ZALO_URL}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="group relative w-full sm:w-auto"
+									>
+										<div
+											aria-hidden
+											className="absolute -inset-3 rounded-full bg-[#ffad4e]/30 blur-xl"
+										/>
+										<ShimmerButton
+											background="#6045e8"
+											className="relative w-full px-8 py-4 shadow-2xl shadow-[#6045e8]/25 sm:w-auto md:px-10"
 										>
-											<ShimmerButton
-												background="#6045e8"
-												className="px-10 py-3 shadow-2xl shadow-[#6045e8]/25 md:px-12 md:py-4"
-											>
-												<span className="flex items-center gap-3 text-center text-xl leading-none font-bold tracking-tight whitespace-pre-wrap text-white md:text-2xl">
-													<span>Vào bảng quản trị</span>
-													<ArrowRight className="size-6 md:size-7 transition-transform group-hover:translate-x-1" />
-												</span>
-											</ShimmerButton>
-										</a>
-									</div>
-
-									{/* Trust indicators */}
-									<div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-[#586580] lg:justify-start">
-										<span className="flex items-center gap-1.5">
-											<span
-												className="size-2 rounded-full bg-[#8792a7]"
-												aria-hidden="true"
-											/>
-											Định dạng Anthropic Messages
-										</span>
-										<span className="flex items-center gap-1.5">
-											<span
-												className="size-2 rounded-full bg-[#8792a7]"
-												aria-hidden="true"
-											/>
-											Định dạng OpenAI Chat Completions
-										</span>
-										<span className="flex items-center gap-1.5">
-											<CircleAlert
-												className="size-4 text-amber-600"
-												aria-hidden="true"
-											/>
-											Upstream chưa kết nối
-										</span>
-									</div>
+											<span className="flex items-center justify-center gap-3 text-center text-lg font-bold text-white md:text-xl">
+												Liên hệ ngay để được tư vấn
+												<ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
+											</span>
+										</ShimmerButton>
+									</a>
+									<a
+										href={ZALO_URL}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="inline-flex items-center gap-1.5 text-sm text-[#586580] underline decoration-[#d9d8d1] underline-offset-4 hover:text-[#6045e8]"
+									>
+										Zalo 0583 799 593{" "}
+										<ArrowUpRight className="size-4" aria-hidden="true" />
+									</a>
 								</div>
 							</div>
 						</div>
+
 						<div className="relative mx-auto flex w-full max-w-[540px] items-center justify-center lg:mx-0 lg:min-h-[500px]">
 							<div
 								aria-hidden="true"
-								className="absolute size-[min(80vw,440px)] rounded-full bg-[#e9e2ff]"
-							/>
-							<div
-								aria-hidden="true"
-								className="absolute right-[8%] top-[14%] size-20 rotate-12 rounded-3xl border border-white/80 bg-white/75 shadow-lg shadow-[#101c3a]/5"
+								className="absolute size-[min(80vw,440px)] rounded-full bg-[#e8e2ff]"
 							/>
 							<Image
 								src="/favicon/chui-web-v21.webp"
@@ -135,23 +92,14 @@ export function LandingHero() {
 						</div>
 					</div>
 
-					<div className="animate-hero-enter hero-enter-delay-3">
-						<div className="mx-auto mt-8 max-w-7xl px-4 pb-16 sm:mt-12 sm:px-6 md:mt-20 md:pb-24">
-							<dl className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border bg-border sm:grid-cols-4">
-								{STATS.map((stat) => (
-									<div
-										key={stat.label}
-										className="flex flex-col-reverse bg-background px-5 py-4"
-									>
-										<dt className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
-											{stat.label}
-										</dt>
-										<dd className="font-display text-2xl font-bold tracking-tight md:text-3xl">
-											{stat.value}
-										</dd>
-									</div>
-								))}
-							</dl>
+					<div className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 md:pb-24">
+						<div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+							<div className="rounded-2xl border border-[#e8e2ff] bg-[#f7f5ff] px-6 py-5 text-center font-display text-xl font-semibold text-[#6045e8]">
+								Codex CLI
+							</div>
+							<div className="rounded-2xl border border-[#d9eee0] bg-[#f4fbf6] px-6 py-5 text-center font-display text-xl font-semibold text-[#245b50]">
+								Claude CLI
+							</div>
 						</div>
 					</div>
 				</div>

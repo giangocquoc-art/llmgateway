@@ -319,7 +319,7 @@ export function OnboardingWizard() {
 				</Card>
 
 				{/* Quick Start Snippets */}
-				<QuickStartSection apiKey={apiKey ?? undefined} />
+				<QuickStartSection />
 
 				{/* What's Next Card */}
 				<Card>
