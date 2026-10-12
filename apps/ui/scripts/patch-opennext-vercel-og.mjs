@@ -20,19 +20,21 @@ export async function patchOpenNextVercelOg(packageRoot) {
 		);
 	}
 
+	const fallbackBlock = `const nextOgPath = path.join(buildOpts.appPath, "node_modules/next/dist/compiled/@vercel/og");
+        const standaloneOgPath = path.join(buildOpts.appPath, ".next/standalone", getPackagePath(buildOpts), "node_modules/next/dist/compiled/@vercel/og");
+        const sourceOgPath = existsSync(path.join(nextOgPath, "index.edge.js")) ? nextOgPath : standaloneOgPath;
+        const sourceEdgePath = existsSync(tracedEdgePath) ? tracedEdgePath : path.join(sourceOgPath, "index.edge.js");
+        if (!existsSync(sourceEdgePath)) throw new Error("Missing Vercel OG edge bundle at " + sourceEdgePath);`;
 	const patched = original
-		.replace(
-			edgeTrace,
-			`${edgeTrace}\n        const sourceEdgePath = existsSync(tracedEdgePath) ? tracedEdgePath : path.join(dirname(getPackagePath(buildOpts)), "next/dist/compiled/@vercel/og/index.edge.js");\n        if (!existsSync(sourceEdgePath)) throw new Error("Missing Vercel OG edge bundle at " + sourceEdgePath);`,
-		)
+		.replace(edgeTrace, `${edgeTrace}\n        ${fallbackBlock}`)
 		.replace(edgeCopy, "copyFileSync(sourceEdgePath, outputEdgePath);")
 		.replace(
 			wasmTrace,
-			'const tracedWasmPath = path.join(path.dirname(sourceEdgePath), "yoga.wasm");',
+			'const tracedWasmPath = path.join(sourceOgPath, "yoga.wasm");',
 		)
 		.replace(
 			fontTrace,
-			"const tracedFontPath = path.join(path.dirname(sourceEdgePath), fontFileName);",
+			"const tracedFontPath = path.join(sourceOgPath, fontFileName);",
 		);
 	await writeFile(patchPath, patched);
 	return () => writeFile(patchPath, original);
