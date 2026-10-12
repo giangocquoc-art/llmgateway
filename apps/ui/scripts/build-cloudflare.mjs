@@ -54,6 +54,7 @@ async function hideOptionalSharpLinks(directory) {
 }
 
 async function main() {
+	await run(process.execPath, ["scripts/ensure-next-og-assets.mjs"]);
 	await run(process.execPath, ["scripts/copy-standalone-assets.mjs"]);
 	await hideOptionalSharpLinks(pnpmStore);
 	await hideOptionalSharpLinks(appModules);
