@@ -18,6 +18,7 @@ import {
 	subWeeks,
 	subYears,
 } from "date-fns";
+import { vi } from "date-fns/locale";
 import { ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
 
@@ -224,7 +225,7 @@ export function DateRangeControl({
 	range: UsageDateRange;
 	onChange: (range: UsageDateRange, label: string) => void;
 }) {
-	const { t } = useLanguage();
+	const { language, t } = useLanguage();
 	const [open, setOpen] = useState(false);
 	const [search, setSearch] = useState("");
 	const [showCalendar, setShowCalendar] = useState(false);
@@ -234,7 +235,7 @@ export function DateRangeControl({
 	const triggerLabel =
 		preset && preset.value !== "custom"
 			? localizedPresetLabel(preset, t)
-			: `${format(range.from, "MMM d, yyyy")} – ${format(range.to, "MMM d, yyyy")}`;
+			: `${format(range.from, language === "vi" ? "d MMM yyyy" : "MMM d, yyyy", { locale: language === "vi" ? vi : undefined })} – ${format(range.to, language === "vi" ? "d MMM yyyy" : "MMM d, yyyy", { locale: language === "vi" ? vi : undefined })}`;
 	const filteredPresets = search.trim()
 		? presets.filter((item) =>
 				localizedPresetLabel(item, t)

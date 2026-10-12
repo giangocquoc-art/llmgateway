@@ -1,6 +1,7 @@
 "use client";
 
 import { format, parseISO } from "date-fns";
+import { vi } from "date-fns/locale";
 
 import {
 	Card,
@@ -9,6 +10,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/lib/components/card";
+import { useLanguage } from "@/lib/language";
 
 import { formatNumber } from "@llmgateway/shared/number-format";
 
@@ -23,16 +25,23 @@ export function RecentActivityCard({
 	activityData,
 	isLoading,
 }: RecentActivityCardProps) {
+	const { language, t } = useLanguage();
+	const dateLocale = language === "vi" ? vi : undefined;
+	const dateFormat = language === "vi" ? "d MMM yyyy" : "MMM d, yyyy";
 	if (isLoading) {
 		return (
 			<Card>
 				<CardHeader>
-					<CardTitle>Recent Activity</CardTitle>
-					<CardDescription>Latest usage for this project</CardDescription>
+					<CardTitle>{t("activityCard.title", "Recent Activity")}</CardTitle>
+					<CardDescription>
+						{t("activityCard.latest", "Latest usage for this project")}
+					</CardDescription>
 				</CardHeader>
 				<CardContent>
 					<div className="flex h-[260px] items-center justify-center">
-						<p className="text-muted-foreground">Loading recent activity...</p>
+						<p className="text-muted-foreground">
+							{t("activityCard.loading", "Loading recent activity...")}
+						</p>
 					</div>
 				</CardContent>
 			</Card>
@@ -43,12 +52,16 @@ export function RecentActivityCard({
 		return (
 			<Card>
 				<CardHeader>
-					<CardTitle>Recent Activity</CardTitle>
-					<CardDescription>Latest usage for this project</CardDescription>
+					<CardTitle>{t("activityCard.title", "Recent Activity")}</CardTitle>
+					<CardDescription>
+						{t("activityCard.latest", "Latest usage for this project")}
+					</CardDescription>
 				</CardHeader>
 				<CardContent>
 					<div className="flex h-[260px] items-center justify-center">
-						<p className="text-muted-foreground">No activity data available</p>
+						<p className="text-muted-foreground">
+							{t("activityCard.noData", "No activity data available")}
+						</p>
 					</div>
 				</CardContent>
 			</Card>
@@ -63,8 +76,10 @@ export function RecentActivityCard({
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>Recent Activity</CardTitle>
-				<CardDescription>Daily usage overview (last few days)</CardDescription>
+				<CardTitle>{t("activityCard.title", "Recent Activity")}</CardTitle>
+				<CardDescription>
+					{t("activityCard.daily", "Daily usage overview (last few days)")}
+				</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<div className="space-y-2">
@@ -76,11 +91,15 @@ export function RecentActivityCard({
 							<div className="flex items-center justify-between gap-3">
 								<div className="min-w-0">
 									<p className="font-medium">
-										{format(parseISO(day.date), "MMM d, yyyy")}
+										{format(parseISO(day.date), dateFormat, {
+											locale: dateLocale,
+										})}
 									</p>
 									<p className="truncate text-xs text-muted-foreground">
-										{formatNumber(day.requestCount)} requests •{" "}
-										{formatNumber(day.totalTokens)} tokens
+										{formatNumber(day.requestCount)}{" "}
+										{t("activityCard.requests", "requests")} •{" "}
+										{formatNumber(day.totalTokens)}{" "}
+										{t("activityCard.tokens", "tokens")}
 									</p>
 								</div>
 								<div className="shrink-0 text-right">
@@ -89,7 +108,8 @@ export function RecentActivityCard({
 									</p>
 									{day.discountSavings > 0 && (
 										<p className="text-xs text-emerald-600 dark:text-emerald-400">
-											-${day.discountSavings.toFixed(4)} saved
+											-{`$${day.discountSavings.toFixed(4)}`}{" "}
+											{t("activityCard.saved", "saved")}
 										</p>
 									)}
 								</div>

@@ -17,6 +17,7 @@ import {
 	subWeeks,
 	subYears,
 } from "date-fns";
+import { vi } from "date-fns/locale";
 import { ChevronDownIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
@@ -268,7 +269,9 @@ export function DayRangePicker({
 	onCancel,
 	applyLabel = "Apply range",
 }: DayRangePickerProps) {
-	const { t } = useLanguage();
+	const { language, t } = useLanguage();
+	const datePattern = language === "vi" ? "d MMM yyyy" : "MMM d, yyyy";
+	const dateLocale = language === "vi" ? vi : undefined;
 	const { timeZone } = useDisplayTimeZone();
 	const today = new Date(`${formatDayKey(new Date(), timeZone)}T00:00:00`);
 	const [range, setRange] = useState<DateRange | undefined>({ from, to });
@@ -283,7 +286,7 @@ export function DayRangePicker({
 					</p>
 					<p className="mt-0.5 text-sm font-medium tabular-nums">
 						{range?.from
-							? format(range.from, "MMM d, yyyy")
+							? format(range.from, datePattern, { locale: dateLocale })
 							: t("date.selectDay", "Select a day")}
 					</p>
 				</div>
@@ -293,7 +296,7 @@ export function DayRangePicker({
 					</p>
 					<p className="mt-0.5 text-sm font-medium tabular-nums">
 						{range?.to
-							? format(range.to, "MMM d, yyyy")
+							? format(range.to, datePattern, { locale: dateLocale })
 							: t("date.selectDay", "Select a day")}
 					</p>
 				</div>
@@ -341,7 +344,9 @@ export function DayRangePicker({
 }
 
 export function DateRangePicker({ buildUrl, path }: DateRangePickerProps) {
-	const { t } = useLanguage();
+	const { language, t } = useLanguage();
+	const datePattern = language === "vi" ? "d MMM yyyy" : "MMM d, yyyy";
+	const dateLocale = language === "vi" ? vi : undefined;
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const [open, setOpen] = useState(false);
@@ -403,8 +408,8 @@ export function DateRangePicker({ buildUrl, path }: DateRangePickerProps) {
 		if (preset && preset.value !== "custom") {
 			return localizedPresetLabel(preset, t);
 		}
-		return `${format(from, "MMM d, yyyy")} – ${format(to, "MMM d, yyyy")}`;
-	}, [activePreset, from, to, presets, t]);
+		return `${format(from, datePattern, { locale: dateLocale })} – ${format(to, datePattern, { locale: dateLocale })}`;
+	}, [activePreset, dateLocale, datePattern, from, to, presets, t]);
 
 	return (
 		<Popover

@@ -8,6 +8,8 @@ import {
 	subMonths,
 } from "date-fns";
 
+import type { Locale } from "date-fns";
+
 export type UsageComparisonMode =
 	"off" | "previous-period" | "previous-week" | "previous-month" | "custom";
 
@@ -91,12 +93,19 @@ export function resolveUsageComparisonRange(
 	}
 }
 
-export function formatUsageDateRange({ from, to }: UsageDateRange): string {
+export function formatUsageDateRange(
+	{ from, to }: UsageDateRange,
+	locale?: Locale,
+): string {
+	const isVietnamese = locale?.code === "vi";
+	const options = locale ? { locale } : undefined;
+	const monthDay = isVietnamese ? "d MMM" : "MMM d";
+	const fullDate = isVietnamese ? "d MMM yyyy" : "MMM d, yyyy";
 	if (from.getFullYear() === to.getFullYear()) {
 		if (from.getMonth() === to.getMonth()) {
-			return `${format(from, "MMM d")}–${format(to, "d, yyyy")}`;
+			return `${format(from, monthDay, options)}–${format(to, isVietnamese ? "d yyyy" : "d, yyyy", options)}`;
 		}
-		return `${format(from, "MMM d")}–${format(to, "MMM d, yyyy")}`;
+		return `${format(from, monthDay, options)}–${format(to, fullDate, options)}`;
 	}
-	return `${format(from, "MMM d, yyyy")}–${format(to, "MMM d, yyyy")}`;
+	return `${format(from, fullDate, options)}–${format(to, fullDate, options)}`;
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { vi } from "date-fns/locale";
 import { Check, ChevronDown, ChevronLeft, GitCompare } from "lucide-react";
 import { useState } from "react";
 
@@ -11,6 +12,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/lib/components/popover";
+import { useLanguage } from "@/lib/language";
 import { cn } from "@/lib/utils";
 
 import {
@@ -30,26 +32,36 @@ const OPTIONS: {
 	value: Exclude<UsageComparisonMode, "custom">;
 	label: string;
 	description: string;
+	labelKey: string;
+	descriptionKey: string;
 }[] = [
 	{
 		value: "off",
 		label: "No comparison",
 		description: "Show only the selected range",
+		labelKey: "comparison.noComparison",
+		descriptionKey: "comparison.selectedOnly",
 	},
 	{
 		value: "previous-period",
 		label: "Previous period",
 		description: "The same number of days immediately before",
+		labelKey: "comparison.previousPeriod",
+		descriptionKey: "comparison.previousPeriodDescription",
 	},
 	{
 		value: "previous-week",
 		label: "Week over week",
 		description: "A full week starting on the date you choose",
+		labelKey: "comparison.weekOverWeek",
+		descriptionKey: "comparison.weekDescription",
 	},
 	{
 		value: "previous-month",
 		label: "Month over month",
 		description: "A full month starting on the date you choose",
+		labelKey: "comparison.monthOverMonth",
+		descriptionKey: "comparison.monthDescription",
 	},
 ];
 
@@ -64,20 +76,25 @@ interface UsageComparisonPickerProps {
 function triggerLabel(
 	mode: UsageComparisonMode,
 	comparisonRange: UsageDateRange | null,
+	t: (key: string, fallback?: string) => string,
+	locale?: typeof vi,
 ): string {
 	if (mode === "off") {
-		return "Compare";
+		return t("comparison.compare", "Compare");
 	}
 	if (comparisonRange && mode === "custom") {
-		return formatUsageDateRange(comparisonRange);
+		return formatUsageDateRange(comparisonRange, locale);
 	}
 	if (comparisonRange && mode === "previous-week") {
-		return `Week · ${formatUsageDateRange(comparisonRange)}`;
+		return `${t("comparison.week", "Week")} · ${formatUsageDateRange(comparisonRange, locale)}`;
 	}
 	if (comparisonRange && mode === "previous-month") {
-		return `Month · ${formatUsageDateRange(comparisonRange)}`;
+		return `${t("comparison.month", "Month")} · ${formatUsageDateRange(comparisonRange, locale)}`;
 	}
-	return OPTIONS.find((option) => option.value === mode)?.label ?? "Compare";
+	const option = OPTIONS.find((item) => item.value === mode);
+	return option
+		? t(option.labelKey, option.label)
+		: t("comparison.compare", "Compare");
 }
 
 function ComparisonStartPicker({
@@ -95,6 +112,8 @@ function ComparisonStartPicker({
 	onBack: () => void;
 	onSelect: (range: UsageDateRange) => void;
 }) {
+	const { language, t } = useLanguage();
+	const locale = language === "vi" ? vi : undefined;
 	const selectedRange = namedUsageComparisonRange(mode, start);
 	const overlapsCurrent = selectedRange.to >= currentRange.from;
 
@@ -107,26 +126,35 @@ function ComparisonStartPicker({
 					size="icon"
 					className="-ml-2 h-8 w-8"
 					onClick={onBack}
-					aria-label="Back to comparison options"
+					aria-label={t("comparison.back", "Back to comparison options")}
 				>
 					<ChevronLeft className="h-4 w-4" />
 				</Button>
 				<div>
 					<p className="text-sm font-medium">
-						{mode === "previous-week" ? "Week" : "Month"} comparison
+						{mode === "previous-week"
+							? t("comparison.weekRange", "Week comparison")
+							: t("comparison.monthRange", "Month comparison")}
 					</p>
 					<p className="text-xs text-muted-foreground">
-						Choose a start date for the{" "}
-						{mode === "previous-week" ? "7-day" : "one-month"} comparison
+						{mode === "previous-week"
+							? t(
+									"comparison.chooseStart7Day",
+									"Choose a start date for the 7-day comparison",
+								)
+							: t(
+									"comparison.chooseStartMonth",
+									"Choose a start date for the one-month comparison",
+								)}
 					</p>
 				</div>
 			</div>
 			<div className="rounded-md border border-border/60 bg-muted/30 px-3 py-2">
 				<p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-					Comparison range
+					{t("comparison.range", "Comparison range")}
 				</p>
 				<p className="mt-0.5 text-sm font-medium tabular-nums">
-					{formatUsageDateRange(selectedRange)}
+					{formatUsageDateRange(selectedRange, locale)}
 				</p>
 			</div>
 			<Calendar
@@ -145,14 +173,16 @@ function ComparisonStartPicker({
 				className="relative p-0"
 			/>
 			<div className="flex items-center justify-between border-t px-3 pt-3 sm:px-0">
-				<p className="text-xs text-muted-foreground">Ends automatically</p>
+				<p className="text-xs text-muted-foreground">
+					{t("comparison.endsAutomatically", "Ends automatically")}
+				</p>
 				<Button
 					type="button"
 					size="sm"
 					disabled={overlapsCurrent}
 					onClick={() => onSelect(selectedRange)}
 				>
-					Compare
+					{t("comparison.compare", "Compare")}
 				</Button>
 			</div>
 		</div>
@@ -166,6 +196,8 @@ export function UsageComparisonPicker({
 	disabled = false,
 	onChange,
 }: UsageComparisonPickerProps) {
+	const { language, t } = useLanguage();
+	const locale = language === "vi" ? vi : undefined;
 	const [open, setOpen] = useState(false);
 	const [showCustom, setShowCustom] = useState(false);
 	const [startDateMode, setStartDateMode] = useState<StartDateMode | null>(
@@ -194,7 +226,10 @@ export function UsageComparisonPicker({
 					disabled={disabled}
 					title={
 						disabled
-							? "Comparison is unavailable for all-time ranges"
+							? t(
+									"comparison.unavailableAllTime",
+									"Comparison is unavailable for all-time ranges",
+								)
 							: undefined
 					}
 					className={cn(
@@ -204,7 +239,7 @@ export function UsageComparisonPicker({
 				>
 					<GitCompare className="h-3.5 w-3.5" />
 					<span className="truncate">
-						{triggerLabel(mode, comparisonRange)}
+						{triggerLabel(mode, comparisonRange, t, locale)}
 					</span>
 					<ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
 				</Button>
@@ -245,9 +280,11 @@ export function UsageComparisonPicker({
 				) : (
 					<div className="p-1">
 						<div className="px-2 pb-2 pt-2">
-							<p className="text-sm font-medium">Compare usage</p>
+							<p className="text-sm font-medium">
+								{t("comparison.menuTitle", "Compare usage")}
+							</p>
 							<p className="text-xs text-muted-foreground">
-								Overlay ranges by elapsed day
+								{t("comparison.overlay", "Overlay ranges by elapsed day")}
 							</p>
 						</div>
 						{OPTIONS.map((option) => (
@@ -282,10 +319,10 @@ export function UsageComparisonPicker({
 								</span>
 								<span>
 									<span className="block text-sm font-medium">
-										{option.label}
+										{t(option.labelKey, option.label)}
 									</span>
 									<span className="block text-xs text-muted-foreground">
-										{option.description}
+										{t(option.descriptionKey, option.description)}
 									</span>
 								</span>
 							</button>
@@ -299,9 +336,14 @@ export function UsageComparisonPicker({
 								{mode === "custom" && <Check className="h-3.5 w-3.5" />}
 							</span>
 							<span>
-								<span className="block text-sm font-medium">Custom range</span>
+								<span className="block text-sm font-medium">
+									{t("comparison.customRange", "Custom range")}
+								</span>
 								<span className="block text-xs text-muted-foreground">
-									Choose exact comparison days
+									{t(
+										"comparison.chooseExactDays",
+										"Choose exact comparison days",
+									)}
 								</span>
 							</span>
 						</button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { format, parseISO } from "date-fns";
+import { vi } from "date-fns/locale";
 import {
 	Bar,
 	BarChart,
@@ -16,6 +17,7 @@ import {
 	type ChartPoint,
 } from "@/components/dashboard/overview-data";
 import { formatUsageDateRange } from "@/components/dashboard/usage-comparison";
+import { useLanguage } from "@/lib/language";
 
 import {
 	formatCompactNumber,
@@ -59,16 +61,19 @@ function formatAxisCost(value: number): string {
 	return `$${value.toFixed(0)}`;
 }
 
-function comparisonName(mode: UsageComparisonMode | undefined): string {
+function comparisonName(
+	mode: UsageComparisonMode | undefined,
+	t: (key: string, fallback?: string) => string,
+): string {
 	switch (mode) {
 		case "previous-period":
-			return "Previous period";
+			return t("comparison.previousPeriod", "Previous period");
 		case "previous-week":
-			return "Previous week";
+			return t("comparison.previousWeek", "Previous week");
 		case "previous-month":
-			return "Previous month";
+			return t("comparison.previousMonth", "Previous month");
 		default:
-			return "Comparison";
+			return t("comparison.comparison", "Comparison");
 	}
 }
 
@@ -87,6 +92,8 @@ function TooltipSection({
 	costView: CostView;
 	comparison?: boolean;
 }) {
+	const { language, t } = useLanguage();
+	const locale = language === "vi" ? vi : undefined;
 	const prefix = comparison ? "comparison" : "current";
 	const totalCost = point[`${prefix}Cost`];
 	const requests = point[`${prefix}Requests`];
@@ -101,24 +108,36 @@ function TooltipSection({
 			<div className="flex items-baseline justify-between gap-6">
 				<p className="text-xs font-medium text-muted-foreground">{label}</p>
 				<p className="text-xs tabular-nums text-muted-foreground">
-					{format(parseISO(date), "MMM d, yyyy")}
+					{format(
+						parseISO(date),
+						language === "vi" ? "d MMM yyyy" : "MMM d, yyyy",
+						{ locale },
+					)}
 				</p>
 			</div>
 			{metric === "requests" ? (
 				<p className="mt-1 text-sm font-medium tabular-nums">
-					{formatNumber(requests ?? 0)} requests
+					{formatNumber(requests ?? 0)} {t("chart.requests", "requests")}
 				</p>
 			) : costView === "total" ? (
 				<p className="mt-1 text-sm font-medium tabular-nums">
-					{formatCost(totalCost ?? 0)} total cost
+					{formatCost(totalCost ?? 0)} {t("chart.totalCost", "total cost")}
 				</p>
 			) : (
 				<div className="mt-1 space-y-1">
 					{[
-						{ label: "Input", value: inputCost ?? 0, color: COLORS.input },
-						{ label: "Output", value: outputCost ?? 0, color: COLORS.output },
 						{
-							label: "Cached input",
+							label: t("chart.input", "Input"),
+							value: inputCost ?? 0,
+							color: COLORS.input,
+						},
+						{
+							label: t("chart.output", "Output"),
+							value: outputCost ?? 0,
+							color: COLORS.output,
+						},
+						{
+							label: t("chart.cachedInput", "Cached input"),
 							value: cachedInputCost ?? 0,
 							color: COLORS.cached,
 						},
@@ -158,6 +177,7 @@ function ChartTooltip({
 	costView: CostView;
 	comparisonMode?: UsageComparisonMode;
 }) {
+	const { t } = useLanguage();
 	const point = payload?.[0]?.payload;
 	if (!active || !point) {
 		return null;
@@ -168,7 +188,7 @@ function ChartTooltip({
 			{point.currentDate && (
 				<TooltipSection
 					date={point.currentDate}
-					label="Current"
+					label={t("chart.current", "Current")}
 					point={point}
 					metric={metric}
 					costView={costView}
@@ -177,7 +197,7 @@ function ChartTooltip({
 			{point.comparisonDate && (
 				<TooltipSection
 					date={point.comparisonDate}
-					label={comparisonName(comparisonMode)}
+					label={comparisonName(comparisonMode, t)}
 					point={point}
 					metric={metric}
 					costView={costView}
@@ -246,12 +266,16 @@ export function UsageOverviewChart({
 	metric: Metric;
 	costView: CostView;
 }) {
+	const { language, t } = useLanguage();
+	const locale = language === "vi" ? vi : undefined;
 	const hasComparison = Boolean(comparisonRange);
 
 	if (data.length === 0) {
 		return (
 			<div className="flex h-[350px] items-center justify-center">
-				<p className="text-muted-foreground">No activity data available</p>
+				<p className="text-muted-foreground">
+					{t("chart.noActivity", "No activity data available")}
+				</p>
 			</div>
 		);
 	}
@@ -263,7 +287,7 @@ export function UsageOverviewChart({
 		comparisonData,
 	);
 	const comparisonLabel = comparisonRange
-		? formatUsageDateRange(comparisonRange)
+		? formatUsageDateRange(comparisonRange, locale)
 		: null;
 	const breakdown = metric === "costs" && costView === "breakdown";
 
@@ -272,17 +296,26 @@ export function UsageOverviewChart({
 			<div className="mb-3 flex min-h-5 flex-wrap items-center gap-x-4 gap-y-2 px-4 text-xs text-muted-foreground">
 				{breakdown ? (
 					<>
-						<LegendItem color={COLORS.input} label="Input" />
-						<LegendItem color={COLORS.output} label="Output" />
-						<LegendItem color={COLORS.cached} label="Cached input" />
+						<LegendItem
+							color={COLORS.input}
+							label={t("chart.input", "Input")}
+						/>
+						<LegendItem
+							color={COLORS.output}
+							label={t("chart.output", "Output")}
+						/>
+						<LegendItem
+							color={COLORS.cached}
+							label={t("chart.cachedInput", "Cached input")}
+						/>
 						{hasComparison && (
 							<PeriodLegendItem
-								label={`Current · ${formatUsageDateRange(currentRange)}`}
+								label={`${t("chart.current", "Current")} · ${formatUsageDateRange(currentRange, locale)}`}
 							/>
 						)}
 						{hasComparison && comparisonLabel && (
 							<PeriodLegendItem
-								label={`${comparisonName(comparisonMode)} · ${comparisonLabel}`}
+								label={`${comparisonName(comparisonMode, t)} · ${comparisonLabel}`}
 								opacity={0.38}
 							/>
 						)}
@@ -290,13 +323,13 @@ export function UsageOverviewChart({
 				) : (
 					<LegendItem
 						color={COLORS.current}
-						label={`Current · ${formatUsageDateRange(currentRange)}`}
+						label={`${t("chart.current", "Current")} · ${formatUsageDateRange(currentRange, locale)}`}
 					/>
 				)}
 				{hasComparison && comparisonLabel && !breakdown && (
 					<LegendItem
 						color={COLORS.comparison}
-						label={`${comparisonName(comparisonMode)} · ${comparisonLabel}`}
+						label={`${comparisonName(comparisonMode, t)} · ${comparisonLabel}`}
 						opacity={0.55}
 					/>
 				)}
@@ -318,8 +351,12 @@ export function UsageOverviewChart({
 						tickFormatter={(value: number) => {
 							const date = chartData[value]?.currentDate;
 							return date
-								? format(parseISO(date), "MMM d")
-								: `Day ${value + 1}`;
+								? format(
+										parseISO(date),
+										language === "vi" ? "d MMM" : "MMM d",
+										{ locale },
+									)
+								: `${t("chart.day", "Day")} ${value + 1}`;
 						}}
 						stroke="#888888"
 						fontSize={12}

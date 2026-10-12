@@ -1,6 +1,7 @@
 "use client";
 
 import { format, parseISO } from "date-fns";
+import { vi } from "date-fns/locale";
 
 import {
 	Card,
@@ -9,6 +10,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/lib/components/card";
+import { useLanguage } from "@/lib/language";
 import { cn } from "@/lib/utils";
 
 import { formatNumber } from "@llmgateway/shared/number-format";
@@ -68,16 +70,25 @@ export function ErrorsReliabilityCard({
 	activityData,
 	isLoading,
 }: ErrorsReliabilityCardProps) {
+	const { language, t } = useLanguage();
+	const dateLocale = language === "vi" ? vi : undefined;
+	const dateFormat = language === "vi" ? "d MMM yyyy" : "MMM d, yyyy";
 	if (isLoading) {
 		return (
 			<Card>
 				<CardHeader>
-					<CardTitle>Errors & Reliability</CardTitle>
-					<CardDescription>Error rate and cache health</CardDescription>
+					<CardTitle>
+						{t("reliability.title", "Errors & Reliability")}
+					</CardTitle>
+					<CardDescription>
+						{t("reliability.description", "Error rate and cache health")}
+					</CardDescription>
 				</CardHeader>
 				<CardContent>
 					<div className="flex h-[260px] items-center justify-center">
-						<p className="text-muted-foreground">Loading reliability data...</p>
+						<p className="text-muted-foreground">
+							{t("reliability.loading", "Loading reliability data...")}
+						</p>
 					</div>
 				</CardContent>
 			</Card>
@@ -88,12 +99,18 @@ export function ErrorsReliabilityCard({
 		return (
 			<Card>
 				<CardHeader>
-					<CardTitle>Errors & Reliability</CardTitle>
-					<CardDescription>Error rate and cache health</CardDescription>
+					<CardTitle>
+						{t("reliability.title", "Errors & Reliability")}
+					</CardTitle>
+					<CardDescription>
+						{t("reliability.description", "Error rate and cache health")}
+					</CardDescription>
 				</CardHeader>
 				<CardContent>
 					<div className="flex h-[260px] items-center justify-center">
-						<p className="text-muted-foreground">No activity data available</p>
+						<p className="text-muted-foreground">
+							{t("reliability.noData", "No activity data available")}
+						</p>
 					</div>
 				</CardContent>
 			</Card>
@@ -133,30 +150,40 @@ export function ErrorsReliabilityCard({
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>Errors & Reliability</CardTitle>
+				<CardTitle>{t("reliability.title", "Errors & Reliability")}</CardTitle>
 				<CardDescription>
-					Overall error and cache rates for this period
+					{t(
+						"reliability.overall",
+						"Overall error and cache rates for this period",
+					)}
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="space-y-4">
 				<div className="grid grid-cols-2 gap-3 text-sm">
 					<RateStat
-						label="Error rate"
+						label={t("reliability.errorRate", "Error rate")}
 						rate={errorRate}
-						detail={`${formatNumber(totalErrors)} failed of ${formatNumber(uptimeRequests)} valid requests`}
+						detail={t(
+							"reliability.failedOfValid",
+							"{errors} failed of {valid} valid requests",
+						)
+							.replace("{errors}", formatNumber(totalErrors))
+							.replace("{valid}", formatNumber(uptimeRequests))}
 						tone={errorTone}
 					/>
 					<RateStat
-						label="Cache hit rate"
+						label={t("reliability.cacheHitRate", "Cache hit rate")}
 						rate={cacheRate}
-						detail={`${formatNumber(totalCached)} cached responses`}
+						detail={`${formatNumber(totalCached)} ${t("reliability.cachedResponses", "cached responses")}`}
 						tone="neutral"
 					/>
 				</div>
 
 				<div className="rounded-lg border border-border/60 p-3">
 					<div className="flex items-center justify-between">
-						<p className="text-xs text-muted-foreground">Success rate</p>
+						<p className="text-xs text-muted-foreground">
+							{t("reliability.successRate", "Success rate")}
+						</p>
 						<p className="text-sm font-semibold tabular-nums">
 							{successRate.toFixed(2)}%
 						</p>
@@ -178,7 +205,10 @@ export function ErrorsReliabilityCard({
 				{worstErrorDays.length > 0 && (
 					<div className="space-y-2">
 						<p className="text-xs font-medium text-muted-foreground">
-							Days with highest error rate
+							{t(
+								"reliability.highestErrorDays",
+								"Days with highest error rate",
+							)}
 						</p>
 						<div className="space-y-1 text-xs">
 							{worstErrorDays.map((day) => (
@@ -186,7 +216,11 @@ export function ErrorsReliabilityCard({
 									key={day.date}
 									className="flex items-center justify-between rounded-md border border-border/60 px-2.5 py-1.5"
 								>
-									<span>{format(parseISO(day.date), "MMM d, yyyy")}</span>
+									<span>
+										{format(parseISO(day.date), dateFormat, {
+											locale: dateLocale,
+										})}
+									</span>
 									<span
 										className={cn(
 											"font-semibold tabular-nums",

@@ -21,6 +21,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/lib/components/popover";
+import { useLanguage } from "@/lib/language";
 import { applyUsageModeToDaily, type UsageMode } from "@/lib/usage-mode";
 
 import type { DailyActivity } from "@/types/activity";
@@ -95,6 +96,7 @@ export function CostBreakdownCard({
 	usageMode: UsageMode;
 	projectName: string;
 }) {
+	const { t } = useLanguage();
 	const [othersOpen, setOthersOpen] = useState(false);
 
 	const modelCosts = new Map<string, { cost: number; provider: string }>();
@@ -130,10 +132,15 @@ export function CostBreakdownCard({
 		});
 	}
 
-	const chartConfig: ChartConfig = { cost: { label: "Cost" } };
+	const chartConfig: ChartConfig = {
+		cost: { label: t("dashboard.costs", "Cost") },
+	};
 	const chartData: Slice[] = sorted.map((item, index) => {
 		const key = item.model.replace(/[^a-zA-Z0-9]/g, "_");
-		const label = item.model === "storage" ? "Storage" : item.model;
+		const label =
+			item.model === "storage"
+				? t("dashboard.storageLabel", "Storage")
+				: item.model;
 		chartConfig[key] = {
 			label,
 			color:
@@ -176,15 +183,20 @@ export function CostBreakdownCard({
 	return (
 		<Card>
 			<CardHeader>
-				<CardTitle>Cost Breakdown</CardTitle>
+				<CardTitle>{t("costBreakdown.title", "Cost Breakdown")}</CardTitle>
 				<CardDescription>
-					Estimated costs by provider and storage for this project
+					{t(
+						"costBreakdown.description",
+						"Estimated costs by provider and storage for this project",
+					)}
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="@container">
 				{chartData.length === 0 ? (
 					<div className="flex h-full items-center justify-center">
-						<p className="text-muted-foreground">No cost data available</p>
+						<p className="text-muted-foreground">
+							{t("costBreakdown.noData", "No cost data available")}
+						</p>
 					</div>
 				) : (
 					<div className="flex h-full flex-col gap-4 @lg:flex-row">
@@ -240,7 +252,7 @@ export function CostBreakdownCard({
 														y={(viewBox.cy ?? 0) + 20}
 														className="fill-muted-foreground text-xs"
 													>
-														Total Cost
+														{t("costBreakdown.total", "Total Cost")}
 													</tspan>
 												</text>
 											) : null
@@ -251,7 +263,7 @@ export function CostBreakdownCard({
 						</ChartContainer>
 						<div className="flex min-w-0 flex-1 flex-col justify-center gap-3 text-sm">
 							<p className="text-muted-foreground">
-								Project:{" "}
+								{t("costBreakdown.project", "Project")}:{" "}
 								<span className="font-medium text-foreground">
 									{projectName}
 								</span>
@@ -268,7 +280,8 @@ export function CostBreakdownCard({
 												<div className="flex min-w-0 items-center gap-2">
 													<span className="h-2.5 w-2.5 shrink-0 rounded-sm bg-muted-foreground/40" />
 													<span className="text-muted-foreground">
-														+{othersItems.length} more
+														+{othersItems.length}{" "}
+														{t("costBreakdown.more", "more")}
 													</span>
 												</div>
 												<div className="flex shrink-0 items-center gap-2 tabular-nums">
@@ -302,7 +315,7 @@ export function CostBreakdownCard({
 									<div className="flex flex-col gap-1.5 border-t pt-3 text-sm">
 										<div className="flex items-center justify-between gap-2">
 											<span className="text-muted-foreground">
-												Credits (billed)
+												{t("costBreakdown.creditsBilled", "Credits (billed)")}
 											</span>
 											<span className="font-medium tabular-nums">
 												{formatCompactCost(creditsTotal)}
@@ -310,7 +323,10 @@ export function CostBreakdownCard({
 										</div>
 										<div className="flex items-center justify-between gap-2">
 											<span className="text-muted-foreground">
-												BYOK keys (not billed)
+												{t(
+													"costBreakdown.byokNotBilled",
+													"BYOK keys (not billed)",
+												)}
 											</span>
 											<span className="font-medium tabular-nums">
 												{formatCompactCost(apiKeysTotal)}
