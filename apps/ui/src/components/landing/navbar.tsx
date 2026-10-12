@@ -687,7 +687,7 @@ export const Navbar = ({
 									className="bg-zinc-900 dark:bg-white text-white dark:text-black hover:bg-zinc-700 dark:hover:bg-zinc-200 font-medium w-full md:w-fit"
 								>
 									<a href="https://api.psharehub.com/admin/studio/">
-										Mở Gateway Console
+										Mở bảng quản trị
 									</a>
 								</Button>
 							</div>

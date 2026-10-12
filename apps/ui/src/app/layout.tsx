@@ -26,11 +26,11 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
 	metadataBase: new URL("https://ai.psharehub.com"),
 	title: {
-		default: "PShareHub AI Gateway — Bản xem trước",
+		default: "PShareHub AI Gateway",
 		template: "%s | PShareHub AI Gateway",
 	},
 	description:
-		"Bản xem trước cổng API hỗ trợ Anthropic Messages và OpenAI Chat Completions. Yêu cầu nhà vận hành cấu hình thông tin truy cập upstream.",
+		"Cổng API AI PShareHub hỗ trợ Anthropic Messages và OpenAI Chat Completions, với bảng quản trị riêng cho chủ dự án.",
 	authors: [{ name: "PShareHub AI Gateway" }],
 	creator: "PShareHub AI Gateway",
 	publisher: "PShareHub AI Gateway",
@@ -55,9 +55,9 @@ export const metadata: Metadata = {
 		canonical: "./",
 	},
 	openGraph: {
-		title: "PShareHub AI Gateway — Bản xem trước",
+		title: "PShareHub AI Gateway",
 		description:
-			"Bản xem trước cổng API hỗ trợ Anthropic Messages và OpenAI Chat Completions.",
+			"Cổng API AI PShareHub hỗ trợ Anthropic Messages và OpenAI Chat Completions.",
 		type: "website",
 		url: "https://ai.psharehub.com",
 		siteName: "PShareHub AI Gateway",
@@ -65,9 +65,9 @@ export const metadata: Metadata = {
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "PShareHub AI Gateway — Bản xem trước",
+		title: "PShareHub AI Gateway",
 		description:
-			"Bản xem trước cổng API hỗ trợ Anthropic Messages và OpenAI Chat Completions.",
+			"Cổng API AI PShareHub hỗ trợ Anthropic Messages và OpenAI Chat Completions.",
 		creator: "@psharehub",
 	},
 	robots: {

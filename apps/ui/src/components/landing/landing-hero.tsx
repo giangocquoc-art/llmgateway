@@ -57,10 +57,10 @@ export function LandingHero() {
 										PShareHub AI Gateway
 									</h1>
 									<p className="mx-auto mt-4 max-w-2xl text-balance text-base leading-8 text-[#586580] md:mt-6 md:text-lg lg:mx-0">
-										Bản xem trước cổng API hỗ trợ Anthropic Messages và OpenAI
-										Chat Completions. Yêu cầu được chuyển qua các tuyến upstream
-										do người vận hành cấu hình. Quyền truy cập công khai và giá
-										dịch vụ chưa được công bố.
+										Cổng API AI thống nhất của PShareHub, hỗ trợ Anthropic
+										Messages và OpenAI Chat Completions. Bảng quản trị dành
+										riêng cho chủ dự án; kết nối mô hình sẽ khả dụng sau khi cấu
+										hình nhà cung cấp.
 									</p>
 								</div>
 
@@ -79,7 +79,7 @@ export function LandingHero() {
 												className="px-10 py-3 shadow-2xl shadow-[#6045e8]/25 md:px-12 md:py-4"
 											>
 												<span className="flex items-center gap-3 text-center text-xl leading-none font-bold tracking-tight whitespace-pre-wrap text-white md:text-2xl">
-													<span>Mở Gateway Console</span>
+													<span>Mở bảng quản trị</span>
 													<ArrowRight className="size-6 md:size-7 transition-transform group-hover:translate-x-1" />
 												</span>
 											</ShimmerButton>
