@@ -44,7 +44,19 @@ export async function patchOpenNextVercelOg(packageRoot) {
             }
         }
         if (!sourceEdgePath) throw new Error("Could not copy Vercel OG edge bundle from: " + [...ogCandidates, ...ogCopyErrors].join(", "));`;
+	const fsImport = original.match(/import \{([^}]*)\} from "node:fs";/);
+	if (!fsImport) {
+		throw new Error(
+			"OpenNext Vercel OG patch has no node:fs import; refusing an unsafe patch",
+		);
+	}
 	const patched = original
+		.replace(
+			fsImport[0],
+			fsImport[1].split(",").map((name) => name.trim()).includes("mkdirSync")
+				? fsImport[0]
+				: `import { ${fsImport[1].trim()}, mkdirSync } from "node:fs";`,
+		)
 		.replace(edgeTrace, `${edgeTrace}\n        ${fallbackBlock}`)
 		.replace(edgeCopy, "// The edge bundle was copied by the fallback block above.")
 		.replace(
