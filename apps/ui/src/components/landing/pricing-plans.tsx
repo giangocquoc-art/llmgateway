@@ -15,8 +15,10 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/lib/components/card";
+import { useAppConfig } from "@/lib/config";
 
 export function PricingPlans() {
+	const { docsUrl } = useAppConfig();
 	const { isAuthenticated } = useSessionStatus();
 	const router = useRouter();
 	const posthog = usePostHog();
@@ -29,7 +31,7 @@ export function PricingPlans() {
 
 		switch (planName) {
 			case "Self-Host":
-				router.push("https://docs.llmgateway.io");
+				router.push(docsUrl);
 				return;
 			case "Enterprise":
 				router.push("/enterprise");
