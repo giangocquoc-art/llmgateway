@@ -41,7 +41,10 @@ const missing = [];
 for (const asset of assets) {
 	if (!(await exists(resolve(ogRoot, asset)))) missing.push(asset);
 }
-if (missing.length === 0) process.exit(0);
+if (missing.length === 0) {
+	console.log(`Next ${JSON.parse(await readFile(resolve(nextRoot, "package.json"), "utf8")).version} OG assets are present.`);
+	process.exit(0);
+}
 
 const nextPackage = JSON.parse(
 	await readFile(resolve(nextRoot, "package.json"), "utf8"),

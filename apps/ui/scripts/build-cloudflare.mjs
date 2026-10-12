@@ -58,6 +58,7 @@ async function main() {
 	await run(process.execPath, ["scripts/copy-standalone-assets.mjs"]);
 	await hideOptionalSharpLinks(pnpmStore);
 	await hideOptionalSharpLinks(appModules);
+	await run(process.execPath, ["scripts/ensure-next-og-assets.mjs"]);
 	const packageEntry = fileURLToPath(
 		import.meta.resolve("@opennextjs/cloudflare"),
 	);
