@@ -1,692 +1,75 @@
-import { GithubIcon } from "lucide-react";
 import Link from "next/link";
 
-import Newsletter from "@/components/landing/newsletter";
-import { getConfig } from "@/lib/config-server";
-import { XIcon } from "@/lib/icons/XIcon";
-import { listedProviders } from "@/lib/providers-catalog";
+const footerLinks = [
+	{ href: "https://psharehub.com/", label: "Trang chủ PShareHub" },
+	{
+		href: "https://api.psharehub.com/admin/studio/",
+		label: "Bảng điều khiển API",
+	},
+	{
+		href: "https://github.com/giangocquoc-art/llmgateway/tree/psharehub/branding-vietnamese-workers",
+		label: "Mã nguồn",
+	},
+	{ href: "/legal/terms", label: "Điều khoản nền tảng gốc" },
+];
 
-// Server component on purpose: the provider directory below pulls the full
-// model catalogue via providers-catalog, which must stay out of the client
-// bundle of every marketing page that renders the footer.
 export default function Footer() {
-	const config = getConfig();
-
 	return (
-		<footer className="relative py-12 bg-background">
-			{/* Gradient separator */}
-			<div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-
-			<div className="container mx-auto px-4">
-				<Newsletter />
-
-				<div className="flex flex-col md:flex-row md:justify-between md:items-start">
-					<div className="mb-8 md:mb-0 md:w-48 md:shrink-0">
-						<div className="flex items-center gap-2">
-							<a
-								href={config.githubUrl}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="flex h-9 w-9 items-center justify-center rounded-full border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
-								aria-label="GitHub"
-							>
-								<GithubIcon className="h-4 w-4" />
-							</a>
-							{config.twitterUrl ? (
-								<a
-									href={config.twitterUrl}
-									target="_blank"
-									rel="noopener noreferrer"
-									className="flex h-9 w-9 items-center justify-center rounded-full border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
-									aria-label="X"
-								>
-									<XIcon className="h-4 w-4" />
-								</a>
-							) : null}
-							{config.discordUrl ? (
-								<a
-									href={config.discordUrl}
-									target="_blank"
-									rel="noopener noreferrer"
-									className="flex h-9 w-9 items-center justify-center rounded-full border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
-									aria-label="Discord"
-								>
-									<svg
-										className="h-4 w-4"
-										viewBox="0 0 15 15"
-										aria-hidden="true"
-									>
-										<use href="/landing-icons.svg#discord" />
-									</svg>
-								</a>
-							) : null}
-						</div>
-					</div>
-
-					<div className="w-full md:w-auto grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 text-muted-foreground">
-						<div>
-							<h3 className="font-display text-sm font-semibold mb-4 text-foreground">
-								Product
-							</h3>
-							<ul className="space-y-2">
-								<li>
-									<a
-										href="/#features"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-									>
-										Features
-									</a>
-								</li>
-								<li>
-									<Link
-										href="/products/ai-gateway"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										AI Gateway
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/products/observability"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Observability
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/models"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Models
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/providers"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Providers
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/rankings"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Rankings
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="https://psharehub.com/"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Add Provider
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/partners"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Partners
-									</Link>
-								</li>
-
-								<li>
-									<Link
-										href="/changelog"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Changelog
-									</Link>
-								</li>
-
-								<li>
-									<Link
-										href="/models/compare"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Compare Models
-									</Link>
-								</li>
-							</ul>
-						</div>
-
-						<div>
-							<h3 className="font-display text-sm font-semibold mb-4 text-foreground">
-								Resources
-							</h3>
-							<ul className="space-y-2">
-								<li>
-									<Link
-										href="/legal"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Legal Overview
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/apps"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch
-									>
-										Apps
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/templates"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch
-									>
-										Templates
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/agents"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch
-									>
-										Agents
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/mcp"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch
-									>
-										MCP Server
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/use-cases"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch
-									>
-										Use Cases
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/blog"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-									>
-										Blog
-									</Link>
-								</li>
-								<li>
-									<a
-										href={config.docsUrl ?? ""}
-										target="_blank"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-									>
-										Documentation
-									</a>
-								</li>
-								<li>
-									<Link
-										href="/developers"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-									>
-										Developer resources
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/integrations"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch
-									>
-										Integrations
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/guides"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch
-									>
-										Guides
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/brand"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch
-									>
-										Brand Assets
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/token-cost-calculator"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch
-									>
-										Token Cost Calculator
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/copilot-cost-calculator"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch
-									>
-										Copilot Cost Calculator
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/referrals"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-									>
-										Referral Program
-									</Link>
-								</li>
-								<li>
-									<a
-										href={config.githubUrl ?? ""}
-										target="_blank"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-									>
-										GitHub
-									</a>
-								</li>
-
-								<li>
-									<Link
-										href="/about"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-									>
-										About
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/contact"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-									>
-										Contact Us
-									</Link>
-								</li>
-							</ul>
-						</div>
-
-						<div>
-							<h3 className="font-display text-sm font-semibold mb-4 text-foreground">
-								Information
-							</h3>
-							<ul className="space-y-2">
-								<li>
-									<Link
-										href="/legal/terms"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Terms
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/legal/privacy"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Privacy Policy
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/legal/providers"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Provider Information
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/legal/sub-processors"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Sub-processors
-									</Link>
-								</li>
-							</ul>
-						</div>
-
-						<div>
-							<h3 className="font-display text-sm font-semibold mb-4 text-foreground">
-								Compare
-							</h3>
-							<ul className="space-y-2">
-								<li>
-									<Link
-										href="/compare"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										All Comparisons
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/compare/github-copilot"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										GitHub Copilot
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/compare/open-router"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										OpenRouter
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/compare/litellm"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										LiteLLM
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/compare/portkey"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Portkey
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/compare/aws-bedrock"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										AWS Bedrock
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/compare/azure-ai-foundry"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Microsoft Foundry
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/compare/vercel-ai-gateway"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Vercel AI Gateway
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/blog/openrouter-alternatives"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										OpenRouter Alternatives
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/blog/litellm-alternatives"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										LiteLLM Alternatives
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/migration"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Migration Guides
-									</Link>
-								</li>
-							</ul>
-						</div>
-
-						<div>
-							<h3 className="font-display text-sm font-semibold mb-4 text-foreground">
-								Models
-							</h3>
-							<ul className="space-y-2">
-								<li>
-									<Link
-										href="/models/text"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Text Generation
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/models/text-to-image"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Text to Image
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/models/image-to-image"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Image to Image
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/models/video"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Video Generation
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/models/embeddings"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Embeddings
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/models/vision"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Vision
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/models/reasoning"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Reasoning
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/models/tools"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Tool Calling
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/models/web-search"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Web Search
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/models/discounted"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Discounted
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/models/roleplay"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Best for Roleplay
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/models/coding"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Best for Coding
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/models/creative-writing"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Best for Creative Writing
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/models/translation"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Best for Translation
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/models/math"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Best for Math
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/models/long-context"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Long Context
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/models/cheapest"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Cheapest
-									</Link>
-								</li>
-								<li>
-									<Link
-										href="/models/open-source"
-										className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-										prefetch={true}
-									>
-										Open Source
-									</Link>
-								</li>
-							</ul>
-						</div>
-
-						<div>
-							<h3 className="font-display text-sm font-semibold mb-4 text-foreground">
-								Providers
-							</h3>
-							<ul className="space-y-2">
-								{listedProviders.map((provider) => (
-									<li key={provider.id}>
-										<Link
-											href={`/providers/${provider.id}`}
-											className="text-sm hover:underline underline-offset-4 hover:text-foreground"
-											prefetch={true}
-										>
-											{provider.name}
-										</Link>
-									</li>
-								))}
-							</ul>
-						</div>
-					</div>
-				</div>
-
-				{/* Bottom bar */}
-				<div className="border-t border-border/50 pt-8 mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-					<div className="flex flex-col items-center gap-2 text-center sm:flex-row sm:gap-4">
-						<p className="text-muted-foreground text-sm">
-							&copy; {new Date().getFullYear()} PShareHub AI Gateway. UI based
-							on LLM Gateway (AGPLv3).
-						</p>
+		<footer className="relative bg-background py-10">
+			<div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+			<div className="container mx-auto flex flex-col gap-8 px-4">
+				<div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-center">
+					<div>
 						<a
-							href="https://github.com/giangocquoc-art/llmgateway/tree/psharehub/branding-vietnamese-workers"
-							target="_blank"
-							rel="noreferrer"
-							className="text-muted-foreground text-sm underline underline-offset-4 hover:text-foreground"
+							href="https://psharehub.com/"
+							className="font-display text-lg font-bold text-foreground hover:text-primary"
 						>
-							Source code
+							PShareHub AI Gateway
 						</a>
+						<p className="mt-2 max-w-md text-sm text-muted-foreground">
+							Cổng API AI của PShareHub. Truy cập và dịch vụ phụ thuộc vào cấu
+							hình upstream hiện có.
+						</p>
 					</div>
+					<nav aria-label="Liên kết cuối trang">
+						<ul className="flex flex-wrap gap-x-6 gap-y-3 text-sm text-muted-foreground">
+							{footerLinks.map((link) => (
+								<li key={link.href}>
+									{link.href.startsWith("http") ? (
+										<a
+											href={link.href}
+											target="_blank"
+											rel="noreferrer"
+											className="underline-offset-4 hover:text-foreground hover:underline"
+										>
+											{link.label}
+										</a>
+									) : (
+										<Link
+											href={link.href}
+											className="underline-offset-4 hover:text-foreground hover:underline"
+										>
+											{link.label}
+										</Link>
+									)}
+								</li>
+							))}
+						</ul>
+					</nav>
+				</div>
+				<div className="flex flex-col items-center justify-between gap-2 border-t border-border/50 pt-6 text-center text-sm text-muted-foreground sm:flex-row sm:text-left">
+					<p>
+						&copy; {new Date().getFullYear()} PShareHub AI Gateway. Giao diện
+						dựa trên LLM Gateway, giấy phép AGPLv3.
+					</p>
+					<a
+						href="https://www.gnu.org/licenses/agpl-3.0.html"
+						target="_blank"
+						rel="noreferrer"
+						className="underline-offset-4 hover:text-foreground hover:underline"
+					>
+						Thông tin giấy phép
+					</a>
 				</div>
 			</div>
 		</footer>
