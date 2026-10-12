@@ -8,15 +8,9 @@ export async function patchOpenNextVercelOg(packageRoot) {
 	const edgeCopy = "copyFileSync(tracedEdgePath, outputEdgePath);";
 	const wasmTrace =
 		'const tracedWasmPath = path.join(path.dirname(traceInfoPath), tracedNodePath.replace("index.node.js", "yoga.wasm"));';
-	const fontTrace =
-		"const tracedFontPath = path.join(path.dirname(tracedEdgePath), fontFileName);";
-	const fontRename =
-		"renameSync(outputFontPath, path.join(outputDir, `${fontFileName}.bin`));";
-	if (
-		[edgeTrace, edgeCopy, wasmTrace, fontRename].some(
-			(anchor) => !original.includes(anchor),
-		)
-	) {
+	const fontBlock =
+		/const fontFileName = matches\[0\]\.getMatch\("PATH"\)\.text\(\);[\s\S]*?renameSync\([^;]+\);/;
+	if ([edgeTrace, edgeCopy, wasmTrace].some((anchor) => !original.includes(anchor)) || !fontBlock.test(original)) {
 		throw new Error(
 			"OpenNext Vercel OG patch anchors changed; refusing an unsafe patch",
 		);
@@ -66,10 +60,14 @@ export async function patchOpenNextVercelOg(packageRoot) {
 			'const tracedWasmPath = path.join(sourceOgPath ?? path.dirname(tracedEdgePath), "yoga.wasm");',
 		)
 		.replace(
-			fontTrace,
-			"const tracedFontPath = path.join(sourceOgPath ?? path.dirname(tracedEdgePath), fontFileName);\n                const outputFontBinPath = path.join(outputDir, `${fontFileName}.bin`);\n                if (existsSync(tracedFontPath) && !existsSync(outputFontBinPath)) copyFileSync(tracedFontPath, outputFontBinPath);",
-		)
-		.replace(fontRename, "// The fallback font bundle was copied to .bin above.");
+			fontBlock,
+			`const fontFileName = matches[0].getMatch("PATH").text();
+                const stagedFontPath = path.join(buildOpts.appPath, ".psharehub-og-assets", fontFileName);
+                const outputFontBinPath = path.join(outputDir, fontFileName + ".bin");
+                if (existsSync(stagedFontPath) && !existsSync(outputFontBinPath)) {
+                    copyFileSync(stagedFontPath, outputFontBinPath);
+                }`,
+		);
 	await writeFile(patchPath, patched);
 	return () => writeFile(patchPath, original);
 }
