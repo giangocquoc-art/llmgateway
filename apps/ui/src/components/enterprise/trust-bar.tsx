@@ -1,7 +1,7 @@
 const capabilities = [
 	"Anthropic Messages",
 	"OpenAI Chat Completions",
-	"Phản hồi streaming",
+	"Phản hồi theo luồng",
 	"Có thể cấu hình tuyến dự phòng",
 ];
 

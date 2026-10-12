@@ -6,7 +6,7 @@ import { ShimmerButton } from "@/lib/components/shimmer-button";
 const STATS = [
 	{ value: "Anthropic", label: "Anthropic Messages" },
 	{ value: "OpenAI", label: "Tương thích Chat Completions" },
-	{ value: "Streaming", label: "Phản hồi theo luồng" },
+	{ value: "Liên tục", label: "Phản hồi theo luồng" },
 	{ value: "Gateway", label: "Một địa chỉ API" },
 ];
 

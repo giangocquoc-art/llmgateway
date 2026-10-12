@@ -154,8 +154,7 @@ export const Navbar = ({
 		{
 			title: "AI Gateway",
 			href: "/products/ai-gateway",
-			description:
-				"Chuyển tiếp yêu cầu tương thích đến các upstream đã cấu hình.",
+			description: "Chuyển yêu cầu đến nhà cung cấp AI đã kết nối.",
 			icon: Network,
 			gradient:
 				"hover:from-violet-500/20 hover:to-purple-600/30 hover:shadow-violet-500/10 group-hover/product:text-violet-500 dark:group-hover/product:text-violet-400",

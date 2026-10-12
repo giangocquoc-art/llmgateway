@@ -42,7 +42,7 @@ Circle.displayName = "Circle";
 const stats = [
 	{ value: "Anthropic", label: "API Messages" },
 	{ value: "OpenAI", label: "Tương thích Chat Completions" },
-	{ value: "Streaming", label: "Phản hồi theo luồng" },
+	{ value: "Liên tục", label: "Phản hồi theo luồng" },
 ];
 
 export function Graph() {
