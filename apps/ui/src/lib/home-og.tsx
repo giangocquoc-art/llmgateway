@@ -115,7 +115,7 @@ export async function homeOgImage() {
 						gap: 20,
 					}}
 				>
-					<Eyebrow>PShareHub AI Gateway · Bản xem trước</Eyebrow>
+					<Eyebrow>PShareHub AI Gateway</Eyebrow>
 					<div
 						style={{
 							display: "flex",
@@ -148,8 +148,8 @@ export async function homeOgImage() {
 							color: MUTED,
 						}}
 					>
-						Cổng API xem trước hỗ trợ Anthropic Messages và OpenAI Chat
-						Completions. Cần cấu hình quyền truy cập upstream để xử lý yêu cầu.
+						Cổng API AI hỗ trợ Anthropic Messages và OpenAI Chat Completions.
+						Kết nối nhà cung cấp để xử lý yêu cầu.
 					</div>
 				</div>
 				<div
@@ -174,8 +174,8 @@ export async function homeOgImage() {
 							color: "rgba(16,28,58,0.62)",
 						}}
 					>
-						<span>● API GATEWAY</span>
-						<span>PREVIEW</span>
+						<span>● PSHAREHUB</span>
+						<span>API GATEWAY</span>
 					</div>
 					<div
 						style={{

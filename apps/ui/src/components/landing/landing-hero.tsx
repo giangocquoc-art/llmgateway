@@ -57,9 +57,9 @@ export function LandingHero() {
 									</h1>
 									<p className="mx-auto mt-4 max-w-2xl text-balance text-base leading-8 text-[#586580] md:mt-6 md:text-lg lg:mx-0">
 										Cổng API AI thống nhất của PShareHub, hỗ trợ Anthropic
-										Messages và OpenAI Chat Completions. Bảng quản trị dành
-										riêng cho chủ dự án; kết nối mô hình sẽ khả dụng sau khi cấu
-										hình nhà cung cấp.
+										Messages và OpenAI Chat Completions. Quản lý khóa truy cập
+										và cấu hình nhà cung cấp trong bảng quản trị. Kết nối nhà
+										cung cấp để bắt đầu xử lý yêu cầu.
 									</p>
 								</div>
 

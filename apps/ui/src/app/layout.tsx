@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 		template: "%s | PShareHub AI Gateway",
 	},
 	description:
-		"Cổng API AI PShareHub hỗ trợ Anthropic Messages và OpenAI Chat Completions, với bảng quản trị riêng cho chủ dự án.",
+		"Cổng API AI PShareHub hỗ trợ Anthropic Messages và OpenAI Chat Completions. Quản lý khóa truy cập và cấu hình nhà cung cấp trong bảng quản trị.",
 	authors: [{ name: "PShareHub AI Gateway" }],
 	creator: "PShareHub AI Gateway",
 	publisher: "PShareHub AI Gateway",
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
 	openGraph: {
 		title: "PShareHub AI Gateway",
 		description:
-			"Cổng API AI PShareHub hỗ trợ Anthropic Messages và OpenAI Chat Completions.",
+			"Cổng API AI PShareHub hỗ trợ Anthropic Messages và OpenAI Chat Completions. Quản lý khóa truy cập và cấu hình nhà cung cấp trong bảng quản trị.",
 		type: "website",
 		url: "https://ai.psharehub.com",
 		siteName: "PShareHub AI Gateway",
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
 		card: "summary_large_image",
 		title: "PShareHub AI Gateway",
 		description:
-			"Cổng API AI PShareHub hỗ trợ Anthropic Messages và OpenAI Chat Completions.",
+			"Cổng API AI PShareHub hỗ trợ Anthropic Messages và OpenAI Chat Completions. Quản lý khóa truy cập và cấu hình nhà cung cấp trong bảng quản trị.",
 		creator: "@psharehub",
 	},
 	robots: {
