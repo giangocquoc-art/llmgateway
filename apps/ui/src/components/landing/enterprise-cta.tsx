@@ -16,11 +16,11 @@ const capabilities = [
 	{
 		icon: Server,
 		title: "OpenAI Chat Completions",
-		description: "Adapter tương thích định dạng OpenAI Chat Completions.",
+		description: "Tương thích với định dạng OpenAI Chat Completions.",
 	},
 	{
 		icon: Zap,
-		title: "Phản hồi streaming",
+		title: "Phản hồi theo luồng",
 		description: "Hỗ trợ truyền phản hồi theo luồng.",
 	},
 	{

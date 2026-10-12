@@ -10,7 +10,6 @@ const footerLinks = [
 		href: "https://github.com/giangocquoc-art/llmgateway/tree/cf-ui-release",
 		label: "Mã nguồn",
 	},
-	{ href: "/legal/terms", label: "Điều khoản nền tảng gốc" },
 ];
 
 export default function Footer() {
