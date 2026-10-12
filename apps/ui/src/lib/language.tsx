@@ -25,7 +25,7 @@ const translations: Record<Language, Record<string, string>> = {
 		"nav.Dynamic Routes": "Tuy\u1ebfn \u0111\u1ed9ng",
 		"nav.Guardrails": "Guardrails",
 		"nav.Team": "Nhóm",
-		"nav.Provider Keys": "Khóa nhà cung cấp",
+		"nav.Provider Keys": "Nhà cung cấp AI",
 		"nav.Your Discounts": "Ưu đãi của bạn",
 		"nav.Models": "M\u00f4 h\u00ecnh",
 		"nav.Skills": "Kỹ năng",

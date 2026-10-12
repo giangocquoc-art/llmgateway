@@ -9,7 +9,7 @@
 		"CLIENT_IP_HEADER": "CF-Connecting-IP",
 		"APP_URL": "https://ai.psharehub.com",
 		"GATEWAY_URL": "https://api.psharehub.com",
-		"DOCS_URL": "https://api.psharehub.com/docs",
+		"DOCS_URL": "https://api.psharehub.com/docs/",
 		"GITHUB_URL": "https://github.com/giangocquoc-art/llmgateway",
 		"CHAT_SUPPORT_ENABLED": "false",
 		"ACCOUNT_AUTH_ENABLED": "false",

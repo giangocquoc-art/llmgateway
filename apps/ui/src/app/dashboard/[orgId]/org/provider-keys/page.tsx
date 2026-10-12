@@ -1,3 +1,4 @@
+import { PShareHubWorkerConfig } from "@/components/dashboard/psharehub-worker-config";
 import { ProviderKeysClient } from "@/components/provider-keys/provider-keys-client";
 import { fetchServerData } from "@/lib/server-api";
 
@@ -11,6 +12,10 @@ export default async function ProviderKeysPage({
 }: {
 	params: Promise<{ orgId: string }>;
 }) {
+	if (process.env.NEXT_PUBLIC_PSHAREHUB_SINGLE_OWNER === "true") {
+		return <PShareHubWorkerConfig mode="provider" />;
+	}
+
 	const { orgId } = await params;
 
 	// Server-side data fetching for provider keys

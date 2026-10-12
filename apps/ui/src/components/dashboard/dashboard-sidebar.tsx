@@ -104,11 +104,10 @@ import { OrganizationSwitcher } from "./organization-switcher";
 
 import type { AnimatedIconProps } from "@/components/dashboard/animated-nav-icons";
 import type { Organization, User } from "@/lib/types";
+import type { Route } from "next";
 
 const PSHAREHUB_SINGLE_OWNER =
 	process.env.NEXT_PUBLIC_PSHAREHUB_SINGLE_OWNER === "true";
-import type { Route } from "next";
-
 type AnimatedIconComponent = React.ComponentType<AnimatedIconProps>;
 
 // Configuration
@@ -1339,7 +1338,7 @@ export function DashboardSidebar({
 				},
 				{
 					href: buildOrgUrl("org/provider-keys"),
-					label: "Khóa nhà cung cấp",
+					label: "Nhà cung cấp AI",
 					section: "Gateway",
 					icon: AnimatedKeyRound,
 				},
@@ -1600,7 +1599,7 @@ export function DashboardSidebar({
 										{ href: "api-keys", label: "Khóa API", icon: AnimatedKey },
 										{
 											href: "org/provider-keys",
-											label: "Khóa nhà cung cấp",
+							label: "Nhà cung cấp AI",
 											icon: AnimatedKeyRound,
 										},
 										{
