@@ -10,8 +10,10 @@ export async function patchOpenNextVercelOg(packageRoot) {
 		'const tracedWasmPath = path.join(path.dirname(traceInfoPath), tracedNodePath.replace("index.node.js", "yoga.wasm"));';
 	const fontTrace =
 		"const tracedFontPath = path.join(path.dirname(tracedEdgePath), fontFileName);";
+	const fontRename =
+		"renameSync(outputFontPath, path.join(outputDir, `${fontFileName}.bin`));";
 	if (
-		[edgeTrace, edgeCopy, wasmTrace].some(
+		[edgeTrace, edgeCopy, wasmTrace, fontRename].some(
 			(anchor) => !original.includes(anchor),
 		)
 	) {
@@ -65,8 +67,9 @@ export async function patchOpenNextVercelOg(packageRoot) {
 		)
 		.replace(
 			fontTrace,
-			"const tracedFontPath = path.join(sourceOgPath ?? path.dirname(tracedEdgePath), fontFileName);",
-		);
+			"const tracedFontPath = path.join(sourceOgPath ?? path.dirname(tracedEdgePath), fontFileName);\n                const outputFontBinPath = path.join(outputDir, `${fontFileName}.bin`);\n                if (existsSync(tracedFontPath) && !existsSync(outputFontBinPath)) copyFileSync(tracedFontPath, outputFontBinPath);",
+		)
+		.replace(fontRename, "// The fallback font bundle was copied to .bin above.");
 	await writeFile(patchPath, patched);
 	return () => writeFile(patchPath, original);
 }
