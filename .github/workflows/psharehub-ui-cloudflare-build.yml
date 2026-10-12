@@ -11,6 +11,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,7 +31,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Generate API schema and UI dependencies
-        run: pnpm build:core
+        run: pnpm exec turbo run build --filter=ui^...
 
       - name: Build and typecheck UI
         run: pnpm --filter ui build
