@@ -689,12 +689,14 @@ function OrganizationSection({
 	toggleSidebar,
 	searchParams,
 	isEnterprise,
+	billingEnabled,
 }: {
 	isActive: (path: string) => boolean;
 	isMobile: boolean;
 	toggleSidebar: () => void;
 	searchParams: ReadonlyURLSearchParams;
 	isEnterprise: boolean;
+	billingEnabled: boolean;
 }) {
 	const { t } = useLanguage();
 	const { buildOrgUrl } = useDashboardNavigation();
@@ -709,7 +711,9 @@ function OrganizationSection({
 			</SidebarGroupLabel>
 			<SidebarGroupContent className="mt-2">
 				<SidebarMenu>
-					{ORGANIZATION_NAVIGATION.map((item) => (
+					{ORGANIZATION_NAVIGATION.filter(
+						(item) => billingEnabled || item.href !== "org/discounts",
+					).map((item) => (
 						<OrgNavItem
 							key={item.href}
 							href={buildOrgUrl(item.href)}
@@ -729,13 +733,21 @@ function OrganizationSection({
 							asChild
 							// Derived from the list rather than repeated, so a new
 							// settings page cannot leave the parent unhighlighted.
-							isActive={ORGANIZATION_SETTINGS.some((item) =>
-								isActive(item.href),
-							)}
+							isActive={ORGANIZATION_SETTINGS.filter(
+								(item) =>
+									billingEnabled ||
+									![
+										"org/billing",
+										"org/transactions",
+										"org/referrals",
+									].includes(item.href),
+							).some((item) => isActive(item.href))}
 							tooltip={t("nav.Settings", "Settings")}
 						>
 							<Link
-								href={buildOrgUrl("org/billing")}
+								href={buildOrgUrl(
+									billingEnabled ? "org/billing" : "org/preferences",
+								)}
 								onClick={() => {
 									if (isMobile) {
 										toggleSidebar();
@@ -748,7 +760,15 @@ function OrganizationSection({
 							</Link>
 						</SidebarMenuButton>
 						<SidebarMenuSub className="ml-7">
-							{ORGANIZATION_SETTINGS.map((item) => (
+							{ORGANIZATION_SETTINGS.filter(
+								(item) =>
+									billingEnabled ||
+									![
+										"org/billing",
+										"org/transactions",
+										"org/referrals",
+									].includes(item.href),
+							).map((item) => (
 								<SidebarMenuSubItem key={item.href}>
 									<SidebarMenuSubButton asChild isActive={isActive(item.href)}>
 										<Link
@@ -1003,11 +1023,13 @@ function UserDropdownMenu({
 	isMobile,
 	toggleSidebar,
 	onLogout,
+	billingEnabled,
 }: {
 	user: User;
 	isMobile: boolean;
 	toggleSidebar: () => void;
 	onLogout: () => void;
+	billingEnabled: boolean;
 }) {
 	const { t } = useLanguage();
 	const { buildUrl, buildOrgUrl } = useDashboardNavigation();
@@ -1054,7 +1076,9 @@ function UserDropdownMenu({
 					<ThemeSelect />
 				</div>
 				<DropdownMenuSeparator />
-				{USER_MENU_ITEMS.map((item) => {
+				{USER_MENU_ITEMS.filter(
+					(item) => billingEnabled || item.href !== "org/billing",
+				).map((item) => {
 					// Use buildOrgUrl for billing, buildUrl for other items
 					const urlBuilder =
 						item.href === "org/billing" ? buildOrgUrl : buildUrl;
@@ -1194,6 +1218,7 @@ export function DashboardSidebar({
 	const queryClient = useQueryClient();
 	const { signOut } = useAuth();
 	const { buildUrl, buildOrgUrl } = useDashboardNavigation();
+	const billingEnabled = selectedOrganization?.billingEnabled !== false;
 	const [showUpgradeCTA, setShowUpgradeCTA] = useState(true);
 	const [ctaLoaded, setCTALoaded] = useState(false);
 	const [searchQuery, setSearchQuery] = useState("");
@@ -1581,6 +1606,7 @@ export function DashboardSidebar({
 								toggleSidebar={toggleSidebar}
 								searchParams={searchParams}
 								isEnterprise={selectedOrganization?.enterpriseAccess === true}
+								billingEnabled={billingEnabled}
 							/>
 						) : (
 							<DeveloperOrgSection
@@ -1605,7 +1631,7 @@ export function DashboardSidebar({
 				<LanguagePicker />
 				{/* Org credits + upgrade prompts are org-level; hide them from
 				    project-scoped developers. */}
-				{isOrgAdmin && (
+				{isOrgAdmin && billingEnabled && (
 					<>
 						<CreditsDisplay selectedOrganization={selectedOrganization} />
 						<UpgradeCTA
@@ -1622,6 +1648,7 @@ export function DashboardSidebar({
 							isMobile={isMobile}
 							toggleSidebar={toggleSidebar}
 							onLogout={logout}
+							billingEnabled={billingEnabled}
 						/>
 					</SidebarMenuItem>
 				</SidebarMenu>

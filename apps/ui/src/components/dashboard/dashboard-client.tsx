@@ -275,6 +275,7 @@ export function DashboardClient({
 
 	const { selectedOrganization, selectedProject } = useDashboardNavigation();
 	const isOrgAdmin = isOrganizationAdmin(selectedOrganization?.role);
+	const billingEnabled = selectedOrganization?.billingEnabled !== false;
 	const api = useApi();
 
 	const { data, isLoading } = api.useQuery(
@@ -421,7 +422,7 @@ export function DashboardClient({
 
 	// Mode-normalized rows: cost/requestCount reflect the selected billing view
 	// (credits vs BYOK); token, error and cache measures stay blended.
-	const usageMode = useUsageMode();
+	const usageMode = useUsageMode({ creditsEnabled: billingEnabled });
 	const rawActivityData = data?.activity ?? [];
 	const activityData = rawActivityData.map((day) =>
 		applyUsageModeToDaily(day, usageMode),
@@ -626,10 +627,12 @@ export function DashboardClient({
 										{t("dashboard.createApiKey", "Create API Key")}
 									</Button>
 								</CreateApiKeyDialog>
-								{isOrgAdmin && <TopUpCreditsButton />}
+								{isOrgAdmin && billingEnabled && <TopUpCreditsButton />}
 							</>
 						)}
-						{isOrgAdmin && !selectedProject && <TopUpCreditsButton />}
+						{isOrgAdmin && billingEnabled && !selectedProject && (
+							<TopUpCreditsButton />
+						)}
 					</div>
 				</div>
 
@@ -637,7 +640,7 @@ export function DashboardClient({
 
 				<div className="flex flex-wrap items-center gap-x-3 gap-y-2">
 					<DateRangePicker buildUrl={buildUrl} />
-					<UsageModeSelector />
+					<UsageModeSelector creditsEnabled={billingEnabled} />
 					{rangeDays <= 366 && (
 						<p className="text-xs text-muted-foreground">
 							{t("dashboard.trendsCompare", "Trends compare to")}{" "}
@@ -651,10 +654,12 @@ export function DashboardClient({
 					<div
 						className={cn(
 							"grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4",
-							isOrgAdmin ? "lg:grid-cols-4" : "lg:grid-cols-3",
+							isOrgAdmin && billingEnabled
+								? "lg:grid-cols-4"
+								: "lg:grid-cols-3",
 						)}
 					>
-						{isOrgAdmin && (
+						{isOrgAdmin && billingEnabled && (
 							<MetricCard
 								label={t(
 									"dashboard.organizationCredits",
@@ -791,6 +796,7 @@ export function DashboardClient({
 									createdAtMs !== null &&
 									Date.now() - createdAtMs < 7 * 24 * 60 * 60 * 1000;
 								const needsTopUp =
+									billingEnabled &&
 									isOrgAdmin &&
 									!Number.isNaN(credits) &&
 									credits <= 0 &&
@@ -869,7 +875,9 @@ export function DashboardClient({
 													</div>
 												</div>
 												<div className="flex flex-wrap gap-2">
-													{isOrgAdmin && <TopUpCreditsButton />}
+													{isOrgAdmin && billingEnabled && (
+														<TopUpCreditsButton />
+													)}
 													<Button asChild variant="outline" size="sm">
 														<a
 															href={

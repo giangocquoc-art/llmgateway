@@ -10,20 +10,29 @@ import {
 import { cn } from "@/lib/utils";
 
 /** Reads the current billing-mode view from the `mode` URL search param. */
-export function useUsageMode(): UsageMode {
+export function useUsageMode({
+	creditsEnabled = true,
+}: { creditsEnabled?: boolean } = {}): UsageMode {
 	const searchParams = useSearchParams();
-	return parseUsageMode(searchParams.get("mode"));
+	const mode = parseUsageMode(searchParams.get("mode"));
+	return !creditsEnabled && mode === "credits" ? "api-keys" : mode;
 }
 
 /**
  * Segmented All / Credits / BYOK toggle for usage pages. Stores the selection
  * in the `mode` URL search param so it survives navigation and can be shared.
  */
-export function UsageModeSelector({ className }: { className?: string }) {
+export function UsageModeSelector({
+	className,
+	creditsEnabled = true,
+}: {
+	className?: string;
+	creditsEnabled?: boolean;
+}) {
 	const router = useRouter();
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
-	const mode = parseUsageMode(searchParams.get("mode"));
+	const mode = useUsageMode({ creditsEnabled });
 
 	const setMode = (next: UsageMode) => {
 		const params = new URLSearchParams(searchParams.toString());
@@ -45,7 +54,9 @@ export function UsageModeSelector({ className }: { className?: string }) {
 				className,
 			)}
 		>
-			{USAGE_MODE_OPTIONS.map((option) => (
+			{USAGE_MODE_OPTIONS.filter(
+				(option) => creditsEnabled || option.value !== "credits",
+			).map((option) => (
 				<button
 					key={option.value}
 					type="button"
