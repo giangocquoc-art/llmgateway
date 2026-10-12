@@ -6,6 +6,7 @@ import { dirname, relative, resolve } from "node:path";
 const appRoot = process.cwd();
 const nextRoot = resolve(appRoot, "node_modules/next");
 const ogRoot = resolve(nextRoot, "dist/compiled/@vercel/og");
+const stableOgRoot = resolve(appRoot, ".psharehub-og-assets");
 const assets = ["index.edge.js", "resvg.wasm", "yoga.wasm", "Geist-Regular.ttf"];
 
 async function exists(path) {
@@ -42,7 +43,11 @@ for (const asset of assets) {
 	if (!(await exists(resolve(ogRoot, asset)))) missing.push(asset);
 }
 if (missing.length === 0) {
-	console.log(`Next ${JSON.parse(await readFile(resolve(nextRoot, "package.json"), "utf8")).version} OG assets are present.`);
+	for (const asset of assets) {
+		await mkdir(stableOgRoot, { recursive: true });
+		await copyFile(resolve(ogRoot, asset), resolve(stableOgRoot, asset));
+	}
+	console.log(`Next ${JSON.parse(await readFile(resolve(nextRoot, "package.json"), "utf8")).version} OG assets are present and staged.`);
 	process.exit(0);
 }
 
@@ -65,7 +70,11 @@ try {
 	for (const asset of missing) {
 		await copyFile(resolve(tempRoot, "package", "dist/compiled/@vercel/og", asset), resolve(ogRoot, asset));
 	}
-	console.log(`Restored missing Next ${nextPackage.version} OG assets: ${missing.join(", ")}`);
+	await mkdir(stableOgRoot, { recursive: true });
+	for (const asset of assets) {
+		await copyFile(resolve(ogRoot, asset), resolve(stableOgRoot, asset));
+	}
+	console.log(`Restored and staged Next ${nextPackage.version} OG assets: ${missing.join(", ")}`);
 } finally {
 	await rm(tempRoot, { recursive: true, force: true });
 }

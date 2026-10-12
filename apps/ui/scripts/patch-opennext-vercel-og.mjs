@@ -21,6 +21,7 @@ export async function patchOpenNextVercelOg(packageRoot) {
 	}
 
 	const fallbackBlock = `const ogCandidates = [
+			path.join(buildOpts.appPath, ".psharehub-og-assets"),
             path.join(buildOpts.appPath, ".next/standalone/apps/ui/node_modules/next/dist/compiled/@vercel/og"),
             path.join(buildOpts.appPath, "node_modules/next/dist/compiled/@vercel/og"),
             path.dirname(tracedEdgePath),
