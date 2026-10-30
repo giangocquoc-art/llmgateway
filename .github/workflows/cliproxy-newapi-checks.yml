@@ -1,0 +1,19 @@
+name: CLIProxy New API deployment checks
+
+on:
+  pull_request:
+    paths:
+      - 'deployments/cliproxy-newapi/**'
+      - '.github/workflows/cliproxy-newapi-checks.yml'
+  push:
+    paths:
+      - 'deployments/cliproxy-newapi/**'
+      - '.github/workflows/cliproxy-newapi-checks.yml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Static checks and Docker Compose validation
+        run: bash deployments/cliproxy-newapi/scripts/check.sh
