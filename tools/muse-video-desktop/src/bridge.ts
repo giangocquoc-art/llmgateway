@@ -1,4 +1,4 @@
-import { createServer, request as httpRequest, Server } from "node:http";
+import { createServer, request as httpRequest, Server, type OutgoingHttpHeaders } from "node:http";
 import { existsSync, readFileSync, writeFileSync, renameSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import { createHash, createHmac, randomBytes, timingSafeEqual } from "node:crypto";
@@ -135,7 +135,7 @@ export function createGateway(
     }
     const isVideo = videoPath(parsed.pathname);
     const port = isVideo ? (ports.video ?? MUSE_PORT) : (ports.cli ?? CLI_PORT);
-    const headers = { ...req.headers, host: `127.0.0.1:${port}` };
+    const headers: OutgoingHttpHeaders = { ...req.headers, host: `127.0.0.1:${port}` };
     if (isVideo) headers.authorization = `Bearer ${museKey}`;
     delete headers.connection;
     delete headers["proxy-authorization"];
