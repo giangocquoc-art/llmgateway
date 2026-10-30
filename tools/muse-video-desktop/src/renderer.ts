@@ -1,12 +1,12 @@
 type Status = { museOnline: boolean; cliOnline: boolean; bridgeOnline: boolean; keyCount: number; cliConfig: string; workerError: string; endpoint: string };
 type Account = { id: string; label: string; status: string; enabled: boolean };
-type Task = { id: string; status: string; result?: { url?: string }; error?: string };
+type Task = { id: string; status: string; result?: { url?: string }; error?: { message?: string } | string };
 type Manager = {
   status(): Promise<Status>;
   restartWorker(): Promise<{ started: boolean; error: string }>;
   chooseConfig(): Promise<{ cliConfig: string; keyCount: number } | null>;
-  openLogin(): Promise<void>;
-  syncLogin(): Promise<object>;
+  openLogin(label: string): Promise<void>;
+  syncLogin(label: string): Promise<object>;
   accounts(): Promise<{ data: Account[] }>;
   tasks(): Promise<{ data: Task[] }>;
   submitVideo(prompt: string, duration: number, size: string): Promise<{ id: string; status: string }>;
@@ -106,9 +106,9 @@ element("choose-config").addEventListener("click", () => void execute(async () =
   await refresh();
 }, "CLIProxy settings updated"));
 element("cli-manager").addEventListener("click", () => void execute(() => api.openCliManager(), "Opened CLIProxy manager"));
-element("login").addEventListener("click", () => void execute(() => api.openLogin(), "Muse Web sign-in window opened"));
+element("login").addEventListener("click", () => void execute(() => api.openLogin((element("account-label") as HTMLInputElement).value), "Muse Web sign-in window opened"));
 element("sync").addEventListener("click", () => void execute(async () => {
-  await api.syncLogin();
+  await api.syncLogin((element("account-label") as HTMLInputElement).value);
   await refresh();
 }, "Muse Web session imported"));
 element("refresh").addEventListener("click", () => void execute(refresh, "Refreshed"));
