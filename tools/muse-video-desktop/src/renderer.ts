@@ -3,7 +3,7 @@ type Account = { id: string; label: string; status: string; enabled: boolean };
 type Task = { id: string; status: string; result?: { url?: string }; error?: { message?: string } | string };
 type Manager = {
   status(): Promise<Status>;
-  restartWorker(): Promise<{ started: boolean; error: string }>;
+  restartWorker(): Promise<{ started: boolean; cancelled?: boolean; error: string }>;
   chooseConfig(): Promise<{ cliConfig: string; keyCount: number } | null>;
   openLogin(label: string): Promise<void>;
   syncLogin(label: string): Promise<object>;
@@ -100,6 +100,7 @@ async function refresh(): Promise<void> {
 element("restart-worker").addEventListener("click", () => void execute(async () => {
   const result = await api.restartWorker();
   await refresh();
+  if (result.cancelled) throw new Error("Restart cancelled");
   if (!result.started) throw new Error(result.error || "Worker failed to start");
 }, "Worker launch requested"));
 element("choose-python").addEventListener("click", () => void execute(async () => {
