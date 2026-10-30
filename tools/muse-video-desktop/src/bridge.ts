@@ -1,6 +1,7 @@
 import { createServer, request as httpRequest, Server } from "node:http";
 import { readFileSync } from "node:fs";
 import { timingSafeEqual } from "node:crypto";
+import { Transform } from "node:stream";
 import YAML from "yaml";
 
 export const BRIDGE_PORT = 18710;
@@ -90,6 +91,19 @@ export function createGateway(configFile: () => string, museKey: string, ports: 
     delete headers["upgrade"];
     delete headers["te"];
 
+    let received = 0;
+    let tooLarge = false;
+    const bounded = new Transform({
+      transform(chunk: Buffer, _encoding, callback) {
+        received += chunk.length;
+        if (received > MAX_REQUEST_BYTES) {
+          tooLarge = true;
+          callback(new Error("Request body too large"));
+          return;
+        }
+        callback(null, chunk);
+      }
+    });
     const upstream = httpRequest({
       hostname: "127.0.0.1", port, method: req.method, path: parsed.pathname + parsed.search,
       headers, timeout: 610000
@@ -105,8 +119,13 @@ export function createGateway(configFile: () => string, museKey: string, ports: 
       reply.pipe(res);
     });
     upstream.on("timeout", () => upstream.destroy(new Error("Upstream timeout")));
+    bounded.on("error", () => {
+      upstream.destroy();
+      if (!res.headersSent) res.writeHead(413).end("Request body too large");
+      else res.destroy();
+    });
     upstream.on("error", () => {
-      if (res.writableEnded || res.destroyed) return;
+      if (tooLarge || res.writableEnded || res.destroyed) return;
       if (res.headersSent) {
         res.destroy();
         return;
@@ -115,6 +134,6 @@ export function createGateway(configFile: () => string, museKey: string, ports: 
         .end(JSON.stringify({ error: { message: "Upstream unavailable" } }));
     });
     req.on("aborted", () => upstream.destroy());
-    req.pipe(upstream);
+    req.pipe(bounded).pipe(upstream);
   });
 }
