@@ -257,7 +257,9 @@ if (!singleInstance) {
 
 if (singleInstance) app.whenReady().then(() => {
   loadSettings();
-  const bridge = createGateway(() => settings.cliConfig, internalKey);
+  const bridge = createGateway(() => settings.cliConfig, internalKey, {
+    quotaFile: join(app.getPath("userData"), "video-quotas.json")
+  });
   bridge.on("error", (err) => {
     bridgeOnline = false;
     bridgeError = `Bridge startup failed: ${err.message}`;
