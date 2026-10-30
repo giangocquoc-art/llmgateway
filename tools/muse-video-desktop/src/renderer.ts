@@ -11,6 +11,7 @@ type Manager = {
   submitVideo(prompt: string, duration: number, size: string): Promise<{ id: string; status: string }>;
   deleteAccount(id: string): Promise<object>;
   openCliManager(): Promise<void>;
+  choosePython(): Promise<string | null>;
   downloadMedia(url: string): Promise<void>;
 };
 interface Window { museManager: Manager }
@@ -83,6 +84,10 @@ async function refresh(): Promise<void> {
   }
   if (!tasks.data.length) taskList.textContent = "No video tasks.";
 }
+element("choose-python").addEventListener("click", () => void execute(async () => {
+  await api.choosePython();
+  await refresh();
+}, "Python path updated; restart app to apply"));
 element("choose-config").addEventListener("click", () => void execute(async () => {
   await api.chooseConfig();
   await refresh();
