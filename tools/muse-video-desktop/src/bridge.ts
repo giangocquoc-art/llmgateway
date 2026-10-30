@@ -34,7 +34,7 @@ function videoPath(pathname: string): boolean {
     pathname.startsWith("/v1/media/");
 }
 
-export function createGateway(configFile: () => string, museKey: string): Server {
+export function createGateway(configFile: () => string, museKey: string, ports: { video?: number; cli?: number } = {}): Server {
   return createServer((req, res) => {
     const target = req.url ?? "";
     let parsed: URL;
@@ -66,7 +66,7 @@ export function createGateway(configFile: () => string, museKey: string): Server
       return;
     }
     const isVideo = videoPath(parsed.pathname);
-    const port = isVideo ? MUSE_PORT : CLI_PORT;
+    const port = isVideo ? (ports.video ?? MUSE_PORT) : (ports.cli ?? CLI_PORT);
     const headers = { ...req.headers, host: `127.0.0.1:${port}` };
     // Muse2API uses an internal key; external callers only ever send a CLIProxy key.
     if (isVideo) headers.authorization = `Bearer ${museKey}`;
