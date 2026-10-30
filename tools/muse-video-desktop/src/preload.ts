@@ -8,6 +8,7 @@ contextBridge.exposeInMainWorld("museManager", {
   syncLogin: (label: string) => ipcRenderer.invoke("muse:sync-login", label),
   accounts: () => ipcRenderer.invoke("muse:accounts"),
   tasks: () => ipcRenderer.invoke("muse:tasks"),
+  cancelTask: (id: string) => ipcRenderer.invoke("muse:cancel-task", id),
   submitVideo: (prompt: string, duration: number, size: string) =>
     ipcRenderer.invoke("muse:submit-video", { prompt, duration, size }),
   deleteAccount: (id: string) => ipcRenderer.invoke("muse:delete-account", id),
