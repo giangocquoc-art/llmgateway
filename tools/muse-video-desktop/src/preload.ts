@@ -2,6 +2,7 @@ import { contextBridge, ipcRenderer } from "electron";
 
 contextBridge.exposeInMainWorld("museManager", {
   status: () => ipcRenderer.invoke("manager:status"),
+  restartWorker: () => ipcRenderer.invoke("muse:restart-worker"),
   chooseConfig: () => ipcRenderer.invoke("manager:choose-config"),
   openLogin: () => ipcRenderer.invoke("muse:open-login"),
   syncLogin: () => ipcRenderer.invoke("muse:sync-login"),
