@@ -27,15 +27,22 @@ cp init.sh "$tmp/init.sh"
 
 if command -v docker >/dev/null && docker compose version >/dev/null 2>&1; then
   cp compose.yaml Caddyfile "$tmp/"
-  ( cd "$tmp"; docker compose config -q )
-  echo "Docker Compose validation: OK"
+  ( cd "$tmp"; docker compose config --format json > compose-rendered.json )
+  python3 - "$tmp/compose-rendered.json" <<'PY'
+import json, sys
+with open(sys.argv[1], encoding="utf-8") as f:
+    data = json.load(f)
+services = data["services"]
+for name, service in services.items():
+    if name != "caddy" and service.get("ports"):
+        raise SystemExit("ERROR: internal service publishes ports: " + name)
+published = {int(p["published"]) for p in services["caddy"].get("ports", [])}
+if not {80,443}.issubset(published):
+    raise SystemExit("ERROR: Caddy must publish 80 and 443")
+print("Docker Compose and isolated ports: OK")
+PY
 else
   echo "Docker not available: skipped Compose semantic validation"
 fi
 
-# Reject newly-added files accidentally containing placeholder real secrets.
-if grep -Eq 'ports:[[:space:]]*\[.*(8317|3000|5432|6379)' compose.yaml; then
-  echo "ERROR: an internal port appears published" >&2
-  exit 1
-fi
 echo "Bash and initialization checks: OK"

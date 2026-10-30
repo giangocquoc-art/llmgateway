@@ -86,10 +86,10 @@ Important: New API's quota is a **billing unit dependent on configured model pri
 ## 7. Smoke test
 
 ```bash
-PUBLIC_API=https://api.example.com bash scripts/smoke.sh YOUR_MODEL YOUR_NEW_API_USER_KEY
+PUBLIC_API=https://api.example.com bash scripts/smoke.sh YOUR_MODEL
 ```
 
-This tests model discovery and one chat request. Also manually verify a missing/invalid key gives a 401/403 and that exhausted quota is rejected; review usage records. Do not paste secrets into logs or public GitHub issues. Passing these tests alone is not a production security certification.
+This securely prompts for a key, then tests model discovery and one chat request. Also manually verify a missing/invalid key gives a 401/403 and that exhausted quota is rejected; review usage records. Do not paste secrets into logs or public GitHub issues. Passing these tests alone is not a production security certification.
 
 ## 8. Operations & backup
 
