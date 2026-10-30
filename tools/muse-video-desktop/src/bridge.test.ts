@@ -1,6 +1,6 @@
 import { strict as assert } from "node:assert";
 import { createServer, Server } from "node:http";
-import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
+import { mkdtempSync, writeFileSync, rmSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { after, test } from "node:test";
@@ -57,7 +57,8 @@ test("gateway authenticates once and routes Muse video separately", async () => 
   const musePort = await serve(muse);
   const cfg = join(folder, "route.yaml");
   writeFileSync(cfg, "access:\n  api-keys:\n    - valid-client-key\n");
-  const bridge = createGateway(() => cfg, "internal-test-key", { cli: cliPort, video: musePort });
+  const quotaFile = join(folder, "video-quota.json");
+  const bridge = createGateway(() => cfg, "internal-test-key", { cli: cliPort, video: musePort, quotaFile });
   if (previousLimit === undefined) delete process.env.MUSE_VIDEO_HOURLY_LIMIT;
   else process.env.MUSE_VIDEO_HOURLY_LIMIT = previousLimit;
   const port = await serve(bridge);
@@ -78,6 +79,7 @@ test("gateway authenticates once and routes Muse video separately", async () => 
       body: JSON.stringify({ prompt: "second" })
     });
     assert.equal(allowed.status, 200);
+    assert.equal(existsSync(quotaFile), true);
     const limited = await fetch(base + "/v1/videos", {
       method: "POST", headers: { Authorization: "Bearer valid-client-key" },
       body: JSON.stringify({ prompt: "third" })
@@ -123,4 +125,15 @@ test("gateway authenticates once and routes Muse video separately", async () => 
   } finally {
     await Promise.all([close(bridge), close(cli), close(muse)]);
   }
+  const restarted = createGateway(() => cfg, "internal-test-key", {
+    video: musePort, cli: cliPort, quotaFile
+  });
+  const restartPort = await serve(restarted);
+  try {
+    const limitAfterRestart = await fetch(`http://127.0.0.1:${restartPort}/v1/videos`, {
+      method: "POST", headers: { Authorization: "Bearer valid-client-key" },
+      body: JSON.stringify({ prompt: "after restart" })
+    });
+    assert.equal(limitAfterRestart.status, 429);
+  } finally { await close(restarted); }
 });
