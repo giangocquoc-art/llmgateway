@@ -21,7 +21,7 @@ This review covers source-level logic; no real Muse account, Windows installatio
 ## Additional remediations (current branch)
 
 - Added expiring HMAC-signed MP4 download URLs, with tampering and unauthorized access regression cases. Signing keys remain local and are regenerated at application launch; signatures expire after 15 minutes.
-- Added configurable, in-memory per-client hourly video submission guard (12/hour default), regression cases for HTTP 429 and Retry-After. This does not provide durable billing or fully inherit CLIProxy quotas.
+- Added configurable, locally persisted per-client hourly video submission guard (12/hour default), regression cases for HTTP 429 and Retry-After. Failed upstream submissions are refunded; this does not implement CLIProxy usage accounting or billing.
 - Added first-frame image-to-video control, input MIME and size restrictions, and a quota lookup action for each Muse account.
 - Added selection and self-launch of an existing CLIProxyAPI executable, plus automatic startup on subsequent desktop launches when configured.
 - Added PyInstaller Windows worker packaging and Electron extraResources; the destination PC should no longer need a separately installed Python interpreter when using the installer.
