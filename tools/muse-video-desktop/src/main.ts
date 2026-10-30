@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain, session, shell } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, session } from "electron";
 import { ChildProcessWithoutNullStreams, spawn } from "node:child_process";
 import { randomBytes } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync, createWriteStream } from "node:fs";
@@ -131,6 +131,16 @@ async function syncLogin(): Promise<object> {
   return museFetch("/admin/accounts", "POST", { label: "Muse Web", cookies: jar });
 }
 
+function openCliPanel(): void {
+  const panel = new BrowserWindow({
+    parent: mainWindow, width: 1200, height: 860,
+    title: "CLIProxyAPI Manager",
+    webPreferences: { nodeIntegration: false, contextIsolation: true, sandbox: true }
+  });
+  panel.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
+  void panel.loadURL(`http://127.0.0.1:${CLI_PORT}/management.html`);
+}
+
 function makeWindow(): void {
   mainWindow = new BrowserWindow({
     width: 1220, height: 860, minWidth: 850, minHeight: 620,
@@ -210,7 +220,7 @@ app.whenReady().then(() => {
       createWriteStream(result.filePath, { mode: 0o600 })
     );
   });
-  ipcMain.handle("manager:open-cli", () => shell.openExternal(`http://127.0.0.1:${CLI_PORT}/management.html`));
+  ipcMain.handle("manager:open-cli", () => { openCliPanel(); return true; });
   ipcMain.handle("muse:open-login", () => { openLogin(); return true; });
   ipcMain.handle("muse:sync-login", syncLogin);
   ipcMain.handle("muse:accounts", () => museFetch("/admin/accounts"));
