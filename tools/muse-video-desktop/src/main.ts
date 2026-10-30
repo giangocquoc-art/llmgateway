@@ -4,10 +4,10 @@ import { randomBytes, createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync, createWriteStream } from "node:fs";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
-import { join } from "node:path";
+import { join, dirname } from "node:path";
 import { createGateway, BRIDGE_PORT, MUSE_PORT, CLI_PORT, readClientKeys } from "./bridge";
 
-type Settings = { cliConfig: string; pythonPath: string };
+type Settings = { cliConfig: string; pythonPath: string; cliExecutable: string };
 const internalKey = randomBytes(32).toString("hex");
 function validateLabel(raw: unknown): string {
   if (typeof raw !== "string" || !raw.trim() || raw.trim().length > 60) {
@@ -22,10 +22,12 @@ let loginPartition = "";
 let mainWindow: BrowserWindow;
 let loginWindow: BrowserWindow | undefined;
 let worker: ChildProcessWithoutNullStreams | undefined;
+let cliProcess: ChildProcessWithoutNullStreams | undefined;
+let cliError = "";
 let workerError = "";
 let bridgeError = "";
 let bridgeOnline = false;
-let settings: Settings = { cliConfig: "", pythonPath: "" };
+let settings: Settings = { cliConfig: "", pythonPath: "", cliExecutable: "" };
 
 function storePath(): string { return join(app.getPath("userData"), "settings.json"); }
 function loadSettings(): void {
@@ -35,7 +37,8 @@ function loadSettings(): void {
       const raw = json as Partial<Settings>;
       settings = {
         cliConfig: typeof raw.cliConfig === "string" ? raw.cliConfig : "",
-        pythonPath: typeof raw.pythonPath === "string" ? raw.pythonPath : ""
+        pythonPath: typeof raw.pythonPath === "string" ? raw.pythonPath : "",
+        cliExecutable: typeof raw.cliExecutable === "string" ? raw.cliExecutable : ""
       };
     }
   } catch (error) {
@@ -64,9 +67,12 @@ function pythonPath(): string {
 }
 
 function startWorker(): void {
-  const executable = pythonPath();
+  const bundled = app.isPackaged ? join(process.resourcesPath, "muse-worker", "muse-worker.exe") : "";
+  const packagedWorker = bundled && existsSync(bundled);
+  const executable = packagedWorker ? bundled : pythonPath();
+  const args = packagedWorker ? [] : ["-m", "muse2api"];
   if (!existsSync(executable)) {
-    workerError = "Python worker missing. Run setup-windows.ps1 first.";
+    workerError = "Muse2API worker missing. Run setup-windows.ps1 or install the packaged application.";
     return;
   }
   const dataDir = join(app.getPath("userData"), "muse2api-data");
@@ -77,7 +83,7 @@ function startWorker(): void {
     return;
   }
   workerError = "";
-  const child = spawn(executable, ["-m", "muse2api"], {
+  const child = spawn(executable, args, {
     cwd: dataDir, windowsHide: true,
     env: {
       ...process.env,
@@ -103,6 +109,37 @@ function startWorker(): void {
   // Never print stdout/stderr: upstream logging may contain sensitive browser state.
   child.stdout.resume();
   child.stderr.resume();
+}
+
+async function startCliProxy(): Promise<{ running: boolean; note: string }> {
+  try {
+    await fetch(`http://127.0.0.1:${CLI_PORT}/v1/models`, { signal: AbortSignal.timeout(1500) });
+    return { running: true, note: "CLIProxyAPI already running on localhost" };
+  } catch { /* not listening */ }
+  if (!settings.cliExecutable || !existsSync(settings.cliExecutable)) {
+    throw new Error("Select an existing CLIProxyAPI .exe in the manager first.");
+  }
+  if (!settings.cliConfig || !existsSync(settings.cliConfig)) {
+    throw new Error("Choose the matching CLIProxyAPI config.yaml first.");
+  }
+  if (cliProcess && cliProcess.exitCode === null && cliProcess.signalCode === null) {
+    return { running: true, note: "CLIProxyAPI process is starting" };
+  }
+  cliError = "";
+  const child = spawn(settings.cliExecutable, ["--config", settings.cliConfig], {
+    cwd: dirname(settings.cliConfig), windowsHide: true
+  });
+  cliProcess = child;
+  child.stdout.resume();
+  child.stderr.resume();
+  child.on("error", (error) => { cliError = error.message; });
+  child.on("exit", (code, signal) => {
+    if (cliProcess === child) {
+      cliError = `CLIProxyAPI exited (${signal ?? code})`;
+      cliProcess = undefined;
+    }
+  });
+  return { running: true, note: "CLIProxyAPI startup requested" };
 }
 
 async function museFetch(endpoint: string, method = "GET", body?: object): Promise<Record<string, unknown>> {
@@ -215,6 +252,9 @@ if (singleInstance) app.whenReady().then(() => {
   bridge.listen(BRIDGE_PORT, "127.0.0.1");
   startWorker();
   makeWindow();
+  if (settings.cliExecutable && settings.cliConfig) {
+    void startCliProxy().catch((err: unknown) => { cliError = String(err); });
+  }
 
   ipcMain.handle("manager:status", async () => {
     let museOnline = false;
@@ -226,7 +266,9 @@ if (singleInstance) app.whenReady().then(() => {
     } catch { /* CLIProxy not running */ }
     let keyCount = 0;
     try { keyCount = readClientKeys(settings.cliConfig).length; } catch { /* config missing */ }
-    return { museOnline, cliOnline, bridgeOnline, keyCount, cliConfig: settings.cliConfig, workerError: [workerError, bridgeError].filter(Boolean).join(" | "),
+    return { museOnline, cliOnline, bridgeOnline, keyCount, cliConfig: settings.cliConfig,
+      cliExecutable: settings.cliExecutable,
+      workerError: [workerError, bridgeError, cliError].filter(Boolean).join(" | "),
       endpoint: `http://127.0.0.1:${BRIDGE_PORT}/v1` };
   });
   ipcMain.handle("manager:choose-config", async () => {
@@ -267,6 +309,16 @@ if (singleInstance) app.whenReady().then(() => {
     startWorker();
     return { started: Boolean(worker), error: workerError };
   });
+  ipcMain.handle("manager:choose-cli", async () => {
+    const result = await dialog.showOpenDialog(mainWindow, {
+      properties: ["openFile"], filters: [{ name: "CLIProxyAPI executable", extensions: ["exe"] }]
+    });
+    if (result.canceled || !result.filePaths[0]) return null;
+    settings.cliExecutable = result.filePaths[0];
+    saveSettings();
+    return settings.cliExecutable;
+  });
+  ipcMain.handle("manager:start-cli", startCliProxy);
   ipcMain.handle("manager:choose-python", async () => {
     const selected = await dialog.showOpenDialog(mainWindow, {
       properties: ["openFile"], filters: [{ name: "Python interpreter", extensions: ["exe"] }]
@@ -326,5 +378,5 @@ if (singleInstance) app.whenReady().then(() => {
     return museFetch("/v1/videos", "POST", { prompt, duration, size });
   });
 });
-app.on("before-quit", () => { worker?.kill(); });
+app.on("before-quit", () => { worker?.kill(); cliProcess?.kill(); });
 app.on("window-all-closed", () => { if (process.platform !== "darwin") app.quit(); });
