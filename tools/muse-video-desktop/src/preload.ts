@@ -4,8 +4,8 @@ contextBridge.exposeInMainWorld("museManager", {
   status: () => ipcRenderer.invoke("manager:status"),
   restartWorker: () => ipcRenderer.invoke("muse:restart-worker"),
   chooseConfig: () => ipcRenderer.invoke("manager:choose-config"),
-  openLogin: () => ipcRenderer.invoke("muse:open-login"),
-  syncLogin: () => ipcRenderer.invoke("muse:sync-login"),
+  openLogin: (label: string) => ipcRenderer.invoke("muse:open-login", label),
+  syncLogin: (label: string) => ipcRenderer.invoke("muse:sync-login", label),
   accounts: () => ipcRenderer.invoke("muse:accounts"),
   tasks: () => ipcRenderer.invoke("muse:tasks"),
   submitVideo: (prompt: string, duration: number, size: string) =>
