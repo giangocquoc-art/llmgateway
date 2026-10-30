@@ -80,5 +80,5 @@ The manager can start an existing CLIProxyAPI executable after its path is selec
 - The Windows packaging command invokes build-worker.ps1, uses PyInstaller to create a portable Muse2API executable, and embeds it as an Electron extra resource. This is source-complete but not yet verified in a Windows CI build.
 - Optional first-frame image-to-video is supported in the desktop form; Muse Web upstream behavior is unverified.
 - Video task results are returned with 15-minute HMAC-signed media URLs. An unguessable signed URL permits a video player to fetch the MP4 without an Authorization header. An unsigned URL still requires a client key on the unified bridge.
-- Video submissions have a per-key hourly guard, configurable with MUSE_VIDEO_HOURLY_LIMIT (default: 12 per hour). It is in-memory and does not implement CLIProxy per-key billing or durable quotas.
+- Video submissions have a per-key hourly guard, configurable with MUSE_VIDEO_HOURLY_LIMIT (default: 12 per hour). It is persisted under the application's local user data directory, but does not implement CLIProxy per-key billing or durable quotas.
 - To start an installed CLIProxyAPI from the desktop manager, select config.yaml, select the CLIProxyAPI .exe, and click Start CLIProxy. This path is saved for subsequent launches.
