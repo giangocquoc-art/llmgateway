@@ -1,0 +1,98 @@
+name: cliproxy-newapi
+
+# Only Caddy exposes ports to the host. Other services use internal DNS.
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: gateway
+      POSTGRES_USER: gateway
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run ./init.sh first}
+      TZ: Asia/Ho_Chi_Minh
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gateway -d gateway"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [private]
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?Run ./init.sh first}
+    command: ["sh", "-c", "exec redis-server --appendonly yes --requirepass \"$$REDIS_PASSWORD\""]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "REDISCLI_AUTH=\"$$REDIS_PASSWORD\" redis-cli ping | grep -q PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [private]
+
+  cliproxy:
+    image: ${CLIPROXY_IMAGE:-eceasy/cli-proxy-api:latest}
+    restart: unless-stopped
+    volumes:
+      - ./cliproxy/config.yaml:/CLIProxyAPI/config.yaml:ro
+      - ./cliproxy/auths:/root/.cli-proxy-api
+      - ./cliproxy/logs:/CLIProxyAPI/logs
+      - ./cliproxy/plugins:/CLIProxyAPI/plugins
+    networks: [private]
+
+  new-api:
+    image: ${NEWAPI_IMAGE:-calciumion/new-api:latest}
+    restart: unless-stopped
+    command: --log-dir /app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      cliproxy:
+        condition: service_started
+    environment:
+      TZ: Asia/Ho_Chi_Minh
+      SQL_DSN: postgresql://gateway:${POSTGRES_PASSWORD}@postgres:5432/gateway?sslmode=disable
+      REDIS_CONN_STRING: redis://:${REDIS_PASSWORD}@redis:6379
+      SESSION_SECRET: ${SESSION_SECRET:?Run ./init.sh first}
+      CRYPTO_SECRET: ${CRYPTO_SECRET:?Run ./init.sh first}
+      SESSION_COOKIE_SECURE: "true"
+      SESSION_COOKIE_TRUSTED_URL: https://${API_DOMAIN:?Run ./init.sh first}
+      TRUSTED_PROXIES: none
+      ERROR_LOG_ENABLED: "true"
+      GENERATE_DEFAULT_TOKEN: "false"
+    volumes:
+      - ./newapi/data:/data
+      - ./newapi/logs:/app/logs
+    networks: [private]
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on: [new-api]
+    environment:
+      API_DOMAIN: ${API_DOMAIN:?Run ./init.sh first}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks: [private]
+
+networks:
+  private:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  caddy_data:
+  caddy_config:

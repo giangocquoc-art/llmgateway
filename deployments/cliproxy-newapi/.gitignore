@@ -1,0 +1,14 @@
+.env
+.env.*
+!.env.example
+cliproxy/config.yaml
+cliproxy/auths/
+cliproxy/logs/
+cliproxy/plugins/
+newapi/data/
+newapi/logs/
+backups/
+*.sql
+*.dump
+*.backup
+.DS_Store

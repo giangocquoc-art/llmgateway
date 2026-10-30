@@ -1,0 +1,12 @@
+# Reference only; do NOT place live secrets in this tracked example.
+# Append this root 'api-keys' mapping to generated cliproxy/config.yaml.
+# CLIProxyAPI v8 client authentication is separate: access.api-keys.
+api-keys:
+  openai-compatibility:
+    - name: licensed-upstream
+      base-url: https://PROVIDER-HOST.example/v1
+      models:
+        - name: PROVIDER_MODEL_ID
+          alias: PUBLIC_MODEL_ID
+      keys:
+        - api-key: PROVIDER_UPSTREAM_SECRET
