@@ -6,6 +6,7 @@ import YAML from "yaml";
 export const BRIDGE_PORT = 18710;
 export const MUSE_PORT = 18610;
 export const CLI_PORT = 8317;
+const MAX_REQUEST_BYTES = 25 * 1024 * 1024;
 
 export function readClientKeys(configFile: string): string[] {
   if (!configFile) return [];
@@ -65,6 +66,17 @@ export function createGateway(configFile: () => string, museKey: string, ports: 
         .end(JSON.stringify({ error: { message: "Invalid CLIProxy API key", type: "authentication_error" } }));
       return;
     }
+    const contentLength = req.headers["content-length"];
+    if (contentLength && (!/^\\d+$/.test(contentLength) || Number(contentLength) > MAX_REQUEST_BYTES)) {
+      res.writeHead(413).end("Request body too large");
+      req.resume();
+      return;
+    }
+    if (!["GET", "POST", "PATCH", "DELETE", "PUT", "HEAD"].includes(req.method ?? "")) {
+      res.writeHead(405).end("Method not allowed");
+      req.resume();
+      return;
+    }
     const isVideo = videoPath(parsed.pathname);
     const port = isVideo ? (ports.video ?? MUSE_PORT) : (ports.cli ?? CLI_PORT);
     const headers = { ...req.headers, host: `127.0.0.1:${port}` };
@@ -72,6 +84,11 @@ export function createGateway(configFile: () => string, museKey: string, ports: 
     if (isVideo) headers.authorization = `Bearer ${museKey}`;
     delete headers.connection;
     delete headers["proxy-authorization"];
+    delete headers["proxy-connection"];
+    delete headers["cookie"];
+    delete headers["keep-alive"];
+    delete headers["upgrade"];
+    delete headers["te"];
 
     const upstream = httpRequest({
       hostname: "127.0.0.1", port, method: req.method, path: parsed.pathname + parsed.search,
@@ -79,13 +96,23 @@ export function createGateway(configFile: () => string, museKey: string, ports: 
     }, (reply) => {
       const responseHeaders = { ...reply.headers };
       delete responseHeaders.connection;
+      delete responseHeaders["keep-alive"];
+      delete responseHeaders["proxy-authenticate"];
+      delete responseHeaders["proxy-authorization"];
+      delete responseHeaders["upgrade"];
+      reply.on("aborted", () => res.destroy());
       res.writeHead(reply.statusCode ?? 502, responseHeaders);
       reply.pipe(res);
     });
     upstream.on("timeout", () => upstream.destroy(new Error("Upstream timeout")));
     upstream.on("error", () => {
-      if (!res.headersSent) res.writeHead(502, { "content-type": "application/json" });
-      if (!res.writableEnded) res.end(JSON.stringify({ error: { message: "Upstream unavailable" } }));
+      if (res.writableEnded || res.destroyed) return;
+      if (res.headersSent) {
+        res.destroy();
+        return;
+      }
+      res.writeHead(502, { "content-type": "application/json" })
+        .end(JSON.stringify({ error: { message: "Upstream unavailable" } }));
     });
     req.on("aborted", () => upstream.destroy());
     req.pipe(upstream);
