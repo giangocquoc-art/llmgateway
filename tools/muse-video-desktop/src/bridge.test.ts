@@ -60,6 +60,7 @@ test("gateway authenticates once and routes Muse video separately", async () => 
   });
   const cliPort = await serve(cli);
   const musePort = await serve(muse);
+  try {
   const cfg = join(folder, "route.yaml");
   writeFileSync(cfg, "access:\n  api-keys:\n    - valid-client-key\n");
   const quotaFile = join(folder, "video-quota.json");
@@ -147,6 +148,9 @@ test("gateway authenticates once and routes Muse video separately", async () => 
     });
     assert.equal(limitAfterRestart.status, 429);
   } finally {
-    await Promise.all([close(restarted), close(cli), close(muse)]);
+    await close(restarted);
+  }
+  } finally {
+    await Promise.all([close(cli), close(muse)]);
   }
 });
