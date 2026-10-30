@@ -27,7 +27,8 @@ This review covers source-level logic; no real Muse account, Windows installatio
 5. **Sensitive local data [high]**: Muse2API persists session cookies locally; its raw `/v1/media` route is intentionally unauthenticated by upstream design. Keep its port on loopback and protect the Windows profile.
 6. **Actual build and CI [high]**: Run `npm run check`, `npm test` and `npm run package:win` on a Windows machine with dependencies installed. The GitHub workflow is defined but no successful run was visible at audit time.
 7. **End-to-end task flow [high]**: Validate sign-in -> account pool -> async task creation -> polling -> finished task -> playable MP4 download -> expiry/retry/failure states.
-8. **Additional features [medium]**: There is no image-to-video UI, multi-user video billing, shared CLIProxy usage analytics, background auto-updater, or bundled CLIProxy executable. Account quota details are not shown in the Electron dashboard.
+8. **Video result URL compatibility [high]**: Muse2API emits a `/v1/media/*` URL on the local bridge; the bridge requires a Bearer client key for media downloads, so generic players/SDKs that fetch result URLs without Authorization will receive HTTP 401. Keep authentication by default until a secure signed-download strategy is implemented and tested.
+9. **Additional features [medium]**: There is no image-to-video UI, multi-user video billing, shared CLIProxy usage analytics, background auto-updater, or bundled CLIProxy executable. Account quota details are not shown in the Electron dashboard.
 
 ## Manual acceptance matrix
 
@@ -37,7 +38,8 @@ This review covers source-level logic; no real Muse account, Windows installatio
 - [ ] Block client access to `/admin/*` from unified gateway; verify upload-size limits.
 - [ ] Sign in to Muse Web in embedded browser; verify expected session cookies; import account and read account status/quota.
 - [ ] Sign in with second account label; verify first account still works; re-sync first label without duplicates.
-- [ ] Create 5-second text-to-video; confirm task advances queued -> running -> succeeded; retrieve playable MP4.
+- [ ] Create 5-second text-to-video; confirm task advances queued -> running -> succeeded; retrieve playable MP4 using authenticated request.
+- [ ] Verify standard clients can consume returned media URLs; if not, implement signed-download URLs without exposing sensitive media to unauthenticated clients.
 - [ ] Invalid / expired cookies: show user-friendly errors, never leak tokens.
 - [ ] Cancel a running video; verify task status and browser resource cleanup.
 - [ ] Restart during active task: confirmation appears; ensure interrupted task is marked failed.
