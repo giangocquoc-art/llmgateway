@@ -1,16 +1,18 @@
-type Status = { museOnline: boolean; cliOnline: boolean; bridgeOnline: boolean; keyCount: number; cliConfig: string; workerError: string; endpoint: string };
+type Status = { museOnline: boolean; cliOnline: boolean; bridgeOnline: boolean; cliExecutable: string; keyCount: number; cliConfig: string; workerError: string; endpoint: string };
 type Account = { id: string; label: string; status: string; enabled: boolean };
 type Task = { id: string; status: string; result?: { url?: string }; error?: { message?: string } | string };
 type Manager = {
   status(): Promise<Status>;
   restartWorker(): Promise<{ started: boolean; cancelled?: boolean; error: string }>;
   chooseConfig(): Promise<{ cliConfig: string; keyCount: number } | null>;
+  chooseCli(): Promise<string | null>;
+  startCli(): Promise<{ running: boolean; note: string }>;
   openLogin(label: string): Promise<void>;
   syncLogin(label: string): Promise<object>;
   accounts(): Promise<{ data: Account[] }>;
   tasks(): Promise<{ data: Task[] }>;
   cancelTask(id: string): Promise<object>;
-  submitVideo(prompt: string, duration: number, size: string): Promise<{ id: string; status: string }>;
+  submitVideo(prompt: string, duration: number, size: string, image?: string): Promise<{ id: string; status: string }>;
   deleteAccount(id: string): Promise<object>;
   openCliManager(): Promise<void>;
   choosePython(): Promise<string | null>;
@@ -47,6 +49,7 @@ async function refresh(): Promise<void> {
   element("bridge-status").textContent = status.bridgeOnline ? "Listening" : "Offline";
   element("key-count").textContent = String(status.keyCount);
   element("config-path").textContent = status.cliConfig || "Select a CLIProxy config.yaml to share client keys";
+  element("cli-path").textContent = status.cliExecutable || "CLIProxy executable not selected";
   element("endpoint").textContent = status.endpoint;
   element("worker-error").textContent = status.workerError;
   if (!status.museOnline) {
@@ -117,6 +120,15 @@ element("choose-python").addEventListener("click", () => void execute(async () =
   await api.choosePython();
   await refresh();
 }, "Python path updated; restart app to apply"));
+element("choose-cli").addEventListener("click", () => void execute(async () => {
+  await api.chooseCli();
+  await refresh();
+}, "CLIProxy executable selected"));
+element("start-cli").addEventListener("click", () => void execute(async () => {
+  const response = await api.startCli();
+  output(response.note);
+  await refresh();
+}, "CLIProxy startup requested"));
 element("choose-config").addEventListener("click", () => void execute(async () => {
   await api.chooseConfig();
   await refresh();
@@ -132,7 +144,21 @@ element("create-video").addEventListener("click", () => void execute(async () =>
   const prompt = (element("prompt") as HTMLTextAreaElement).value;
   const duration = Number((element("duration") as HTMLSelectElement).value);
   const size = (element("size") as HTMLSelectElement).value;
-  await api.submitVideo(prompt, duration, size);
+  const imageInput = element("image") as HTMLInputElement;
+  const file = imageInput.files?.item(0);
+  let image: string | undefined;
+  if (file) {
+    if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)) throw new Error("Unsupported reference image");
+    if (file.size > 10 * 1024 * 1024) throw new Error("Reference image must be under 10MB");
+    image = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => typeof reader.result === "string"
+        ? resolve(reader.result) : reject(new Error("Could not read image"));
+      reader.onerror = () => reject(new Error("Could not read image"));
+      reader.readAsDataURL(file);
+    });
+  }
+  await api.submitVideo(prompt, duration, size, image);
   await refresh();
 }, "Task submitted. Refresh tasks to view progress."));
 void execute(refresh, "Manager ready");
