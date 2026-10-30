@@ -15,7 +15,7 @@ header { display: flex; justify-content: space-between; align-items: center; mar
 h1 { font-size: 29px; margin: 0 }
 h2 { font-size: 19px; margin: 35px 0 15px }
 h3 { margin: 0 0 12px; font-size: 15px }
-.metrics { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px }
+.metrics { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px }
 .metric, .panel { border: 1px solid #29344d; background: #131b2e; border-radius: 12px; padding: 22px; margin-bottom: 15px }
 .metric span { display: block; font-size: 13px; color: #a7b9d5; margin-bottom: 8px }
 .metric strong { font-size: 23px; color: #dce6ff }
