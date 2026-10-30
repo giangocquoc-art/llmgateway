@@ -1,6 +1,6 @@
 import { app, BrowserWindow, dialog, ipcMain, session } from "electron";
 import { ChildProcessWithoutNullStreams, spawn } from "node:child_process";
-import { randomBytes } from "node:crypto";
+import { randomBytes, createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync, createWriteStream } from "node:fs";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
@@ -9,7 +9,16 @@ import { createGateway, BRIDGE_PORT, MUSE_PORT, CLI_PORT, readClientKeys } from 
 
 type Settings = { cliConfig: string; pythonPath: string };
 const internalKey = randomBytes(32).toString("hex");
-const partition = "persist:muse-web";
+function validateLabel(raw: unknown): string {
+  if (typeof raw !== "string" || !raw.trim() || raw.trim().length > 60) {
+    throw new Error("Muse account label must be 1–60 characters");
+  }
+  return raw.trim();
+}
+function partitionFor(label: string): string {
+  return "persist:muse-web-" + createHash("sha256").update(label).digest("hex").slice(0, 16);
+}
+let loginPartition = "";
 let mainWindow: BrowserWindow;
 let loginWindow: BrowserWindow | undefined;
 let worker: ChildProcessWithoutNullStreams | undefined;
@@ -110,8 +119,13 @@ async function museFetch(endpoint: string, method = "GET", body?: object): Promi
   return result as Record<string, unknown>;
 }
 
-function openLogin(): void {
-  if (loginWindow && !loginWindow.isDestroyed()) { loginWindow.focus(); return; }
+function openLogin(rawLabel: unknown): void {
+  const partition = partitionFor(validateLabel(rawLabel));
+  if (loginWindow && !loginWindow.isDestroyed()) {
+    if (loginPartition === partition) { loginWindow.focus(); return; }
+    loginWindow.close();
+  }
+  loginPartition = partition;
   loginWindow = new BrowserWindow({
     parent: mainWindow, width: 1200, height: 840,
     title: "Sign in to Muse Web",
@@ -129,9 +143,10 @@ function openLogin(): void {
   void loginWindow.loadURL("https://muse.ai");
 }
 
-async function syncLogin(): Promise<object> {
-  // Reads only the dedicated Muse browser partition, never the user's normal Chrome profile.
-  const cookies = await session.fromPartition(partition).cookies.get({ url: "https://muse.ai" });
+async function syncLogin(rawLabel: unknown): Promise<object> {
+  const label = validateLabel(rawLabel);
+  // Per-label browser partition keeps distinct Muse Web accounts isolated.
+  const cookies = await session.fromPartition(partitionFor(label)).cookies.get({ url: "https://muse.ai" });
   const jar = Object.fromEntries(cookies.map(({ name, value }) => [name, value]));
   if (!jar.hatch_sess || !jar.hatch_native_auth_device) {
     throw new Error("Muse Web login not found. Sign in inside the Muse window first.");
@@ -144,14 +159,14 @@ async function syncLogin(): Promise<object> {
   const existing = accounts.find((entry: unknown) => {
     if (!entry || typeof entry !== "object") return false;
     const account = entry as { label?: unknown; id?: unknown };
-    return account.label === "Muse Web" && typeof account.id === "string";
+    return account.label === label && typeof account.id === "string";
   }) as { id: string } | undefined;
   if (existing) {
     return museFetch(`/admin/accounts/${encodeURIComponent(existing.id)}`, "PATCH",
       { cookies: jar, cookie_expires: expires, enabled: true });
   }
   return museFetch("/admin/accounts", "POST",
-    { label: "Muse Web", cookies: jar, cookie_expires: expires });
+    { label, cookies: jar, cookie_expires: expires });
 }
 
 function openCliPanel(): void {
@@ -276,8 +291,8 @@ if (singleInstance) app.whenReady().then(() => {
     );
   });
   ipcMain.handle("manager:open-cli", () => { openCliPanel(); return true; });
-  ipcMain.handle("muse:open-login", () => { openLogin(); return true; });
-  ipcMain.handle("muse:sync-login", syncLogin);
+  ipcMain.handle("muse:open-login", (_event, label: unknown) => { openLogin(label); return true; });
+  ipcMain.handle("muse:sync-login", (_event, label: unknown) => syncLogin(label));
   ipcMain.handle("muse:accounts", () => museFetch("/admin/accounts"));
   ipcMain.handle("muse:tasks", () => museFetch("/admin/tasks?limit=30"));
   ipcMain.handle("muse:delete-account", (_event, id: unknown) => {
