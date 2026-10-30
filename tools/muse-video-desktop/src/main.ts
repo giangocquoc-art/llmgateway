@@ -244,6 +244,16 @@ if (singleInstance) app.whenReady().then(() => {
   ipcMain.handle("muse:restart-worker", async () => {
     const running = worker;
     if (running && running.exitCode === null && running.signalCode === null) {
+      const decision = await dialog.showMessageBox(mainWindow, {
+        type: "warning",
+        title: "Restart Muse video worker?",
+        message: "Restarting interrupts any active Muse video generation tasks.",
+        buttons: ["Cancel", "Restart worker"],
+        defaultId: 0,
+        cancelId: 0,
+        noLink: true
+      });
+      if (decision.response !== 1) return { started: true, cancelled: true, error: "" };
       running.kill();
       await new Promise<void>((resolve) => {
         const timer = setTimeout(resolve, 5000);
