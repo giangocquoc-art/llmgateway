@@ -356,6 +356,10 @@ if (singleInstance) app.whenReady().then(() => {
   ipcMain.handle("muse:open-login", (_event, label: unknown) => { openLogin(label); return true; });
   ipcMain.handle("muse:sync-login", (_event, label: unknown) => syncLogin(label));
   ipcMain.handle("muse:accounts", () => museFetch("/admin/accounts"));
+  ipcMain.handle("muse:quota", (_event, id: unknown) => {
+    if (typeof id !== "string" || !/^acc_[a-z0-9]{10}$/.test(id)) throw new Error("Invalid account ID");
+    return museFetch(`/admin/accounts/${encodeURIComponent(id)}/quota?refresh=1`);
+  });
   ipcMain.handle("muse:tasks", () => museFetch("/admin/tasks?limit=30"));
   ipcMain.handle("muse:cancel-task", (_event, id: unknown) => {
     if (typeof id !== "string" || !/^task_[a-f0-9]{16}$/.test(id)) {
