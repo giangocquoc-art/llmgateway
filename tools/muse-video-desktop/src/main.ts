@@ -14,6 +14,8 @@ let mainWindow: BrowserWindow;
 let loginWindow: BrowserWindow | undefined;
 let worker: ChildProcessWithoutNullStreams | undefined;
 let workerError = "";
+let bridgeError = "";
+let bridgeOnline = false;
 let settings: Settings = { cliConfig: "", pythonPath: "" };
 
 function storePath(): string { return join(app.getPath("userData"), "settings.json"); }
@@ -66,7 +68,7 @@ function startWorker(): void {
     return;
   }
   workerError = "";
-  worker = spawn(executable, ["-m", "muse2api"], {
+  const child = spawn(executable, ["-m", "muse2api"], {
     cwd: dataDir, windowsHide: true,
     env: {
       ...process.env,
@@ -81,11 +83,17 @@ function startWorker(): void {
       MUSE2API_PUBLIC_BASE: `http://127.0.0.1:${BRIDGE_PORT}`
     }
   });
-  worker.on("error", (err) => { workerError = err.message; });
-  worker.on("exit", (code) => { workerError = `Muse2API worker stopped (code ${code})`; worker = undefined; });
+  worker = child;
+  child.on("error", (err) => { if (worker === child) workerError = err.message; });
+  child.on("exit", (code, signal) => {
+    if (worker === child) {
+      workerError = `Muse2API worker stopped (${signal ?? code})`;
+      worker = undefined;
+    }
+  });
   // Never print stdout/stderr: upstream logging may contain sensitive browser state.
-  worker.stdout.resume();
-  worker.stderr.resume();
+  child.stdout.resume();
+  child.stderr.resume();
 }
 
 async function museFetch(endpoint: string, method = "GET", body?: object): Promise<Record<string, unknown>> {
@@ -128,7 +136,22 @@ async function syncLogin(): Promise<object> {
   if (!jar.hatch_sess || !jar.hatch_native_auth_device) {
     throw new Error("Muse Web login not found. Sign in inside the Muse window first.");
   }
-  return museFetch("/admin/accounts", "POST", { label: "Muse Web", cookies: jar });
+  const expires = Object.fromEntries(cookies.filter((c) =>
+    typeof c.expirationDate === "number" && Number.isFinite(c.expirationDate)
+  ).map((c) => [c.name, Math.floor(c.expirationDate as number)]));
+  const current = await museFetch("/admin/accounts");
+  const accounts = Array.isArray(current.data) ? current.data : [];
+  const existing = accounts.find((entry: unknown) => {
+    if (!entry || typeof entry !== "object") return false;
+    const account = entry as { label?: unknown; id?: unknown };
+    return account.label === "Muse Web" && typeof account.id === "string";
+  }) as { id: string } | undefined;
+  if (existing) {
+    return museFetch(`/admin/accounts/${encodeURIComponent(existing.id)}`, "PATCH",
+      { cookies: jar, cookie_expires: expires, enabled: true });
+  }
+  return museFetch("/admin/accounts", "POST",
+    { label: "Muse Web", cookies: jar, cookie_expires: expires });
 }
 
 function openCliPanel(): void {
@@ -154,10 +177,26 @@ function makeWindow(): void {
   void mainWindow.loadFile(join(__dirname, "..", "ui", "index.html"));
 }
 
-app.whenReady().then(() => {
+const singleInstance = app.requestSingleInstanceLock();
+if (!singleInstance) {
+  app.quit();
+} else {
+  app.on("second-instance", () => {
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
+}
+
+if (singleInstance) app.whenReady().then(() => {
   loadSettings();
   const bridge = createGateway(() => settings.cliConfig, internalKey);
-  bridge.on("error", (err) => { workerError = `Bridge startup failed: ${err.message}`; });
+  bridge.on("error", (err) => {
+    bridgeOnline = false;
+    bridgeError = `Bridge startup failed: ${err.message}`;
+  });
+  bridge.on("listening", () => { bridgeOnline = true; bridgeError = ""; });
   bridge.listen(BRIDGE_PORT, "127.0.0.1");
   startWorker();
   makeWindow();
@@ -172,7 +211,7 @@ app.whenReady().then(() => {
     } catch { /* CLIProxy not running */ }
     let keyCount = 0;
     try { keyCount = readClientKeys(settings.cliConfig).length; } catch { /* config missing */ }
-    return { museOnline, cliOnline, keyCount, cliConfig: settings.cliConfig, workerError,
+    return { museOnline, cliOnline, bridgeOnline, keyCount, cliConfig: settings.cliConfig, workerError: [workerError, bridgeError].filter(Boolean).join(" | "),
       endpoint: `http://127.0.0.1:${BRIDGE_PORT}/v1` };
   });
   ipcMain.handle("manager:choose-config", async () => {
@@ -186,6 +225,22 @@ app.whenReady().then(() => {
     settings.cliConfig = result.filePaths[0];
     saveSettings();
     return { cliConfig: settings.cliConfig, keyCount: keys.length };
+  });
+  ipcMain.handle("muse:restart-worker", async () => {
+    const running = worker;
+    if (running && running.exitCode === null && running.signalCode === null) {
+      running.kill();
+      await new Promise<void>((resolve) => {
+        const timer = setTimeout(resolve, 5000);
+        running.once("exit", () => { clearTimeout(timer); resolve(); });
+      });
+      if (running.exitCode === null && running.signalCode === null) {
+        throw new Error("Worker has not exited; refusing to launch a duplicate");
+      }
+      if (worker === running) worker = undefined;
+    }
+    startWorker();
+    return { started: Boolean(worker), error: workerError };
   });
   ipcMain.handle("manager:choose-python", async () => {
     const selected = await dialog.showOpenDialog(mainWindow, {
