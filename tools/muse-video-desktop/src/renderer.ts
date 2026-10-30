@@ -1,8 +1,9 @@
-type Status = { museOnline: boolean; cliOnline: boolean; keyCount: number; cliConfig: string; workerError: string; endpoint: string };
+type Status = { museOnline: boolean; cliOnline: boolean; bridgeOnline: boolean; keyCount: number; cliConfig: string; workerError: string; endpoint: string };
 type Account = { id: string; label: string; status: string; enabled: boolean };
 type Task = { id: string; status: string; result?: { url?: string }; error?: string };
 type Manager = {
   status(): Promise<Status>;
+  restartWorker(): Promise<{ started: boolean; error: string }>;
   chooseConfig(): Promise<{ cliConfig: string; keyCount: number } | null>;
   openLogin(): Promise<void>;
   syncLogin(): Promise<object>;
@@ -38,11 +39,16 @@ async function refresh(): Promise<void> {
   const status = await api.status();
   element("muse-status").textContent = status.museOnline ? "Online" : "Offline";
   element("cli-status").textContent = status.cliOnline ? "Reachable" : "Offline";
+  element("bridge-status").textContent = status.bridgeOnline ? "Listening" : "Offline";
   element("key-count").textContent = String(status.keyCount);
   element("config-path").textContent = status.cliConfig || "Select a CLIProxy config.yaml to share client keys";
   element("endpoint").textContent = status.endpoint;
   element("worker-error").textContent = status.workerError;
-  if (!status.museOnline) return;
+  if (!status.museOnline) {
+    element("accounts").textContent = "Muse worker offline.";
+    element("tasks").textContent = "Muse worker offline.";
+    return;
+  }
   const [accounts, tasks] = await Promise.all([api.accounts(), api.tasks()]);
   const accountList = element("accounts");
   accountList.replaceChildren();
@@ -62,7 +68,9 @@ async function refresh(): Promise<void> {
   const taskList = element("tasks");
   taskList.replaceChildren();
   for (const task of tasks.data) {
-    const item = textNode("div", `${task.id} · ${task.status}${task.error ? " · " + task.error : ""}`);
+    const detail = task.error && typeof task.error === "object"
+      ? ((task.error as { message?: string }).message ?? "Task failed") : (task.error ?? "");
+    const item = textNode("div", `${task.id} · ${task.status}${detail ? " · " + detail : ""}`);
     item.className = "item";
     if (task.result?.url) {
       const link = document.createElement("a");
@@ -84,6 +92,11 @@ async function refresh(): Promise<void> {
   }
   if (!tasks.data.length) taskList.textContent = "No video tasks.";
 }
+element("restart-worker").addEventListener("click", () => void execute(async () => {
+  const result = await api.restartWorker();
+  await refresh();
+  if (!result.started) throw new Error(result.error || "Worker failed to start");
+}, "Worker launch requested"));
 element("choose-python").addEventListener("click", () => void execute(async () => {
   await api.choosePython();
   await refresh();
@@ -107,3 +120,4 @@ element("create-video").addEventListener("click", () => void execute(async () =>
   await refresh();
 }, "Task submitted. Refresh tasks to view progress."));
 void execute(refresh, "Manager ready");
+setInterval(() => { void refresh().catch((error: unknown) => output(String(error), true)); }, 15000);
