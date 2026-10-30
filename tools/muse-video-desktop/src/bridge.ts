@@ -146,6 +146,18 @@ export function createGateway(
     delete headers["te"];
     headers["accept-encoding"] = "identity";
 
+    // Reserve quota before forwarding concurrent submissions; refund failed requests.
+    let reservation: { key: string; start: number } | undefined;
+    let refunded = false;
+    const refund = (): void => {
+      if (!reservation || refunded) return;
+      refunded = true;
+      const value = quotas.get(reservation.key);
+      if (!value || value.start !== reservation.start) return;
+      value.count = Math.max(0, value.count - 1);
+      try { persistQuotas(); }
+      catch { quotaStoreError = "Cannot persist video quotas"; }
+    };
     // Limit submissions by CLIENT key, not Muse upstream cookie.
     if (req.method === "POST" && parsed.pathname === "/v1/videos") {
       if (quotaStoreError) {
@@ -169,6 +181,8 @@ export function createGateway(
       }
       if (!entry || now - entry.start >= 3600000) quotas.set(keyHash, { start: now, count: 1 });
       else entry.count += 1;
+      const current = quotas.get(keyHash);
+      if (current) reservation = { key: keyHash, start: current.start };
       try { persistQuotas(); }
       catch {
         quotaStoreError = "Cannot persist video quotas";
@@ -200,6 +214,7 @@ export function createGateway(
       hostname: "127.0.0.1", port, method: req.method,
       path: parsed.pathname + parsed.search, headers, timeout: 610000
     }, (reply) => {
+      if ((reply.statusCode ?? 502) >= 400) refund();
       const responseHeaders = { ...reply.headers };
       for (const name of ["connection", "keep-alive", "proxy-authenticate",
         "proxy-authorization", "upgrade", "transfer-encoding"]) delete responseHeaders[name];
@@ -251,11 +266,13 @@ export function createGateway(
     });
     upstream.on("timeout", () => upstream.destroy(new Error("Upstream timeout")));
     bounded.on("error", () => {
+      refund();
       upstream.destroy();
       if (!res.headersSent) res.writeHead(413).end("Request body too large");
       else res.destroy();
     });
     upstream.on("error", () => {
+      refund();
       if (tooLarge || res.writableEnded || res.destroyed) return;
       if (res.headersSent) { res.destroy(); return; }
       res.writeHead(502, { "content-type": "application/json" })
