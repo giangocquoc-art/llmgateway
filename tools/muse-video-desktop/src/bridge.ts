@@ -45,11 +45,11 @@ function mediaPath(pathname: string): boolean {
 export function createGateway(
   configFile: () => string,
   museKey: string,
-  ports: { video?: number; cli?: number; quotaFile?: string } = {}
+  ports: { video?: number; cli?: number; quotaFile?: string; hourlyLimit?: number } = {}
 ): Server {
   const signingSecret = randomBytes(32);
   const quotas = new Map<string, { start: number; count: number }>();
-  const hourlyLimit = Math.max(1, Number(process.env.MUSE_VIDEO_HOURLY_LIMIT || "12") || 12);
+  const hourlyLimit = Math.max(1, Math.floor(ports.hourlyLimit ?? (Number(process.env.MUSE_VIDEO_HOURLY_LIMIT || "12") || 12)));
   let quotaStoreError = "";
   if (ports.quotaFile && existsSync(ports.quotaFile)) {
     try {
