@@ -31,6 +31,8 @@ test("client key parser accepts v8 and legacy layout", () => {
   assert.equal(authorize("Bearer wrong", ["first-key"]), false);
 });
 test("gateway authenticates once and routes Muse video separately", async () => {
+  const previousLimit = process.env.MUSE_VIDEO_HOURLY_LIMIT;
+  process.env.MUSE_VIDEO_HOURLY_LIMIT = "2";
   const cli = createServer((req, res) => {
     res.setHeader("content-type", "application/json");
     res.end(JSON.stringify({ source: "cliproxy", auth: req.headers.authorization }));
@@ -56,6 +58,8 @@ test("gateway authenticates once and routes Muse video separately", async () => 
   const cfg = join(folder, "route.yaml");
   writeFileSync(cfg, "access:\n  api-keys:\n    - valid-client-key\n");
   const bridge = createGateway(() => cfg, "internal-test-key", { cli: cliPort, video: musePort });
+  if (previousLimit === undefined) delete process.env.MUSE_VIDEO_HOURLY_LIMIT;
+  else process.env.MUSE_VIDEO_HOURLY_LIMIT = previousLimit;
   const port = await serve(bridge);
   const base = `http://127.0.0.1:${port}`;
   try {
@@ -69,6 +73,17 @@ test("gateway authenticates once and routes Muse video separately", async () => 
     assert.deepEqual(await video.json(), {
       source: "muse", auth: "Bearer internal-test-key", path: "/v1/videos?test=1"
     });
+    const allowed = await fetch(base + "/v1/videos", {
+      method: "POST", headers: { Authorization: "Bearer valid-client-key" },
+      body: JSON.stringify({ prompt: "second" })
+    });
+    assert.equal(allowed.status, 200);
+    const limited = await fetch(base + "/v1/videos", {
+      method: "POST", headers: { Authorization: "Bearer valid-client-key" },
+      body: JSON.stringify({ prompt: "third" })
+    });
+    assert.equal(limited.status, 429);
+    assert.ok(limited.headers.get("retry-after"));
     const status = await fetch(base + "/v1/videos/task_1", {
       headers: { Authorization: "Bearer valid-client-key" }
     });
