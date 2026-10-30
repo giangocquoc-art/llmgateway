@@ -31,8 +31,6 @@ test("client key parser accepts v8 and legacy layout", () => {
   assert.equal(authorize("Bearer wrong", ["first-key"]), false);
 });
 test("gateway authenticates once and routes Muse video separately", async () => {
-  const previousLimit = process.env.MUSE_VIDEO_HOURLY_LIMIT;
-  process.env.MUSE_VIDEO_HOURLY_LIMIT = "2";
   const cli = createServer((req, res) => {
     res.setHeader("content-type", "application/json");
     res.end(JSON.stringify({ source: "cliproxy", auth: req.headers.authorization }));
@@ -64,9 +62,7 @@ test("gateway authenticates once and routes Muse video separately", async () => 
   const cfg = join(folder, "route.yaml");
   writeFileSync(cfg, "access:\n  api-keys:\n    - valid-client-key\n");
   const quotaFile = join(folder, "video-quota.json");
-  const bridge = createGateway(() => cfg, "internal-test-key", { cli: cliPort, video: musePort, quotaFile });
-  if (previousLimit === undefined) delete process.env.MUSE_VIDEO_HOURLY_LIMIT;
-  else process.env.MUSE_VIDEO_HOURLY_LIMIT = previousLimit;
+  const bridge = createGateway(() => cfg, "internal-test-key", { cli: cliPort, video: musePort, quotaFile, hourlyLimit: 2 });
   const port = await serve(bridge);
   const base = `http://127.0.0.1:${port}`;
   try {
@@ -138,7 +134,7 @@ test("gateway authenticates once and routes Muse video separately", async () => 
   }
   // Keep mock upstream services alive while testing the re-created bridge.
   const restarted = createGateway(() => cfg, "internal-test-key", {
-    video: musePort, cli: cliPort, quotaFile
+    video: musePort, cli: cliPort, quotaFile, hourlyLimit: 2
   });
   try {
     const restartPort = await serve(restarted);
