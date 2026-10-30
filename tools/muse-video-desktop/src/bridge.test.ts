@@ -44,6 +44,11 @@ test("gateway authenticates once and routes Muse video separately", async () => 
       return;
     }
     res.setHeader("content-type", "application/json");
+    if (req.url === "/v1/videos?fail=1") {
+      res.writeHead(422);
+      res.end(JSON.stringify({ error: { message: "Invalid Muse prompt" } }));
+      return;
+    }
     if (req.url === "/v1/videos/task_signed") {
       res.end(JSON.stringify({
         id: "task_signed", status: "succeeded",
@@ -66,6 +71,11 @@ test("gateway authenticates once and routes Muse video separately", async () => 
   try {
     const denied = await fetch(base + "/v1/videos", { headers: { Authorization: "Bearer wrong-key" } });
     assert.equal(denied.status, 401);
+    const rejected = await fetch(base + "/v1/videos?fail=1", {
+      method: "POST", headers: { Authorization: "Bearer valid-client-key" },
+      body: JSON.stringify({ prompt: "invalid" })
+    });
+    assert.equal(rejected.status, 422);
     const video = await fetch(base + "/v1/videos?test=1", {
       method: "POST", headers: { Authorization: "Bearer valid-client-key" },
       body: JSON.stringify({ prompt: "test" })
