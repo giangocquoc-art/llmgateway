@@ -88,7 +88,7 @@ function startWorker(): void {
   worker.stderr.resume();
 }
 
-async function museFetch(endpoint: string, method = "GET", body?: object): Promise<any> {
+async function museFetch(endpoint: string, method = "GET", body?: object): Promise<Record<string, unknown>> {
   const response = await fetch(`http://127.0.0.1:${MUSE_PORT}${endpoint}`, {
     method,
     headers: { authorization: `Bearer ${internalKey}`, ...(body ? { "content-type": "application/json" } : {}) },
@@ -98,7 +98,8 @@ async function museFetch(endpoint: string, method = "GET", body?: object): Promi
   let result: unknown;
   try { result = await response.json(); } catch { throw new Error(`Muse worker HTTP ${response.status}`); }
   if (!response.ok) throw new Error(`Muse worker HTTP ${response.status}: ${JSON.stringify(result).slice(0, 300)}`);
-  return result;
+  if (!result || typeof result !== "object" || Array.isArray(result)) throw new Error("Unexpected Muse worker response");
+  return result as Record<string, unknown>;
 }
 
 function openLogin(): void {
