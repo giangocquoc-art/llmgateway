@@ -69,6 +69,14 @@ test("gateway authenticates once and routes Muse video separately", async () => 
       headers: { Authorization: "Bearer valid-client-key" }
     });
     assert.equal(privateAdmin.status, 404);
+    const huge = await fetch(base + "/v1/videos", {
+      method: "POST",
+      headers: { Authorization: "Bearer valid-client-key" },
+      body: "x".repeat(26 * 1024 * 1024)
+    });
+    assert.equal(huge.status, 413);
+    const missing = await fetch(base + "/v1/videos", { method: "POST", body: "{}" });
+    assert.equal(missing.status, 401);
   } finally {
     await Promise.all([close(bridge), close(cli), close(muse)]);
   }
