@@ -36,7 +36,19 @@ test("gateway authenticates once and routes Muse video separately", async () => 
     res.end(JSON.stringify({ source: "cliproxy", auth: req.headers.authorization }));
   });
   const muse = createServer((req, res) => {
+    if (req.url?.startsWith("/v1/media/")) {
+      res.setHeader("content-type", "video/mp4");
+      res.end("fake-video-data");
+      return;
+    }
     res.setHeader("content-type", "application/json");
+    if (req.url === "/v1/videos/task_signed") {
+      res.end(JSON.stringify({
+        id: "task_signed", status: "succeeded",
+        result: { url: "http://127.0.0.1:18710/v1/media/vid_sample.mp4" }
+      }));
+      return;
+    }
     res.end(JSON.stringify({ source: "muse", auth: req.headers.authorization, path: req.url }));
   });
   const cliPort = await serve(cli);
@@ -65,6 +77,22 @@ test("gateway authenticates once and routes Muse video separately", async () => 
       headers: { Authorization: "Bearer valid-client-key" }
     });
     assert.deepEqual(await chat.json(), { source: "cliproxy", auth: "Bearer valid-client-key" });
+    const videoResult = await fetch(base + "/v1/videos/task_signed", {
+      headers: { Authorization: "Bearer valid-client-key" }
+    });
+    const finished = await videoResult.json() as { result: { url: string } };
+    const signed = new URL(finished.result.url);
+    assert.equal(signed.origin, base);
+    assert.ok(signed.searchParams.has("exp"));
+    assert.ok(signed.searchParams.has("sig"));
+    const videoDownload = await fetch(signed);
+    assert.equal(videoDownload.status, 200);
+    assert.equal(await videoDownload.text(), "fake-video-data");
+    const tampered = new URL(signed);
+    tampered.searchParams.set("sig", "a".repeat(43));
+    assert.equal((await fetch(tampered)).status, 401);
+    const rawMedia = await fetch(base + "/v1/media/vid_sample.mp4");
+    assert.equal(rawMedia.status, 401);
     const privateAdmin = await fetch(base + "/admin/accounts", {
       headers: { Authorization: "Bearer valid-client-key" }
     });
