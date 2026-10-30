@@ -10,5 +10,7 @@ contextBridge.exposeInMainWorld("museManager", {
   submitVideo: (prompt: string, duration: number, size: string) =>
     ipcRenderer.invoke("muse:submit-video", { prompt, duration, size }),
   deleteAccount: (id: string) => ipcRenderer.invoke("muse:delete-account", id),
+  choosePython: () => ipcRenderer.invoke("manager:choose-python"),
+  downloadMedia: (url: string) => ipcRenderer.invoke("muse:download-media", url),
   openCliManager: () => ipcRenderer.invoke("manager:open-cli")
 });
