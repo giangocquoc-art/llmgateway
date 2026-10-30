@@ -189,8 +189,8 @@ export function createGateway(
                 const source = new URL(task.result.url);
                 if (source.hostname === "127.0.0.1" && mediaPath(source.pathname)) {
                   const exp = Math.floor(Date.now() / 1000) + SIGNED_MEDIA_LIFETIME_S;
-                  const localPort = (server.address() && typeof server.address() !== "string")
-                    ? server.address()!.port : BRIDGE_PORT;
+                  const address = server.address();
+                  const localPort = address && typeof address !== "string" ? address.port : BRIDGE_PORT;
                   task.result.url = `http://127.0.0.1:${localPort}${source.pathname}?exp=${exp}&sig=${sign(source.pathname, exp)}`;
                 }
               }
