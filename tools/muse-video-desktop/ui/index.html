@@ -33,7 +33,7 @@
         <p class="muted">The manager reads client API keys from access.api-keys; edit them in CLIProxyAPI as usual.</p>
       </div>
       <div class="panel"><h3>Connect Muse Web</h3><p class="muted">Sign in interactively with Meta inside an isolated window. Then sync the Muse Web session to the local video worker. Muse Code OAuth tokens are NOT reused as video credentials.</p>
-        <button id="login">Sign in to Muse Web</button> <button class="secondary" id="sync">Sync signed-in session</button>
+        <label for="account-label">Account label</label><input id="account-label" maxlength="60" value="Muse Web" placeholder="Account 1" /> <button id="login">Sign in to Muse Web</button> <button class="secondary" id="sync">Sync signed-in session</button>
         <div id="accounts" class="list">Loading...</div>
       </div>
     </section>
