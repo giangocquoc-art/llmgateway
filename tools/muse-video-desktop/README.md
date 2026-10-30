@@ -21,7 +21,7 @@ Windows packaging now builds a portable Muse2API worker with PyInstaller and bun
 
 ## Windows setup
 
-Install Git, Python 3.10+ (recommended 3.11), Node.js LTS, and Google Chrome or Microsoft Edge. Make sure your existing CLIProxyAPI instance is already running on port 8317.
+Install Git, Python 3.10+ (recommended 3.11), Node.js LTS, and Google Chrome or Microsoft Edge. CLIProxyAPI may already be running on port 8317, or you can select its executable in the desktop app to launch it.
 
 ```powershell
 cd tools\muse-video-desktop
@@ -29,7 +29,7 @@ powershell -ExecutionPolicy Bypass -File .\setup-windows.ps1
 npm start
 ```
 
-1. In the desktop app, select your CLIProxyAPI `config.yaml`. Its **client keys** are reused for **authentication only**. CLIProxyAPI request accounting, rate limits, per-key quota and billing are **not** automatically applied to Muse video requests.
+1. In the desktop app, select your CLIProxyAPI `config.yaml`. Its client keys authenticate video requests, with a separate locally persisted hourly submission guard; CLIProxy billing and usage accounting are not inherited.
 2. Give the account a unique label, click **Sign in to Muse Web**, sign in interactively in the isolated browser window, and click **Sync signed-in session**. Use a different label for each Muse account.
 3. Check the Muse worker and account status.
 4. Test a video using the desktop form or the API below.
@@ -80,5 +80,5 @@ The manager can start an existing CLIProxyAPI executable after its path is selec
 - The Windows packaging command invokes build-worker.ps1, uses PyInstaller to create a portable Muse2API executable, and embeds it as an Electron extra resource. This is source-complete but not yet verified in a Windows CI build.
 - Optional first-frame image-to-video is supported in the desktop form; Muse Web upstream behavior is unverified.
 - Video task results are returned with 15-minute HMAC-signed media URLs. An unguessable signed URL permits a video player to fetch the MP4 without an Authorization header. An unsigned URL still requires a client key on the unified bridge.
-- Video submissions have a per-key hourly guard, configurable with MUSE_VIDEO_HOURLY_LIMIT (default: 12 per hour). It is persisted under the application's local user data directory, but does not implement CLIProxy per-key billing or durable quotas.
+- Video submissions have a per-key hourly guard, configurable with MUSE_VIDEO_HOURLY_LIMIT (default: 12 per hour). It is persisted under the application's local user data directory, and upstream failures are refunded; this does not implement CLIProxy per-key billing or full usage tracking.
 - To start an installed CLIProxyAPI from the desktop manager, select config.yaml, select the CLIProxyAPI .exe, and click Start CLIProxy. This path is saved for subsequent launches.
