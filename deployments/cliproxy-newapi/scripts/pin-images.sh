@@ -27,8 +27,18 @@ for key,default in names.items():
         raise SystemExit("Image not pulled: "+image_ref+"; run docker compose pull before pinning")
     import json
     digests=json.loads(r.stdout)
-    target=image_ref.partition("@")[0].partition(":")[0].removeprefix("docker.io/")
-    compatible=[d for d in digests if d.partition("@")[0].removeprefix("docker.io/")==target]
+    def normalize_name(value):
+        value=value.split("@",1)[0]
+        last=value.rsplit("/",1)[-1]
+        if ":" in last:
+            value=value.rsplit(":",1)[0]
+        if value.startswith("docker.io/"):
+            value=value[len("docker.io/"):]
+        if value.startswith("library/"):
+            value=value[len("library/"):]
+        return value
+    target=normalize_name(image_ref)
+    compatible=[d for d in digests if normalize_name(d)==target]
     # For already digest-pinned references, preserve the exact same reference.
     if "@sha256:" in image_ref:
         digest=image_ref
@@ -40,7 +50,7 @@ for key,default in names.items():
         raise SystemExit("Invalid image digest for "+key)
     data=re.sub(r"(?m)^"+re.escape(key)+r"=.*$",lambda _:key+"="+digest,data,count=1)
     print(key+" pinned by digest (not printing digest)")
-temp=path.with_suffix(".env.tmp")
+temp=path.parent / (path.name + ".tmp")
 with temp.open("w") as f: f.write(data)
 os.chmod(temp,0o600)
 os.replace(temp,path)
