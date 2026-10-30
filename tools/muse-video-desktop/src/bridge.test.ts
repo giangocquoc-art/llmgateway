@@ -133,17 +133,20 @@ test("gateway authenticates once and routes Muse video separately", async () => 
     const missing = await fetch(base + "/v1/videos", { method: "POST", body: "{}" });
     assert.equal(missing.status, 401);
   } finally {
-    await Promise.all([close(bridge), close(cli), close(muse)]);
+    await close(bridge);
   }
+  // Keep mock upstream services alive while testing the re-created bridge.
   const restarted = createGateway(() => cfg, "internal-test-key", {
     video: musePort, cli: cliPort, quotaFile
   });
-  const restartPort = await serve(restarted);
   try {
+    const restartPort = await serve(restarted);
     const limitAfterRestart = await fetch(`http://127.0.0.1:${restartPort}/v1/videos`, {
       method: "POST", headers: { Authorization: "Bearer valid-client-key" },
       body: JSON.stringify({ prompt: "after restart" })
     });
     assert.equal(limitAfterRestart.status, 429);
-  } finally { await close(restarted); }
+  } finally {
+    await Promise.all([close(restarted), close(cli), close(muse)]);
+  }
 });
