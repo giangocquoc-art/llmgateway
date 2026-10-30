@@ -305,6 +305,12 @@ if (singleInstance) app.whenReady().then(() => {
   ipcMain.handle("muse:sync-login", (_event, label: unknown) => syncLogin(label));
   ipcMain.handle("muse:accounts", () => museFetch("/admin/accounts"));
   ipcMain.handle("muse:tasks", () => museFetch("/admin/tasks?limit=30"));
+  ipcMain.handle("muse:cancel-task", (_event, id: unknown) => {
+    if (typeof id !== "string" || !/^task_[a-f0-9]{16}$/.test(id)) {
+      throw new Error("Invalid video task ID");
+    }
+    return museFetch(`/admin/tasks/${encodeURIComponent(id)}/cancel`, "POST");
+  });
   ipcMain.handle("muse:delete-account", (_event, id: unknown) => {
     if (typeof id !== "string" || !/^[a-zA-Z0-9_-]{1,100}$/.test(id)) throw new Error("Invalid account ID");
     return museFetch(`/admin/accounts/${encodeURIComponent(id)}`, "DELETE");
