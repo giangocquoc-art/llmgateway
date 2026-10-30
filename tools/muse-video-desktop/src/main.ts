@@ -375,7 +375,13 @@ if (singleInstance) app.whenReady().then(() => {
     const size = data?.size;
     if (duration !== 5 && duration !== 10) throw new Error("Unsupported duration");
     if (size !== "16:9" && size !== "9:16" && size !== "1:1") throw new Error("Unsupported aspect ratio");
-    return museFetch("/v1/videos", "POST", { prompt, duration, size });
+    const image = data?.image;
+    if (image !== undefined && (
+      typeof image !== "string" || image.length > 15 * 1024 * 1024 ||
+      !/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(image)
+    )) throw new Error("Invalid reference image");
+    return museFetch("/v1/videos", "POST", { prompt, duration, size,
+      ...(typeof image === "string" ? { image } : {}) });
   });
 });
 app.on("before-quit", () => { worker?.kill(); cliProcess?.kill(); });
