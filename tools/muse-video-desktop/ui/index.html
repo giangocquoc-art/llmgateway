@@ -29,7 +29,7 @@
     </section>
     <section id="accounts-section"><h2>Account management</h2>
       <div class="panel"><h3>CLIProxy configuration</h3><p id="config-path" class="path">No config selected</p>
-        <button id="choose-config">Select config.yaml</button> <button class="secondary" id="cli-manager">Open CLIProxy Manager</button>
+        <button id="choose-config">Select config.yaml</button> <button class="secondary" id="choose-cli">Select CLIProxy .exe</button> <button class="secondary" id="start-cli">Start CLIProxy</button> <button class="secondary" id="cli-manager">Open CLIProxy Manager</button> <p id="cli-path" class="path">CLIProxy executable not selected</p>
         <p class="muted">The manager reads client API keys from access.api-keys; edit them in CLIProxyAPI as usual.</p>
       </div>
       <div class="panel"><h3>Connect Muse Web</h3><p class="muted">Sign in interactively with Meta inside an isolated window. Then sync the Muse Web session to the local video worker. Muse Code OAuth tokens are NOT reused as video credentials.</p>
@@ -41,7 +41,7 @@
       <label for="prompt">Prompt</label><textarea id="prompt" maxlength="4000" placeholder="A cinematic drone shot of a futuristic Vietnamese city at night..."></textarea>
       <div class="row"><label>Duration <select id="duration"><option value="5">5 seconds</option><option value="10">10 seconds</option></select></label>
         <label>Aspect ratio <select id="size"><option>16:9</option><option>9:16</option><option>1:1</option></select></label></div>
-      <button id="create-video">Create video</button><p class="muted">Live rendering is experimental; Muse2API browser driver must successfully authenticate and run against muse.ai.</p>
+      <label for="image">Optional first frame (image-to-video)</label><input type="file" id="image" accept="image/png,image/jpeg,image/webp" /> <button id="create-video">Create video</button><p class="muted">Live rendering is experimental; Muse2API browser driver must successfully authenticate and run against muse.ai.</p>
     </div></section>
     <section id="tasks-section"><h2>Video tasks</h2><div class="panel"><div id="tasks" class="list">Loading...</div></div></section>
     <p class="message" id="message" role="status" aria-live="polite"></p>
