@@ -5,6 +5,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync, createWriteStream }
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { join, dirname } from "node:path";
+import { pathToFileURL } from "node:url";
 import { createGateway, BRIDGE_PORT, MUSE_PORT, CLI_PORT, readClientKeys } from "./bridge";
 
 type Settings = { cliConfig: string; pythonPath: string; cliExecutable: string };
@@ -213,6 +214,13 @@ function openCliPanel(): void {
     webPreferences: { nodeIntegration: false, contextIsolation: true, sandbox: true }
   });
   panel.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
+  panel.webContents.on("will-navigate", (event, url) => {
+    try {
+      const u = new URL(url);
+      if (u.protocol !== "http:" || u.hostname !== "127.0.0.1" ||
+          u.port !== String(CLI_PORT)) event.preventDefault();
+    } catch { event.preventDefault(); }
+  });
   void panel.loadURL(`http://127.0.0.1:${CLI_PORT}/management.html`);
 }
 
@@ -226,7 +234,13 @@ function makeWindow(): void {
     }
   });
   mainWindow.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
-  void mainWindow.loadFile(join(__dirname, "..", "ui", "index.html"));
+  const localEntry = join(__dirname, "..", "ui", "index.html");
+  const trustedUrl = pathToFileURL(localEntry).href;
+  mainWindow.webContents.on("will-navigate", (event, url) => {
+    if (url !== trustedUrl && !url.startsWith(trustedUrl + "#")) event.preventDefault();
+  });
+  mainWindow.webContents.on("will-redirect", (event) => event.preventDefault());
+  void mainWindow.loadFile(localEntry);
 }
 
 const singleInstance = app.requestSingleInstanceLock();
