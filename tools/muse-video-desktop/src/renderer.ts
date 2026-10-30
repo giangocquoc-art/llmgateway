@@ -9,6 +9,7 @@ type Manager = {
   syncLogin(label: string): Promise<object>;
   accounts(): Promise<{ data: Account[] }>;
   tasks(): Promise<{ data: Task[] }>;
+  cancelTask(id: string): Promise<object>;
   submitVideo(prompt: string, duration: number, size: string): Promise<{ id: string; status: string }>;
   deleteAccount(id: string): Promise<object>;
   openCliManager(): Promise<void>;
@@ -91,6 +92,15 @@ async function refresh(): Promise<void> {
           item.append(link);
         }
       } catch { /* invalid URL */ }
+    }
+    if (task.status === "running" || task.status === "queued") {
+      const cancel = textNode("button", "Cancel") as HTMLButtonElement;
+      cancel.className = "secondary";
+      cancel.addEventListener("click", () => void execute(async () => {
+        await api.cancelTask(task.id);
+        await refresh();
+      }, "Task cancellation requested"));
+      item.append(cancel);
     }
     taskList.append(item);
   }
