@@ -7,11 +7,13 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "start": "npm run build && electron .",
-    "package:win": "npm run build && electron-builder --win nsis",
+    "package:win": "npm run build && powershell -NoProfile -ExecutionPolicy Bypass -File ./build-worker.ps1 && electron-builder --win nsis",
     "check": "tsc --noEmit -p tsconfig.json",
     "test": "npm run build && node --test dist/bridge.test.js"
   },
-  "dependencies": { "yaml": "^2.6.1" },
+  "dependencies": {
+    "yaml": "^2.6.1"
+  },
   "devDependencies": {
     "@types/node": "^22.10.0",
     "electron": "45.1.0",
@@ -21,9 +23,33 @@
   "build": {
     "appId": "local.musevideomanager",
     "productName": "Muse Video Manager",
-    "directories": { "output": "release" },
-    "files": ["dist/**/*", "ui/**/*", "package.json", "node_modules/yaml/**/*"],
-    "win": { "target": ["nsis"] },
-    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true }
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "ui/**/*",
+      "package.json",
+      "node_modules/yaml/**/*"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "artifactName": "Muse-Video-Manager-${version}-Setup.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "extraResources": [
+      {
+        "from": "worker-dist/muse-worker",
+        "to": "muse-worker",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ]
   }
 }
