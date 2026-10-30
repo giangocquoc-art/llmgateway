@@ -35,7 +35,11 @@ function textNode(tag: string, value: string): HTMLElement {
   el.textContent = value;
   return el;
 }
+let refreshPending = false;
 async function refresh(): Promise<void> {
+  if (refreshPending) return;
+  refreshPending = true;
+  try {
   const status = await api.status();
   element("muse-status").textContent = status.museOnline ? "Online" : "Offline";
   element("cli-status").textContent = status.cliOnline ? "Reachable" : "Offline";
@@ -91,6 +95,7 @@ async function refresh(): Promise<void> {
     taskList.append(item);
   }
   if (!tasks.data.length) taskList.textContent = "No video tasks.";
+  } finally { refreshPending = false; }
 }
 element("restart-worker").addEventListener("click", () => void execute(async () => {
   const result = await api.restartWorker();
@@ -116,7 +121,7 @@ element("create-video").addEventListener("click", () => void execute(async () =>
   const prompt = (element("prompt") as HTMLTextAreaElement).value;
   const duration = Number((element("duration") as HTMLSelectElement).value);
   const size = (element("size") as HTMLSelectElement).value;
-  const task = await api.submitVideo(prompt, duration, size);
+  await api.submitVideo(prompt, duration, size);
   await refresh();
 }, "Task submitted. Refresh tasks to view progress."));
 void execute(refresh, "Manager ready");
