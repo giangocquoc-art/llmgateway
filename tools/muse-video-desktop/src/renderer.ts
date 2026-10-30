@@ -11,8 +11,9 @@ type Manager = {
   submitVideo(prompt: string, duration: number, size: string): Promise<{ id: string; status: string }>;
   deleteAccount(id: string): Promise<object>;
   openCliManager(): Promise<void>;
+  downloadMedia(url: string): Promise<void>;
 };
-declare global { interface Window { museManager: Manager } }
+interface Window { museManager: Manager }
 const api = window.museManager;
 const element = (id: string): HTMLElement => {
   const node = document.getElementById(id);
@@ -68,8 +69,12 @@ async function refresh(): Promise<void> {
       try {
         const target = new URL(task.result.url);
         if (target.hostname === "127.0.0.1" && target.port === "18710" && target.pathname.startsWith("/v1/media/")) {
-          link.href = target.href;
-          link.textContent = "Media (requires API key)";
+          link.href = "#tasks-section";
+          link.textContent = "Download MP4";
+          link.addEventListener("click", (event) => {
+            event.preventDefault();
+            void execute(() => api.downloadMedia(target.href), "Video downloaded");
+          });
           item.append(link);
         }
       } catch { /* invalid URL */ }
@@ -94,8 +99,6 @@ element("create-video").addEventListener("click", () => void execute(async () =>
   const duration = Number((element("duration") as HTMLSelectElement).value);
   const size = (element("size") as HTMLSelectElement).value;
   const task = await api.submitVideo(prompt, duration, size);
-  output(`Created video task ${task.id} (${task.status})`);
   await refresh();
-}, "Task submitted"));
+}, "Task submitted. Refresh tasks to view progress."));
 void execute(refresh, "Manager ready");
-export {};
