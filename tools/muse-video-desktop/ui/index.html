@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Muse Video Manager</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside><div class="brand">▶ MUSE<span>MANAGER</span></div>
+    <p class="muted">Local desktop gateway</p>
+    <nav><a href="#overview">Overview</a><a href="#accounts-section">Muse accounts</a><a href="#video">Create video</a><a href="#tasks-section">Tasks</a></nav>
+    <div class="footer">CLIProxyAPI + Muse2API<br>Private localhost integration</div>
+  </aside>
+  <main>
+    <header><div><h1>Video Gateway</h1><p>One dashboard for Muse video and CLIProxyAPI routing.</p></div><button id="refresh">Refresh</button></header>
+    <section id="overview"><h2>Overview</h2>
+      <div class="metrics">
+        <div class="metric"><span>CLIProxyAPI</span><strong id="cli-status">Checking</strong></div>
+        <div class="metric"><span>Muse2API worker</span><strong id="muse-status">Checking</strong></div>
+        <div class="metric"><span>Shared API keys</span><strong id="key-count">0</strong></div>
+      </div>
+      <div class="panel"><h3>Unified OpenAI-compatible endpoint</h3><code id="endpoint">http://127.0.0.1:18710/v1</code>
+      <p class="muted">Chat is forwarded to CLIProxyAPI. Video and media endpoints are forwarded to Muse2API. The same CLIProxy client key authenticates both.</p>
+      <p id="worker-error" class="warning"></p></div>
+    </section>
+    <section id="accounts-section"><h2>Account management</h2>
+      <div class="panel"><h3>CLIProxy configuration</h3><p id="config-path" class="path">No config selected</p>
+        <button id="choose-config">Select config.yaml</button> <button class="secondary" id="cli-manager">Open CLIProxy Manager</button>
+        <p class="muted">The manager reads client API keys from access.api-keys; edit them in CLIProxyAPI as usual.</p>
+      </div>
+      <div class="panel"><h3>Connect Muse Web</h3><p class="muted">Sign in interactively with Meta inside an isolated window. Then sync the Muse Web session to the local video worker. Muse Code OAuth tokens are NOT reused as video credentials.</p>
+        <button id="login">Sign in to Muse Web</button> <button class="secondary" id="sync">Sync signed-in session</button>
+        <div id="accounts" class="list">Loading...</div>
+      </div>
+    </section>
+    <section id="video"><h2>Create a video</h2><div class="panel">
+      <label for="prompt">Prompt</label><textarea id="prompt" maxlength="4000" placeholder="A cinematic drone shot of a futuristic Vietnamese city at night..."></textarea>
+      <div class="row"><label>Duration <select id="duration"><option value="5">5 seconds</option><option value="10">10 seconds</option></select></label>
+        <label>Aspect ratio <select id="size"><option>16:9</option><option>9:16</option><option>1:1</option></select></label></div>
+      <button id="create-video">Create video</button><p class="muted">Live rendering is experimental; Muse2API browser driver must successfully authenticate and run against muse.ai.</p>
+    </div></section>
+    <section id="tasks-section"><h2>Video tasks</h2><div class="panel"><div id="tasks" class="list">Loading...</div></div></section>
+    <p class="message" id="message" role="status" aria-live="polite"></p>
+  </main>
+</div>
+<script src="../dist/renderer.js"></script>
+</body>
+</html>
