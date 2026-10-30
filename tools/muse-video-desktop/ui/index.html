@@ -20,11 +20,12 @@
       <div class="metrics">
         <div class="metric"><span>CLIProxyAPI</span><strong id="cli-status">Checking</strong></div>
         <div class="metric"><span>Muse2API worker</span><strong id="muse-status">Checking</strong></div>
+        <div class="metric"><span>Unified gateway</span><strong id="bridge-status">Checking</strong></div>
         <div class="metric"><span>Shared API keys</span><strong id="key-count">0</strong></div>
       </div>
       <div class="panel"><h3>Unified OpenAI-compatible endpoint</h3><code id="endpoint">http://127.0.0.1:18710/v1</code>
       <p class="muted">Chat is forwarded to CLIProxyAPI. Video and media endpoints are forwarded to Muse2API. The same CLIProxy client key authenticates both.</p>
-      <p id="worker-error" class="warning"></p><button class="secondary" id="choose-python">Choose worker Python</button></div>
+      <p id="worker-error" class="warning"></p><button class="secondary" id="choose-python">Choose worker Python</button> <button class="secondary" id="restart-worker">Restart video worker</button></div>
     </section>
     <section id="accounts-section"><h2>Account management</h2>
       <div class="panel"><h3>CLIProxy configuration</h3><p id="config-path" class="path">No config selected</p>
