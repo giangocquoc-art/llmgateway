@@ -388,7 +388,7 @@ if (singleInstance) app.whenReady().then(() => {
     return museFetch(`/admin/accounts/${encodeURIComponent(id)}`, "DELETE");
   });
   ipcMain.handle("muse:submit-video", (_event, input: unknown) => {
-    const data = input as { prompt?: unknown; duration?: unknown; size?: unknown } | null;
+    const data = input as { prompt?: unknown; duration?: unknown; size?: unknown; image?: unknown } | null;
     const prompt = data?.prompt;
     if (typeof prompt !== "string" || !prompt.trim() || prompt.length > 4000) throw new Error("Prompt must be 1–4000 characters");
     const duration = data?.duration;
