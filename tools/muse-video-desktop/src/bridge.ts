@@ -1,5 +1,6 @@
 import { createServer, request as httpRequest, Server } from "node:http";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync, renameSync, mkdirSync } from "node:fs";
+import { dirname } from "node:path";
 import { createHash, createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { Transform } from "node:stream";
 import YAML from "yaml";
@@ -44,11 +45,37 @@ function mediaPath(pathname: string): boolean {
 export function createGateway(
   configFile: () => string,
   museKey: string,
-  ports: { video?: number; cli?: number } = {}
+  ports: { video?: number; cli?: number; quotaFile?: string } = {}
 ): Server {
   const signingSecret = randomBytes(32);
   const quotas = new Map<string, { start: number; count: number }>();
   const hourlyLimit = Math.max(1, Number(process.env.MUSE_VIDEO_HOURLY_LIMIT || "12") || 12);
+  let quotaStoreError = "";
+  if (ports.quotaFile && existsSync(ports.quotaFile)) {
+    try {
+      const values: unknown = JSON.parse(readFileSync(ports.quotaFile, "utf8"));
+      if (!values || typeof values !== "object" || Array.isArray(values)) throw Error("Corrupt quotas");
+      for (const [key, value] of Object.entries(values)) {
+        if (!/^[a-f0-9]{64}$/.test(key) || !value || typeof value !== "object") continue;
+        const entry = value as { start?: unknown; count?: unknown };
+        if (typeof entry.start === "number" && Number.isFinite(entry.start) &&
+            typeof entry.count === "number" && Number.isFinite(entry.count) &&
+            Number.isInteger(entry.count) && entry.count >= 0 &&
+            Date.now() - entry.start < 3600000 && entry.start <= Date.now()) {
+          quotas.set(key, { start: entry.start, count: entry.count });
+        }
+      }
+    } catch {
+      quotaStoreError = "Stored video quota data is unreadable; fix the file before new video requests.";
+    }
+  }
+  const persistQuotas = (): void => {
+    if (!ports.quotaFile) return;
+    mkdirSync(dirname(ports.quotaFile), { recursive: true });
+    const temporary = ports.quotaFile + ".tmp";
+    writeFileSync(temporary, JSON.stringify(Object.fromEntries(quotas)), { mode: 0o600 });
+    renameSync(temporary, ports.quotaFile);
+  };
 
   const sign = (pathname: string, exp: number): string =>
     createHmac("sha256", signingSecret).update(pathname + ":" + exp).digest("base64url");
@@ -121,6 +148,11 @@ export function createGateway(
 
     // Limit submissions by CLIENT key, not Muse upstream cookie.
     if (req.method === "POST" && parsed.pathname === "/v1/videos") {
+      if (quotaStoreError) {
+        res.writeHead(503).end(quotaStoreError);
+        req.resume();
+        return;
+      }
       const auth = req.headers.authorization ?? "";
       const keyHash = createHash("sha256").update(auth).digest("hex");
       const now = Date.now();
@@ -137,6 +169,13 @@ export function createGateway(
       }
       if (!entry || now - entry.start >= 3600000) quotas.set(keyHash, { start: now, count: 1 });
       else entry.count += 1;
+      try { persistQuotas(); }
+      catch {
+        quotaStoreError = "Cannot persist video quotas";
+        res.writeHead(503).end("Cannot persist video quotas");
+        req.resume();
+        return;
+      }
     }
     if (isSignedDownload) {
       parsed.searchParams.delete("sig");
