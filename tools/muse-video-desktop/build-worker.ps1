@@ -5,7 +5,7 @@ $python = Join-Path $PSScriptRoot ".venv\Scripts\python.exe"
 if (-not (Test-Path $python)) {
     throw "Run setup-windows.ps1 first; Muse2API Python environment is missing."
 }
-& $python -m pip install "pyinstaller==6.16.0"
+& $python -m pip install "pyinstaller==6.22.3"
 if ($LASTEXITCODE -ne 0) { throw "Unable to install PyInstaller." }
 & $python -m PyInstaller --noconfirm --clean --onedir --name muse-worker --collect-all muse2api --distpath "$PSScriptRoot\worker-dist" --workpath "$PSScriptRoot\worker-build" --specpath "$PSScriptRoot\worker-build" "$PSScriptRoot\worker-entry.py"
 if ($LASTEXITCODE -ne 0) { throw "Worker packaging failed." }
