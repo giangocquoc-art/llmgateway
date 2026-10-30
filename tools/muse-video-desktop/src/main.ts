@@ -1,7 +1,9 @@
 import { app, BrowserWindow, dialog, ipcMain, session, shell } from "electron";
 import { ChildProcessWithoutNullStreams, spawn } from "node:child_process";
 import { randomBytes } from "node:crypto";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync, createWriteStream } from "node:fs";
+import { Readable } from "node:stream";
+import { pipeline } from "node:stream/promises";
 import { join } from "node:path";
 import { createGateway, BRIDGE_PORT, MUSE_PORT, CLI_PORT, readClientKeys } from "./bridge";
 
@@ -173,6 +175,39 @@ app.whenReady().then(() => {
     settings.cliConfig = result.filePaths[0];
     saveSettings();
     return { cliConfig: settings.cliConfig, keyCount: keys.length };
+  });
+  ipcMain.handle("manager:choose-python", async () => {
+    const selected = await dialog.showOpenDialog(mainWindow, {
+      properties: ["openFile"], filters: [{ name: "Python interpreter", extensions: ["exe"] }]
+    });
+    if (selected.canceled || !selected.filePaths[0]) return null;
+    settings.pythonPath = selected.filePaths[0];
+    saveSettings();
+    workerError = "Restart the manager to apply the new worker path.";
+    return settings.pythonPath;
+  });
+  ipcMain.handle("muse:download-media", async (_event, raw: unknown) => {
+    if (typeof raw !== "string") throw new Error("Invalid media URL");
+    let url: URL;
+    try { url = new URL(raw); } catch { throw new Error("Invalid media URL"); }
+    if (url.protocol !== "http:" || url.hostname !== "127.0.0.1" ||
+      url.port !== String(BRIDGE_PORT) || !/^\/v1\/media\/[a-zA-Z0-9_.-]+$/.test(url.pathname)) {
+      throw new Error("Only Muse media from the local gateway can be downloaded");
+    }
+    const result = await dialog.showSaveDialog(mainWindow, {
+      defaultPath: url.pathname.split("/").pop() || "video.mp4",
+      filters: [{ name: "Video", extensions: ["mp4"] }, { name: "All files", extensions: ["*"] }]
+    });
+    if (result.canceled || !result.filePath) return;
+    const response = await fetch(`http://127.0.0.1:${MUSE_PORT}${url.pathname}`, {
+      headers: { Authorization: `Bearer ${internalKey}` },
+      signal: AbortSignal.timeout(300000)
+    });
+    if (!response.ok || !response.body) throw new Error(`Media download failed: HTTP ${response.status}`);
+    await pipeline(
+      Readable.fromWeb(response.body as unknown as import("node:stream/web").ReadableStream),
+      createWriteStream(result.filePath, { mode: 0o600 })
+    );
   });
   ipcMain.handle("manager:open-cli", () => shell.openExternal(`http://127.0.0.1:${CLI_PORT}/management.html`));
   ipcMain.handle("muse:open-login", () => { openLogin(); return true; });
