@@ -2,7 +2,7 @@
 
 **Purpose:** run a self-hosted, multi-user OpenAI-compatible endpoint with individual New API tokens, quotas, model access policies and usage tracking. This folder is an **independent deployment stack** inside the existing `llmgateway` repo; it does not replace or configure the original app.
 
-**Architecture:** Clients → HTTPS Caddy → New API → CLIProxyAPI → authorized provider. PostgreSQL stores users/quotas, Redis supports shared state/rate-limit functionality. Only Caddy publishes 80/443; CLIProxyAPI management is disabled.
+**Architecture:** Clients → HTTPS Caddy → New API → CLIProxyAPI → authorized provider. PostgreSQL stores users/quotas, Redis supports shared state/rate-limit functionality. In production only Caddy publishes 80/443; CLIProxyAPI management is disabled. First-owner setup runs behind an SSH tunnel before public exposure.
 
 > ⚠️ This is a **deployment starter**, not a deployed service. You still need a VPS, DNS, an authorized AI upstream, gateway initialization, and end-to-end tests. Never resell or redistribute OAuth/subscription access unless your provider agreement permits it. New API quota does not create additional upstream capacity.
 
@@ -30,17 +30,34 @@ If the feature branch is merged into `main`, clone `main` instead.
 
 ```bash
 sudo apt-get update && sudo apt-get install -y openssl curl
-bash init.sh api.example.com     # CHANGE domain; script refuses to overwrite generated secrets
-docker compose config -q
-docker compose pull
-docker compose up -d
-docker compose ps
-docker compose logs --tail=100 caddy new-api cliproxy postgres redis
+bash init.sh api.example.com     # replace with real domain
+bash scripts/check.sh
+docker compose -f compose.yaml -f compose.bootstrap.yaml pull
+docker compose -f compose.yaml -f compose.bootstrap.yaml up -d new-api
 ```
 
 `init.sh` generates `.env` (DB, Redis, session & crypto secrets) and `cliproxy/config.yaml` (one private **internal CLIProxy key**). These files and OAuth credentials must never be committed. The image variables in `.env` initially reference `latest` for setup; **pin reviewed image versions/digests before real production traffic**.
 
-Open `https://api.example.com` and complete New API administrator setup. Protect the root account, turn off public signups until rollout, configure 2FA where possible and set conservative global/per-token rate limits. If TLS is unavailable, verify A/AAAA records, port 80/443 and `docker compose logs caddy`.
+**Private first-owner bootstrap:** Caddy is NOT started yet; New API listens on VPS loopback only. On your own workstation open a second terminal:
+
+```bash
+ssh -N -L 3000:127.0.0.1:3000 YOUR_SSH_USER@YOUR_VPS_IP
+```
+
+Open `http://127.0.0.1:3000` on your computer **through the encrypted SSH tunnel**, create the root administrator with a strong password, and disable public registration. Do this before exposing the gateway. Bootstrap temporarily disables Secure cookies only on this private HTTP address.
+
+After the root account exists, on your VPS switch to production configuration **without the bootstrap override**:
+
+```bash
+docker compose -f compose.yaml up -d --force-recreate new-api caddy
+docker compose -f compose.yaml ps
+docker compose -f compose.yaml config -q
+docker compose logs --tail=100 caddy new-api cliproxy postgres redis
+```
+
+Confirm that New API no longer publishes port 3000, only Caddy publishes 80/443, and sign in at `https://api.example.com`. Never combine `compose.bootstrap.yaml` with production commands. Enable root 2FA if supported, set global/per-key rate limits and check TLS/DNS.
+
+Caddy's fixed bridge IP is `172.30.44.10`, explicitly trusted by New API to recover the real client IP. If `172.30.44.0/24` overlaps an existing VPS/Docker network, change the subnet, Caddy IP and New API `TRUSTED_PROXIES` **together**.
 
 > No direct ports for New API (3000), CLIProxyAPI (8317), PostgreSQL (5432), or Redis (6379). Docker published ports can bypass UFW expectations. Inspect `docker compose ps` and `ss -lntup`.
 
@@ -102,7 +119,7 @@ bash scripts/check.sh
 
 Backups: `scripts/backup.sh` writes a timestamped PostgreSQL custom-format dump to ignored `backups/`. Store encrypted backup files **off-VPS**, and separately back up `.env`, `cliproxy/config.yaml`, `cliproxy/auths/` and necessary persistent app data; verify restoring them on a staging machine. Redis AOF is not a substitute for SQL backups.
 
-Before exposure to multiple users: pin image digests, verify quota and logging accuracy with streaming and retries, configure alerting on upstream spending and disk space, prohibit public signup by default, and restrict admin accounts. `TRUSTED_PROXIES=none` is intentionally conservative: IP-based user rate-limiting requires explicit trusted proxy configuration after you confirm Caddy's Docker network address. Never trust arbitrary client-supplied forwarded headers.
+Before exposure to multiple users: pin image digests, verify quota and logging accuracy with streaming and retries, configure alerting on upstream spending and disk space, prohibit public signup by default, and restrict admin accounts. New API trusts only Caddy's fixed private IP for forwarded client IPs. If another proxy such as Cloudflare is added, audit the forwarded-header chain before relying on IP-based limits. Token/user quotas remain the primary protection.
 
 ## 9. References
 

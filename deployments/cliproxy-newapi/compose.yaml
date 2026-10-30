@@ -63,7 +63,7 @@ services:
       CRYPTO_SECRET: ${CRYPTO_SECRET:?Run ./init.sh first}
       SESSION_COOKIE_SECURE: "true"
       SESSION_COOKIE_TRUSTED_URL: https://${API_DOMAIN:?Run ./init.sh first}
-      TRUSTED_PROXIES: none
+      TRUSTED_PROXIES: "172.30.44.10"
       ERROR_LOG_ENABLED: "true"
       GENERATE_DEFAULT_TOKEN: "false"
     volumes:
@@ -85,11 +85,16 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
       - caddy_config:/config
-    networks: [private]
+    networks:
+      private:
+        ipv4_address: 172.30.44.10
 
 networks:
   private:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.44.0/24
 
 volumes:
   postgres_data:

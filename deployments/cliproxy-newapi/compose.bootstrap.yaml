@@ -1,0 +1,9 @@
+# First-owner setup ONLY. Access this port exclusively via SSH tunnel.
+# Do not use this override once the service is public.
+services:
+  new-api:
+    environment:
+      SESSION_COOKIE_SECURE: "false"
+      SESSION_COOKIE_TRUSTED_URL: ""
+    ports:
+      - "127.0.0.1:3000:3000"
