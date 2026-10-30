@@ -31,6 +31,9 @@ SESSION_SECRET=${SESSION_SECRET}
 CRYPTO_SECRET=${CRYPTO_SECRET}
 CLIPROXY_IMAGE=eceasy/cli-proxy-api:latest
 NEWAPI_IMAGE=calciumion/new-api:latest
+POSTGRES_IMAGE=postgres:16-alpine
+REDIS_IMAGE=redis:7-alpine
+CADDY_IMAGE=caddy:2-alpine
 ENV
 
 cat > cliproxy/config.yaml <<YAML

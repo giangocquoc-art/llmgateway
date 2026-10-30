@@ -36,7 +36,7 @@ docker compose -f compose.yaml -f compose.bootstrap.yaml pull
 docker compose -f compose.yaml -f compose.bootstrap.yaml up -d new-api
 ```
 
-`init.sh` generates `.env` (DB, Redis, session & crypto secrets) and `cliproxy/config.yaml` (one private **internal CLIProxy key**). These files and OAuth credentials must never be committed. The image variables in `.env` initially reference `latest` for setup; **pin reviewed image versions/digests before real production traffic**.
+`init.sh` generates `.env` (DB, Redis, session & crypto secrets) and `cliproxy/config.yaml` (one private **internal CLIProxy key**). These files and OAuth credentials must never be committed. The image variables in `.env` initially reference `latest` for private setup; **`scripts/production-preflight.sh` rejects public deployment until all five images are digest-pinned**.
 
 **Private first-owner bootstrap:** Caddy is NOT started yet; New API listens on VPS loopback only. On your own workstation open a second terminal:
 
@@ -46,7 +46,14 @@ ssh -N -L 3000:127.0.0.1:3000 YOUR_SSH_USER@YOUR_VPS_IP
 
 Open `http://127.0.0.1:3000` on your computer **through the encrypted SSH tunnel**, create the root administrator with a strong password, and disable public registration. Do this before exposing the gateway. Bootstrap temporarily disables Secure cookies only on this private HTTP address.
 
-After the root account exists, on your VPS switch to production configuration **without the bootstrap override**:
+After the root account exists, pin the exact Docker images already downloaded during bootstrap, then switch to production configuration **without the bootstrap override**. This prevents silent changes to containers during later deploys:
+
+```bash
+bash scripts/pin-images.sh
+bash scripts/production-preflight.sh
+```
+
+For upgrades, explicitly select reviewed image tags, pull them, test on staging and rerun `pin-images.sh` to lock their new digests. All five runtime images (New API, CLIProxyAPI, PostgreSQL, Redis, Caddy) must be pinned before public deployment.
 
 ```bash
 docker compose -f compose.yaml up -d --force-recreate new-api caddy

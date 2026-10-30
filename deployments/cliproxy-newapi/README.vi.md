@@ -34,6 +34,13 @@ Trên máy cá nhân vào **http://127.0.0.1:3000**, tạo tài khoản root, đ
 
 ## Chuyển sang công khai qua HTTPS
 
+Trên VPS, khóa 5 image theo SHA-256 để tránh bản mới âm thầm thay đổi:
+
+```bash
+bash scripts/pin-images.sh
+bash scripts/production-preflight.sh
+```
+
 Chạy trên VPS:
 
 ```bash

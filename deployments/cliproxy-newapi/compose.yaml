@@ -3,7 +3,7 @@ name: cliproxy-newapi
 # Only Caddy exposes ports to the host. Other services use internal DNS.
 services:
   postgres:
-    image: postgres:16-alpine
+    image: ${POSTGRES_IMAGE:-postgres:16-alpine}
     restart: unless-stopped
     environment:
       POSTGRES_DB: gateway
@@ -20,7 +20,7 @@ services:
     networks: [private]
 
   redis:
-    image: redis:7-alpine
+    image: ${REDIS_IMAGE:-redis:7-alpine}
     restart: unless-stopped
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD:?Run ./init.sh first}
@@ -72,7 +72,7 @@ services:
     networks: [private]
 
   caddy:
-    image: caddy:2-alpine
+    image: ${CADDY_IMAGE:-caddy:2-alpine}
     restart: unless-stopped
     depends_on: [new-api]
     environment:
