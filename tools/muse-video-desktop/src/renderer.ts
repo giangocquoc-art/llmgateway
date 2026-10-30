@@ -1,5 +1,6 @@
 type Status = { museOnline: boolean; cliOnline: boolean; bridgeOnline: boolean; cliExecutable: string; keyCount: number; cliConfig: string; workerError: string; endpoint: string };
-type Account = { id: string; label: string; status: string; enabled: boolean };
+type Account = { id: string; label: string; status: string; enabled: boolean;
+  cookie_expires?: Record<string, number>; last_error?: string | null };
 type Task = { id: string; status: string; result?: { url?: string }; error?: { message?: string } | string };
 type Manager = {
   status(): Promise<Status>;
@@ -10,6 +11,7 @@ type Manager = {
   openLogin(label: string): Promise<void>;
   syncLogin(label: string): Promise<object>;
   accounts(): Promise<{ data: Account[] }>;
+  quota(id: string): Promise<Record<string, unknown>>;
   tasks(): Promise<{ data: Task[] }>;
   cancelTask(id: string): Promise<object>;
   submitVideo(prompt: string, duration: number, size: string, image?: string): Promise<{ id: string; status: string }>;
@@ -63,6 +65,14 @@ async function refresh(): Promise<void> {
   for (const a of accounts.data) {
     const item = textNode("div", `${a.label} · ${a.status} · ${a.enabled ? "enabled" : "disabled"}`);
     item.className = "item";
+    const quota = textNode("button", "Check quota") as HTMLButtonElement;
+    quota.className = "secondary";
+    quota.addEventListener("click", () => void execute(async () => {
+      const details = await api.quota(a.id);
+      const data = details.quota ?? details;
+      output(`${a.label}: ${JSON.stringify(data)}`);
+    }, "Quota checked"));
+    item.append(quota);
     const remove = textNode("button", "Remove") as HTMLButtonElement;
     remove.className = "secondary";
     remove.addEventListener("click", () => void execute(async () => {
@@ -70,6 +80,10 @@ async function refresh(): Promise<void> {
       await refresh();
     }, "Account removed"));
     item.append(remove);
+    if (a.last_error) item.append(textNode("span", a.last_error));
+    const expiry = a.cookie_expires && Object.values(a.cookie_expires)
+      .filter((x) => Number.isFinite(x) && x > 0).sort((x, y) => x - y)[0];
+    if (expiry && expiry * 1000 < Date.now()) item.append(textNode("span", "Session needs renewal"));
     accountList.append(item);
   }
   if (!accounts.data.length) accountList.textContent = "No Muse Web accounts yet.";
