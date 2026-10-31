@@ -1,0 +1,41 @@
+name: Muse desktop bridge checks
+on:
+  push:
+    branches: [feat/muse-video-desktop-bridge]
+    paths:
+      - "tools/muse-video-desktop/**"
+      - ".github/workflows/muse-video-desktop.yml"
+  pull_request:
+    paths:
+      - "tools/muse-video-desktop/**"
+      - ".github/workflows/muse-video-desktop.yml"
+  workflow_dispatch:
+jobs:
+  check-and-build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: tools/muse-video-desktop
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install and test
+        shell: pwsh
+        run: |
+          ./setup-windows.ps1
+      - name: Package Windows desktop
+        shell: pwsh
+        run: |
+          npm run package:win
+      - name: Upload Windows installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: muse-video-manager-windows
+          path: tools/muse-video-desktop/release/*.exe
+          if-no-files-found: error
+          retention-days: 7
